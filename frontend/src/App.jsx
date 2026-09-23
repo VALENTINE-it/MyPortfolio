@@ -1,5 +1,6 @@
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
+import About from './components/About'
 import Footer from './components/Footer'
 import './App.css'
 
@@ -9,11 +10,7 @@ function App() {
       <Navbar />
       <main>
         <Hero />
-
-        <section id="about" className="section container" style={{ minHeight: '60vh' }}>
-          <span className="label-editorial">Background</span>
-          <h2 className="heading-editorial">ABOUT</h2>
-        </section>
+        <About />
 
         <section id="projects" className="section container" style={{ minHeight: '60vh' }}>
           <span className="label-editorial">Selected Works</span>

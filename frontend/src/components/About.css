@@ -1,0 +1,178 @@
+/* ==========================================================================
+   About Styles — Valentine Omondi Awili Portfolio
+   ========================================================================== */
+
+.about-section {
+  position: relative;
+  border-top: 1px solid var(--border-light);
+}
+
+.about-header {
+  margin-bottom: var(--space-2xl);
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  align-items: start;
+  gap: var(--space-2xl);
+}
+
+/* Image Column */
+.about-image-column {
+  position: sticky;
+  top: 6.5rem;
+}
+
+.about-image-frame {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  background-color: var(--bg-dark);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.06);
+}
+
+.about-image-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+
+.about-image-frame:hover img {
+  transform: scale(1.02);
+}
+
+/* Text Story Column */
+.about-story-column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.about-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.about-subheading {
+  font-size: var(--font-subheading);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.about-subheading::before {
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 2px;
+  background-color: var(--accent);
+}
+
+.about-paragraph {
+  font-size: var(--font-body);
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+.about-paragraph strong {
+  color: var(--text-primary);
+}
+
+/* What I Do Section */
+.what-i-do-container {
+  margin-top: var(--space-md);
+  padding-top: var(--space-xl);
+  border-top: 1px solid var(--border-light);
+}
+
+.what-i-do-title {
+  font-size: var(--font-project-heading);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-lg);
+  color: var(--text-primary);
+}
+
+.what-i-do-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+}
+
+.what-i-do-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--border-light);
+  transition: transform var(--transition-fast);
+}
+
+.what-i-do-item:hover {
+  transform: translateX(4px);
+}
+
+.what-i-do-number {
+  font-size: var(--font-meta);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  min-width: 2rem;
+  padding-top: 0.15rem;
+}
+
+.what-i-do-content h4 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.35rem;
+}
+
+.what-i-do-content p {
+  font-size: var(--font-meta);
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* Responsive Layout (TASK-011) */
+@media (max-width: 1024px) {
+  .about-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-xl);
+  }
+
+  .about-image-column {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .about-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-xl);
+  }
+
+  .about-image-frame {
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  .about-story-column {
+    gap: var(--space-lg);
+  }
+
+  .what-i-do-item {
+    gap: 1rem;
+    padding: 1rem 0;
+  }
+}

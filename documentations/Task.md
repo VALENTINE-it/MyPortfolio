@@ -214,14 +214,14 @@ Animations must remain subtle.
 
 ## TASK-010 — Build About Section
 
-- [ ] Create `About.jsx`.
-- [ ] Add About heading.
-- [ ] Add large personal image.
-- [ ] Add personal introduction.
-- [ ] Add education information.
-- [ ] Add development journey.
-- [ ] Add current professional focus.
-- [ ] Add "What I Do" content.
+- [x] Create `About.jsx`.
+- [x] Add About heading.
+- [x] Add large personal image.
+- [x] Add personal introduction.
+- [x] Add education information.
+- [x] Add development journey.
+- [x] Add current professional focus.
+- [x] Add "What I Do" content.
 
 The layout should follow the editorial style defined in
 `DESIGN.md`.
@@ -230,12 +230,12 @@ The layout should follow the editorial style defined in
 
 ## TASK-011 — About Responsive Layout
 
-- [ ] Create desktop layout.
-- [ ] Create tablet layout.
-- [ ] Create mobile layout.
-- [ ] Test image positioning.
-- [ ] Test typography.
-- [ ] Test spacing.
+- [x] Create desktop layout.
+- [x] Create tablet layout.
+- [x] Create mobile layout.
+- [x] Test image positioning.
+- [x] Test typography.
+- [x] Test spacing.
 
 ---
 
@@ -1089,7 +1089,7 @@ making changes.
 
 Current task:
 
-    TASK-010
+    TASK-012
 
 After completing a task:
 
@@ -1119,11 +1119,13 @@ Completed:
     TASK-007 — Build Footer
     TASK-008 — Build Hero Section
     TASK-009 — Hero Animations
+    TASK-010 — Build About Section
+    TASK-011 — About Responsive Layout
 
 Current Phase:
 
-    Phase 5 — About
+    Phase 6 — Database
 
 Next Task:
 
-    TASK-010 — Build About Section
+    TASK-012 — Configure SQLite
