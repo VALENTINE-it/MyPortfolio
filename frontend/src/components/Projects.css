@@ -1,0 +1,362 @@
+/* ==========================================================================
+   Experience / Accomplishments Timeline & Portfolio CSS
+   Inspired by Elon Musk Portfolio Theme
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Accomplishments Timeline CSS
+   -------------------------------------------------------------------------- */
+.experience {
+  position: relative;
+  padding: 60px 0 30px 0;
+  background: #ffffff;
+}
+
+.experience .timeline {
+  position: relative;
+  width: 100%;
+  margin-top: 40px;
+}
+
+/* Central Red Vertical Line */
+.experience .timeline::after {
+  content: '';
+  position: absolute;
+  width: 2px;
+  background: #EF233C;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  margin-left: -1px;
+}
+
+.experience .timeline .timeline-item {
+  position: relative;
+  background: inherit;
+  width: 50%;
+  margin-bottom: 40px;
+}
+
+.experience .timeline .timeline-item.left {
+  left: 0;
+  padding-right: 35px;
+}
+
+.experience .timeline .timeline-item.right {
+  left: 50%;
+  padding-left: 35px;
+}
+
+/* Node circle on central line */
+.experience .timeline .timeline-item::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 48px;
+  right: -8px;
+  background: #ffffff;
+  border: 2px solid #EF233C;
+  border-radius: 50%;
+  z-index: 2;
+  transition: background 0.3s;
+}
+
+.experience .timeline .timeline-item.right::after {
+  left: -8px;
+}
+
+.experience .timeline .timeline-item:hover::after {
+  background: #EF233C;
+}
+
+/* Triangle arrow pointing towards line */
+.experience .timeline .timeline-item::before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  top: 46px;
+  right: 15px;
+  z-index: 1;
+  border: 10px solid;
+  border-color: transparent transparent transparent #dddddd;
+}
+
+.experience .timeline .timeline-item.right::before {
+  left: 15px;
+  border-color: transparent #dddddd transparent transparent;
+}
+
+/* Date Indicator */
+.experience .timeline .timeline-date {
+  position: absolute;
+  width: 100%;
+  top: 44px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #EF233C;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  z-index: 1;
+}
+
+.experience .timeline .timeline-item.left .timeline-date {
+  text-align: left;
+  left: calc(100% + 50px);
+}
+
+.experience .timeline .timeline-item.right .timeline-date {
+  text-align: right;
+  right: calc(100% + 50px);
+}
+
+/* Card Content Box */
+.experience .timeline .timeline-text {
+  padding: 30px;
+  background: #ffffff;
+  position: relative;
+  border-right: 5px solid #dddddd;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.07);
+  transition: all 0.3s ease;
+}
+
+.experience .timeline .timeline-item.right .timeline-text {
+  border-right: none;
+  border-left: 5px solid #dddddd;
+}
+
+.experience .timeline .timeline-item:hover .timeline-text {
+  border-color: #EF233C;
+  box-shadow: 0 10px 45px rgba(239, 35, 60, 0.12);
+}
+
+.experience .timeline .timeline-text h2 {
+  margin: 0 0 6px 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #414141;
+}
+
+.experience .timeline .timeline-text h4 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-style: italic;
+  font-weight: 500;
+  color: #EF233C;
+}
+
+.experience .timeline .timeline-text p {
+  margin: 0 0 15px 0;
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: #797979;
+}
+
+.timeline-techs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.timeline-tech-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 3px 8px;
+  background: #f4f4f4;
+  color: #555555;
+  border-radius: 2px;
+}
+
+.timeline-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.timeline-actions .btn-sm {
+  padding: 8px 16px;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+}
+
+/* --------------------------------------------------------------------------
+   Portfolio Section CSS
+   -------------------------------------------------------------------------- */
+.portfolio {
+  position: relative;
+  padding: 60px 0 30px 0;
+  background: #fafafa;
+}
+
+.portfolio #portfolio-filter {
+  padding: 0;
+  margin: -10px 0 35px 0;
+  list-style: none;
+  text-align: center;
+}
+
+.portfolio #portfolio-filter li {
+  cursor: pointer;
+  display: inline-block;
+  margin: 5px 6px;
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #ffffff;
+  background: #EF233C;
+  border: 2px solid transparent;
+  border-radius: 0;
+  box-shadow: inset 0 0 0 50px #EF233C;
+  transition: ease-out 0.3s;
+}
+
+.portfolio #portfolio-filter li:hover,
+.portfolio #portfolio-filter li.filter-active {
+  color: #EF233C;
+  background: transparent;
+  box-shadow: inset 0 0 0 0 #EF233C;
+  border-color: #EF233C;
+}
+
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  margin-top: 15px;
+}
+
+.portfolio-item {
+  position: relative;
+}
+
+.portfolio-wrap {
+  position: relative;
+  width: 100%;
+  background: #ffffff;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.portfolio-img {
+  position: relative;
+  overflow: hidden;
+  height: 240px;
+  background: #f0f0f0;
+}
+
+.portfolio-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.05);
+  transition: transform 0.5s ease;
+}
+
+.portfolio-item:hover .portfolio-img img {
+  transform: scale(1.15) translateX(6px);
+}
+
+.portfolio-text {
+  position: relative;
+  height: 65px;
+  width: calc(100% - 30px);
+  margin: -32px 15px 20px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.12);
+  z-index: 2;
+  padding: 0 12px;
+}
+
+.portfolio-text h3 {
+  width: calc(100% - 55px);
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #414141;
+}
+
+.portfolio-text a.btn {
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  font-weight: 300;
+  line-height: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive Layout Rules
+   -------------------------------------------------------------------------- */
+@media (max-width: 991.98px) {
+  .portfolio-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 767.98px) {
+  .experience .timeline::after {
+    left: 8px;
+  }
+
+  .experience .timeline .timeline-item {
+    width: 100%;
+    padding-left: 38px;
+  }
+
+  .experience .timeline .timeline-item.left {
+    padding-right: 0;
+  }
+
+  .experience .timeline .timeline-item.right {
+    left: 0;
+    padding-left: 38px;
+  }
+
+  .experience .timeline .timeline-item.left::after,
+  .experience .timeline .timeline-item.right::after {
+    left: 0;
+  }
+
+  .experience .timeline .timeline-item.left::before,
+  .experience .timeline .timeline-item.right::before {
+    left: 18px;
+    border-color: transparent #dddddd transparent transparent;
+  }
+
+  .experience .timeline .timeline-item.left .timeline-date,
+  .experience .timeline .timeline-item.right .timeline-date {
+    position: relative;
+    top: 0;
+    right: auto;
+    left: 0;
+    text-align: left;
+    margin-bottom: 8px;
+  }
+
+  .experience .timeline .timeline-item.left .timeline-text,
+  .experience .timeline .timeline-item.right .timeline-text {
+    border-right: none;
+    border-left: 5px solid #dddddd;
+  }
+
+  .portfolio-grid {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+}

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="100%" height="100%">
+  <defs>
+    <linearGradient id="proj1Grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#181818"/>
+      <stop offset="50%" stop-color="#121212"/>
+      <stop offset="100%" stop-color="#0a0a0a"/>
+    </linearGradient>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#404040"/>
+      <stop offset="100%" stop-color="#222222"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="800" fill="url(#proj1Grad)"/>
+
+  <!-- Technical Grid -->
+  <line x1="80" y1="80" x2="1120" y2="80" stroke="#252525" stroke-width="1"/>
+  <line x1="80" y1="720" x2="1120" y2="720" stroke="#252525" stroke-width="1"/>
+  <line x1="80" y1="80" x2="80" y2="720" stroke="#252525" stroke-width="1"/>
+  <line x1="1120" y1="80" x2="1120" y2="720" stroke="#252525" stroke-width="1"/>
+
+  <!-- Shield & Security Icon Graphic -->
+  <g transform="translate(600, 360)">
+    <path d="M 0 -160 L 140 -90 L 140 40 C 140 130 0 210 0 210 C 0 210 -140 130 -140 40 L -140 -90 Z" fill="url(#shieldGrad)" stroke="#555555" stroke-width="2"/>
+    <!-- Lock Mechanism -->
+    <rect x="-40" y="-10" width="80" height="70" rx="6" fill="#111111" stroke="#888888" stroke-width="2"/>
+    <path d="M -24 -10 L -24 -40 C -24 -55 24 -55 24 -40 L 24 -10" fill="none" stroke="#888888" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="0" cy="20" r="8" fill="#FFFFFF"/>
+    <line x1="0" y1="26" x2="0" y2="44" stroke="#FFFFFF" stroke-width="3"/>
+  </g>
+
+  <!-- Typography Metadata -->
+  <text x="120" y="140" fill="#AAAAAA" font-family="'Inter', sans-serif" font-size="13" font-weight="700" letter-spacing="0.2em">SECURITY PLATFORM ARCHITECTURE // 01</text>
+  <text x="120" y="670" fill="#FFFFFF" font-family="'Inter', sans-serif" font-size="32" font-weight="800" letter-spacing="-0.02em">SAFEGUARDING DISCLOSURE SYSTEM</text>
+  <text x="120" y="696" fill="#888888" font-family="'Inter', sans-serif" font-size="14">REACT • GO • SQLITE • ENCRYPTED AUDIT TRAILS</text>
+  <text x="1080" y="670" fill="#555555" font-family="'Inter', sans-serif" font-size="36" font-weight="300" text-anchor="end">2026</text>
+</svg>
