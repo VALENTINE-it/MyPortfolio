@@ -64,9 +64,6 @@ export default function About() {
                   With a solid grounding in computer science principles and defense-in-depth architecture,
                   I am <strong>currently learning cybersecurity</strong> to expand my capabilities in vulnerability analysis, threat modeling, and building hardened, attack-resilient applications.
                 </p>
-                <div className="about-learning-pill">
-                  <i className="fas fa-shield-alt"></i> Currently learning: <strong>Cybersecurity</strong>
-                </div>
               </div>
 
               {/* Skill Proficiency Progress Bars */}
