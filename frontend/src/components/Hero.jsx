@@ -1,111 +1,138 @@
+import { useState, useEffect } from 'react'
 import './Hero.css'
 
+const TYPED_STRINGS = [
+  'Full-Stack Developer',
+  'React & JavaScript Specialist',
+  'Go Backend Engineer',
+  'REST API & SQLite Architect',
+  'Passionate Problem Solver',
+]
+
 export default function Hero() {
+  const [currentText, setCurrentText] = useState('')
+  const [stringIndex, setStringIndex] = useState(0)
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  // Typing effect loop
+  useEffect(() => {
+    const fullText = TYPED_STRINGS[stringIndex]
+    const speed = isDeleting ? 40 : 80
+
+    const timer = setTimeout(() => {
+      if (!isDeleting) {
+        // Typing characters
+        const nextText = fullText.slice(0, currentText.length + 1)
+        setCurrentText(nextText)
+
+        // Finished typing full word
+        if (nextText === fullText) {
+          setTimeout(() => setIsDeleting(true), 1500)
+        }
+      } else {
+        // Deleting characters
+        const nextText = fullText.slice(0, currentText.length - 1)
+        setCurrentText(nextText)
+
+        // Finished deleting
+        if (nextText === '') {
+          setIsDeleting(false)
+          setStringIndex((prev) => (prev + 1) % TYPED_STRINGS.length)
+        }
+      }
+    }, speed)
+
+    return () => clearTimeout(timer)
+  }, [currentText, isDeleting, stringIndex])
+
   const scrollTo = (e, sectionId) => {
     e.preventDefault()
     const target = document.getElementById(sectionId)
     if (target) {
-      target.scrollIntoView({ behavior: 'smooth' })
+      const offset = 65
+      const bodyRect = document.body.getBoundingClientRect().top
+      const elementRect = target.getBoundingClientRect().top
+      const elementPosition = elementRect - bodyRect
+      const offsetPosition = elementPosition - offset
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth',
+      })
       window.history.pushState(null, '', `#${sectionId}`)
     }
   }
 
   return (
-    <section id="home" className="hero-section container">
-      <div className="hero-grid">
-        {/* Left Column: Hero Text Content */}
-        <div className="hero-content">
-          <span className="hero-pretitle animate-fade-up">I&apos;m</span>
-
-          <h1 className="hero-name animate-fade-up animate-delay-1">
-            <span>VALENTINE</span>
-            <span>OMONDI AWILI</span>
-          </h1>
-
-          <div className="hero-title animate-fade-up animate-delay-2">
-            Full-Stack Developer
+    <div className="hero" id="home">
+      <div className="container-fluid">
+        <div className="hero-row">
+          {/* Left Column: Hero Text */}
+          <div className="hero-col-text">
+            <div className="hero-content">
+              <div className="hero-text">
+                <p>I&apos;m</p>
+                <h1 className="hero-name">Valentine Omondi Awili</h1>
+                <h2 className="hero-typed">
+                  <span>{currentText}</span>
+                  <span className="typed-cursor">|</span>
+                </h2>
+              </div>
+              <div className="hero-btn">
+                <a
+                  className="btn"
+                  href="#portfolio"
+                  onClick={(e) => scrollTo(e, 'portfolio')}
+                >
+                  Portfolio
+                </a>
+                <a
+                  className="btn"
+                  href="#contact"
+                  onClick={(e) => scrollTo(e, 'contact')}
+                >
+                  Contact Me
+                </a>
+              </div>
+              <div className="hero-social">
+                <a
+                  href="https://github.com/VALENTINE-it"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="GitHub"
+                >
+                  <i className="fab fa-github"></i>
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/valentine-omondi-434aa12ab/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="LinkedIn"
+                >
+                  <i className="fab fa-linkedin-in"></i>
+                </a>
+                <a
+                  href="mailto:valentineawili@gmail.com"
+                  aria-label="Email"
+                >
+                  <i className="fas fa-envelope"></i>
+                </a>
+              </div>
+            </div>
           </div>
 
-          <p className="hero-description animate-fade-up animate-delay-2">
-            I build modern, responsive and practical web applications using
-            React, JavaScript and Go. Driven by performance, clean architecture, and
-            editorial user experiences.
-          </p>
-
-          {/* Action CTAs */}
-          <div className="hero-actions animate-fade-up animate-delay-3">
-            <a
-              href="#projects"
-              className="btn btn-primary"
-              onClick={(e) => scrollTo(e, 'projects')}
-            >
-              View My Work
-            </a>
-            <a
-              href="#contact"
-              className="btn btn-outline"
-              onClick={(e) => scrollTo(e, 'contact')}
-            >
-              Contact Me
-            </a>
-          </div>
-
-          {/* Social Links */}
-          <div className="hero-socials animate-fade-up animate-delay-3">
-            <a
-              href="https://github.com/VALENTINE-it"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hero-social-link"
-              aria-label="GitHub profile"
-            >
-              GitHub ↗
-            </a>
-            <a
-              href="https://linkedin.com/in/valentine-awili"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hero-social-link"
-              aria-label="LinkedIn profile"
-            >
-              LinkedIn ↗
-            </a>
-            <a
-              href="mailto:valentineawili@gmail.com"
-              className="hero-social-link"
-              aria-label="Email Valentine"
-            >
-              Email ↗
-            </a>
-          </div>
-        </div>
-
-        {/* Right Column: Editorial Profile Image */}
-        <div className="hero-image-wrapper animate-image-reveal">
-          <div className="hero-image-frame">
-            <img
-              src="/images/profile.svg"
-              alt="Valentine Omondi Awili portrait"
-              loading="eager"
-              width="800"
-              height="1000"
-            />
+          {/* Right Column: Hero Image */}
+          <div className="hero-col-image">
+            <div className="hero-image">
+              <img
+                src="/images/profile.svg"
+                alt="Valentine Omondi Awili"
+                loading="eager"
+              />
+            </div>
           </div>
         </div>
       </div>
-
-      {/* Editorial Section Transition Indicator */}
-      <div>
-        <a
-          href="#about"
-          className="hero-scroll-indicator"
-          onClick={(e) => scrollTo(e, 'about')}
-          aria-label="Scroll down to About section"
-        >
-          <span>Learn About Me</span>
-          <span className="scroll-arrow" aria-hidden="true">↓</span>
-        </a>
-      </div>
-    </section>
+    </div>
   )
 }
