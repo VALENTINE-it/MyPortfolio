@@ -1,121 +1,187 @@
 /* ==========================================================================
-   Footer Styles — Valentine Omondi Awili Portfolio
+   Footer CSS — Inspired by Elon Musk Portfolio Theme
    ========================================================================== */
 
 .footer {
-  background-color: var(--bg-dark);
-  color: var(--text-light);
-  padding-top: var(--space-2xl);
-  padding-bottom: var(--space-xl);
-  border-top: 1px solid var(--border-dark);
+  position: relative;
+  margin-top: 0;
+  background: #EF233C;
+  color: #ffffff;
 }
 
-.footer-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: var(--space-xl);
-  margin-bottom: var(--space-2xl);
+.footer .container-fluid {
+  padding: 60px 0 0 0;
 }
 
-.footer-brand {
-  max-width: 480px;
+.footer .footer-info {
+  position: relative;
+  width: 100%;
+  text-align: center;
 }
 
-.footer-name {
-  font-size: clamp(1.8rem, 4vw, 3rem);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  text-transform: uppercase;
-  color: var(--text-light);
-  line-height: 1.1;
-  margin-bottom: var(--space-xs);
-}
-
-.footer-title {
-  font-size: var(--font-subheading);
-  color: var(--text-light-secondary);
-  font-weight: 500;
-  margin-bottom: var(--space-md);
-}
-
-.footer-bio {
-  color: var(--text-light-muted);
-  font-size: var(--font-body);
-  line-height: 1.6;
-}
-
-.footer-nav {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-sm);
-  min-width: 180px;
-}
-
-.footer-heading {
-  font-size: var(--font-meta);
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
+.footer .footer-info h2 {
+  margin-bottom: 12px;
+  font-size: 30px;
   font-weight: 700;
-  color: var(--text-light-muted);
-  margin-bottom: var(--space-xs);
+  color: #ffffff;
+  letter-spacing: 1px;
 }
 
-.footer-link {
-  color: var(--text-light);
-  font-size: var(--font-meta);
-  letter-spacing: 0.05em;
+.footer .footer-info h3 {
+  margin-bottom: 25px;
+  font-size: 18px;
   font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.footer .footer-menu {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+
+.footer .footer-menu p {
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 20px;
+  padding: 0 16px;
+  border-right: 1px solid rgba(255, 255, 255, 0.6);
+  margin-bottom: 8px;
+}
+
+.footer .footer-menu p:last-child {
+  border-right: none;
+}
+
+.footer .footer-social {
+  position: relative;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.footer .footer-social a {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  transition: opacity var(--transition-fast), transform var(--transition-fast);
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  transition: all 0.3s ease;
+  color: #ffffff;
 }
 
-.footer-link:hover {
-  opacity: 0.7;
-  transform: translateX(4px);
+.footer .footer-social a i {
+  font-size: 17px;
+  color: #ffffff;
+  transition: 0.3s;
 }
 
-.footer-bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: var(--space-lg);
-  border-top: 1px solid var(--border-dark);
-  font-size: var(--font-meta);
-  color: var(--text-light-muted);
+.footer .footer-social a:hover {
+  background: #ffffff;
+  transform: translateY(-3px);
 }
 
-.footer-copyright {
+.footer .footer-social a:hover i {
+  color: #EF233C;
+}
+
+.footer .copyright {
+  position: relative;
+  text-align: center;
+  margin-top: 40px;
+  padding-top: 25px;
+  padding-bottom: 25px;
+}
+
+.footer .copyright::before {
+  position: absolute;
+  content: "";
+  width: 50%;
+  height: 1px;
+  top: 0;
+  left: 25%;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.footer .copyright p {
   margin: 0;
+  color: #ffffff;
+  font-size: 13.5px;
 }
 
-.footer-back-to-top {
-  color: var(--text-light-secondary);
-  font-size: var(--font-meta);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+.footer .copyright p a {
+  color: #ffffff;
   font-weight: 600;
+  text-decoration: underline;
+}
+
+.footer .copyright p a:hover {
+  color: #111111;
+}
+
+/* --------------------------------------------------------------------------
+   Floating Back to Top
+   -------------------------------------------------------------------------- */
+.back-to-top {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  text-align: center;
+  font-size: 18px;
+  right: 20px;
+  bottom: 20px;
+  z-index: 999;
+  background: #EF233C;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  border-radius: 0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
   cursor: pointer;
-  transition: color var(--transition-fast);
 }
 
-.footer-back-to-top:hover {
-  color: var(--text-light);
+.back-to-top:hover {
+  background: #ffffff;
+  color: #EF233C;
+  border-color: #EF233C;
+  transform: translateY(-3px);
 }
 
-/* Responsive Footer */
-@media (max-width: 768px) {
-  .footer-top {
-    flex-direction: column;
-    gap: var(--space-lg);
-    margin-bottom: var(--space-xl);
+.back-to-top i {
+  color: inherit;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive Breakpoints
+   -------------------------------------------------------------------------- */
+@media (max-width: 767.98px) {
+  .footer .footer-info h2 {
+    font-size: 24px;
   }
 
-  .footer-bottom {
+  .footer .footer-info h3 {
+    font-size: 16px;
+  }
+
+  .footer .footer-menu {
     flex-direction: column;
-    align-items: flex-start;
-    gap: var(--space-sm);
+    align-items: center;
+  }
+
+  .footer .footer-menu p {
+    border-right: none;
+    padding: 4px 0;
+    margin-bottom: 4px;
   }
 }
