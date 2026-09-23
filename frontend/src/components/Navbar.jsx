@@ -2,33 +2,34 @@ import { useState, useEffect } from 'react'
 import './Navbar.css'
 
 const NAV_ITEMS = [
-  { id: 'home', label: 'HOME' },
-  { id: 'about', label: 'ABOUT' },
-  { id: 'projects', label: 'PROJECTS' },
-  { id: 'skills', label: 'SKILLS' },
-  { id: 'contact', label: 'CONTACT' },
+  { id: 'home', label: 'Home' },
+  { id: 'about', label: 'About' },
+  { id: 'experience', label: 'Accomplishments' },
+  { id: 'portfolio', label: 'Portfolio' },
+  { id: 'skills', label: 'Skills' },
+  { id: 'contact', label: 'Contact' },
 ]
 
 export default function Navbar() {
   const [activeSection, setActiveSection] = useState('home')
-  const [isScrolled, setIsScrolled] = useState(false)
+  const [isSticky, setIsSticky] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-  // Track scroll position for navbar styling & active section
+  // Track scroll position for sticky navbar
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 40)
+      setIsSticky(window.scrollY > 40)
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Observe active sections
+  // Observe active sections for nav highlighting
   useEffect(() => {
     const observerOptions = {
       root: null,
-      rootMargin: '-20% 0px -60% 0px',
+      rootMargin: '-20% 0px -50% 0px',
       threshold: 0,
     }
 
@@ -49,84 +50,66 @@ export default function Navbar() {
     return () => observer.disconnect()
   }, [])
 
-  // Close mobile menu on Escape key
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape' && mobileMenuOpen) {
-        setMobileMenuOpen(false)
-      }
-    }
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [mobileMenuOpen])
-
   const scrollToSection = (e, sectionId) => {
     e.preventDefault()
     setMobileMenuOpen(false)
 
     const el = document.getElementById(sectionId)
     if (el) {
-      el.scrollIntoView({ behavior: 'smooth' })
+      const offset = 65
+      const bodyRect = document.body.getBoundingClientRect().top
+      const elementRect = el.getBoundingClientRect().top
+      const elementPosition = elementRect - bodyRect
+      const offsetPosition = elementPosition - offset
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth',
+      })
       setActiveSection(sectionId)
       window.history.pushState(null, '', `#${sectionId}`)
     }
   }
 
   return (
-    <header className={`navbar ${isScrolled ? 'navbar-scrolled' : ''}`}>
-      <div className="container navbar-container">
-        {/* Brand Logo */}
+    <nav className={`navbar ${isSticky ? 'nav-sticky' : ''}`}>
+      <div className="container-fluid navbar-inner">
         <a
           href="#home"
-          className="navbar-logo"
+          className="navbar-brand"
           onClick={(e) => scrollToSection(e, 'home')}
-          aria-label="Valentine Omondi Awili Portfolio Home"
+          aria-label="Valentine Omondi Awili Home"
         >
-          VALENTINE
+          Valentine
         </a>
 
-        {/* Desktop Navigation */}
-        <nav className="navbar-links" aria-label="Main Navigation">
-          {NAV_ITEMS.map((item) => (
-            <a
-              key={item.id}
-              href={`#${item.id}`}
-              className={`nav-link ${activeSection === item.id ? 'active' : ''}`}
-              onClick={(e) => scrollToSection(e, item.id)}
-            >
-              {item.label}
-            </a>
-          ))}
-        </nav>
-
-        {/* Mobile Toggle Button */}
+        {/* Mobile Toggler */}
         <button
           type="button"
-          className="mobile-menu-btn"
+          className="navbar-toggler"
           onClick={() => setMobileMenuOpen((prev) => !prev)}
           aria-expanded={mobileMenuOpen}
-          aria-label="Toggle navigation menu"
+          aria-label="Toggle navigation"
         >
-          {mobileMenuOpen ? 'CLOSE' : 'MENU'}
+          <i className={mobileMenuOpen ? 'fas fa-times' : 'fas fa-bars'}></i>
         </button>
-      </div>
 
-      {/* Mobile Menu Dropdown */}
-      <nav
-        className={`mobile-nav ${mobileMenuOpen ? 'open' : ''}`}
-        aria-label="Mobile Navigation"
-      >
-        {NAV_ITEMS.map((item) => (
-          <a
-            key={item.id}
-            href={`#${item.id}`}
-            className={`nav-link ${activeSection === item.id ? 'active' : ''}`}
-            onClick={(e) => scrollToSection(e, item.id)}
-          >
-            {item.label}
-          </a>
-        ))}
-      </nav>
-    </header>
+        {/* Nav Links */}
+        <div className={`navbar-collapse ${mobileMenuOpen ? 'show' : ''}`}>
+          <div className="navbar-nav">
+            {NAV_ITEMS.map((item) => (
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                className={`nav-link ${activeSection === item.id ? 'active' : ''}`}
+                onClick={(e) => scrollToSection(e, item.id)}
+              >
+                {item.label}
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </nav>
   )
 }
