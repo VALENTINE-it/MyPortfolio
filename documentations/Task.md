@@ -82,11 +82,11 @@ starts the frontend successfully.
 
 ## TASK-003 — Initialize Go Backend
 
-- [ ] Create Go module.
-- [ ] Create backend entry point.
-- [ ] Create HTTP server.
-- [ ] Configure server port.
-- [ ] Add initial health endpoint.
+- [x] Create Go module.
+- [x] Create backend entry point.
+- [x] Create HTTP server.
+- [x] Configure server port.
+- [x] Add initial health endpoint.
 
 Expected endpoint:
 
@@ -1089,7 +1089,7 @@ making changes.
 
 Current task:
 
-    TASK-003
+    TASK-004
 
 After completing a task:
 
@@ -1112,11 +1112,12 @@ Completed:
 
     TASK-001 — Create Project Repository
     TASK-002 — Initialize React + Vite
+    TASK-003 — Initialize Go Backend
 
 Current Phase:
 
-    Phase 1 — Project Foundation
+    Phase 2 — Frontend Architecture
 
 Next Task:
 
-    TASK-003 — Initialize Go Backend
+    TASK-004 — Create Frontend Folder Structure

@@ -38,3 +38,17 @@ This document tracks all completed tasks, architectural milestones, and verifica
 
 ---
 
+### TASK-003 — Initialize Go Backend
+- **Date Completed:** 2026-09-23
+- **Status:** COMPLETED
+- **Actions Taken:**
+  - Initialized Go module `portfolio-backend` in `backend/go.mod`.
+  - Created backend entry point in `backend/cmd/server/main.go`.
+  - Built HTTP server supporting environment-configured port (`PORT`, defaulting to `8080`).
+  - Added CORS middleware allowing local development frontend communication.
+  - Implemented `GET /api/health` returning JSON `{"success": true, "message": "API is running"}` with proper content-type and method validation.
+- **Verification:**
+  - `go build` compiled cleanly without warnings or errors.
+  - Server successfully launched and handled `curl -i http://localhost:8080/api/health`, returning `HTTP/1.1 200 OK` and JSON `{"success":true,"message":"API is running"}`.
+
+---
