@@ -1,0 +1,122 @@
+/* ==========================================================================
+   Quotes / Testimonials CSS — Inspired by Elon Musk Portfolio Theme
+   ========================================================================== */
+
+.testimonial {
+  position: relative;
+  margin: 60px 0 45px 0;
+  padding: 80px 0;
+  background: #EF233C;
+  color: #ffffff;
+}
+
+.testimonial .container {
+  max-width: 900px;
+}
+
+.testimonial .testimonial-icon {
+  margin-bottom: 35px;
+  text-align: center;
+}
+
+.testimonial .testimonial-icon i {
+  font-size: 55px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.testimonial .testimonial-item {
+  position: relative;
+  margin: 0 15px;
+  text-align: center;
+}
+
+.testimonial .testimonial-img {
+  position: relative;
+  margin-bottom: 15px;
+  z-index: 2;
+}
+
+.testimonial .testimonial-item img {
+  margin: 0 auto;
+  width: 110px;
+  height: 110px;
+  object-fit: cover;
+  padding: 8px;
+  border: 4px dotted #ffffff;
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+.testimonial .testimonial-text {
+  position: relative;
+  margin-top: -60px;
+  padding: 65px 40px 30px 40px;
+  text-align: center;
+  background: #ffffff;
+  border-radius: 500px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+.testimonial .testimonial-item p {
+  font-size: 17px;
+  font-style: italic;
+  line-height: 1.6;
+  color: #414141;
+  margin-bottom: 15px;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.testimonial .testimonial-text h3 {
+  color: #EF233C;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.testimonial .testimonial-text h4 {
+  color: #797979;
+  font-size: 13.5px;
+  margin-bottom: 0;
+  font-weight: 400;
+}
+
+.testimonial-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 25px;
+}
+
+.testimonial-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.3s ease;
+}
+
+.testimonial-dot.active {
+  background: #ffffff;
+  transform: scale(1.2);
+}
+
+@media (max-width: 767.98px) {
+  .testimonial {
+    padding: 60px 0;
+  }
+
+  .testimonial .testimonial-text {
+    border-radius: 20px;
+    padding: 60px 20px 25px 20px;
+  }
+
+  .testimonial .testimonial-item p {
+    font-size: 15px;
+  }
+}
