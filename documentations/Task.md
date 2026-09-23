@@ -66,11 +66,11 @@ Expected structure:
 
 ## TASK-002 — Initialize React + Vite
 
-- [ ] Create React + Vite frontend.
-- [ ] Configure JavaScript.
-- [ ] Verify development server.
-- [ ] Remove default Vite content.
-- [ ] Create initial application structure.
+- [x] Create React + Vite frontend.
+- [x] Configure JavaScript.
+- [x] Verify development server.
+- [x] Remove default Vite content.
+- [x] Create initial application structure.
 
 Expected result:
 
@@ -1089,7 +1089,7 @@ making changes.
 
 Current task:
 
-    TASK-002
+    TASK-003
 
 After completing a task:
 
@@ -1111,6 +1111,7 @@ Status:
 Completed:
 
     TASK-001 — Create Project Repository
+    TASK-002 — Initialize React + Vite
 
 Current Phase:
 
@@ -1118,4 +1119,4 @@ Current Phase:
 
 Next Task:
 
-    TASK-002 — Initialize React + Vite
+    TASK-003 — Initialize Go Backend
