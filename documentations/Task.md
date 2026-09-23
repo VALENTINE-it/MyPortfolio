@@ -129,13 +129,13 @@ Expected structure:
 
 ## TASK-005 — Configure Global Styling
 
-- [ ] Create global CSS.
-- [ ] Configure typography.
-- [ ] Configure CSS variables.
-- [ ] Configure base spacing.
-- [ ] Configure responsive breakpoints.
-- [ ] Configure global transitions.
-- [ ] Remove default browser margins.
+- [x] Create global CSS.
+- [x] Configure typography.
+- [x] Configure CSS variables.
+- [x] Configure base spacing.
+- [x] Configure responsive breakpoints.
+- [x] Configure global transitions.
+- [x] Remove default browser margins.
 
 Use the design system defined in `DESIGN.md`.
 
@@ -1089,7 +1089,7 @@ making changes.
 
 Current task:
 
-    TASK-005
+    TASK-006
 
 After completing a task:
 
@@ -1114,11 +1114,12 @@ Completed:
     TASK-002 — Initialize React + Vite
     TASK-003 — Initialize Go Backend
     TASK-004 — Create Frontend Folder Structure
+    TASK-005 — Configure Global Styling
 
 Current Phase:
 
-    Phase 2 — Frontend Architecture
+    Phase 3 — Navigation
 
 Next Task:
 
-    TASK-005 — Configure Global Styling
+    TASK-006 — Build Navbar

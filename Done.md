@@ -71,3 +71,19 @@ This document tracks all completed tasks, architectural milestones, and verifica
   - Frontend build verification passed.
 
 ---
+
+### TASK-005 — Configure Global Styling
+- **Date Completed:** 2026-09-23
+- **Status:** COMPLETED
+- **Actions Taken:**
+  - Designed and implemented comprehensive design system in `frontend/src/index.css` strictly aligning with `documentations/Design.md`.
+  - Configured CSS custom properties for monochromatic editorial palette (`--bg-primary`, `--bg-dark`, `--text-primary`, `--text-secondary`, `--text-light`, `--border-light`, `--border-dark`).
+  - Configured fluid typography with `clamp()` for hero (`clamp(3.2rem, 9vw, 8.5rem)`), section headings (`clamp(2.4rem, 6vw, 5.5rem)`), project titles, body, and metadata.
+  - Implemented responsive fluid spacing, container max-widths, and fluid section paddings.
+  - Configured cubic-bezier transitions, non-card button primitives (`.btn-primary`, `.btn-outline`, `.btn-link`), editorial labels and divider classes.
+  - Added universal reset, normalized box-sizing, smooth scroll, visible accessible focus rings, and `@media (prefers-reduced-motion)`.
+  - Added responsive media queries for desktop (`> 1024px`), tablet (`768px – 1023px`), and mobile (`< 768px` / `< 480px`).
+- **Verification:**
+  - Production build executed successfully with generated stylesheet `index-BYB2bm2t.css` (0 warnings/errors).
+
+---
