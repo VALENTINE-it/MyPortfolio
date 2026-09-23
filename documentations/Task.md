@@ -168,14 +168,14 @@ Mobile:
 
 ## TASK-007 — Build Footer
 
-- [ ] Create `Footer.jsx`.
-- [ ] Add developer name.
-- [ ] Add professional title.
-- [ ] Add GitHub link.
-- [ ] Add LinkedIn link.
-- [ ] Add email.
-- [ ] Add copyright.
-- [ ] Make footer responsive.
+- [x] Create `Footer.jsx`.
+- [x] Add developer name.
+- [x] Add professional title.
+- [x] Add GitHub link.
+- [x] Add LinkedIn link.
+- [x] Add email.
+- [x] Add copyright.
+- [x] Make footer responsive.
 
 ---
 
@@ -1089,7 +1089,7 @@ making changes.
 
 Current task:
 
-    TASK-007
+    TASK-008
 
 After completing a task:
 
@@ -1116,11 +1116,12 @@ Completed:
     TASK-004 — Create Frontend Folder Structure
     TASK-005 — Configure Global Styling
     TASK-006 — Build Navbar
+    TASK-007 — Build Footer
 
 Current Phase:
 
-    Phase 3 — Navigation
+    Phase 4 — Home / Hero
 
 Next Task:
 
-    TASK-007 — Build Footer
+    TASK-008 — Build Hero Section

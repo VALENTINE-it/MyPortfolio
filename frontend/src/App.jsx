@@ -1,4 +1,5 @@
 import Navbar from './components/Navbar'
+import Footer from './components/Footer'
 import './App.css'
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
           <h2 className="heading-editorial">CONTACT</h2>
         </section>
       </main>
+      <Footer />
     </div>
   )
 }
