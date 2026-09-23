@@ -1,4 +1,5 @@
 import Navbar from './components/Navbar'
+import Hero from './components/Hero'
 import Footer from './components/Footer'
 import './App.css'
 
@@ -7,11 +8,7 @@ function App() {
     <div className="app-container">
       <Navbar />
       <main>
-        <section id="home" className="section container" style={{ paddingTop: '8rem', minHeight: '80vh' }}>
-          <span className="label-editorial">Introduction</span>
-          <h1 className="heading-editorial">VALENTINE OMONDI AWILI</h1>
-          <p>Full-Stack Developer</p>
-        </section>
+        <Hero />
 
         <section id="about" className="section container" style={{ minHeight: '60vh' }}>
           <span className="label-editorial">Background</span>

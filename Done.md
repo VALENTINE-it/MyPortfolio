@@ -125,3 +125,36 @@ This document tracks all completed tasks, architectural milestones, and verifica
   - Verified responsive styling on desktop and mobile viewports.
 
 ---
+
+## Phase 4 — Home / Hero
+
+### TASK-008 — Build Hero Section
+- **Date Completed:** 2026-09-23
+- **Status:** COMPLETED
+- **Actions Taken:**
+  - Created `frontend/src/components/Hero.jsx` and `frontend/src/components/Hero.css`.
+  - Added editorial pretitle `I'm` and prominent headline `VALENTINE OMONDI AWILI` styled with `clamp(3.2rem, 9vw, 8.5rem)` typography.
+  - Added professional role subtitle `Full-Stack Developer` and focused elevator introduction.
+  - Created high-resolution editorial portrait asset in `public/images/profile.svg` and presented in an intentional 4:5 aspect ratio frame (avoiding avatar circular cards).
+  - Implemented primary CTA button ("View My Work") and secondary CTA ("Contact Me") with smooth section scrolling.
+  - Added external professional links (GitHub, LinkedIn, Email).
+  - Added "Learn About Me ↓" editorial transition indicator.
+  - Mounted `Hero` into `App.jsx`.
+- **Verification:**
+  - Verified layout composition matches `DESIGN.md` guidelines.
+  - Production build compiled successfully (`dist/assets/index-3Y5roU7y.js`, `index-k38HJxzU.css`).
+
+---
+
+### TASK-009 — Hero Animations
+- **Date Completed:** 2026-09-23
+- **Status:** COMPLETED
+- **Actions Taken:**
+  - Implemented staggered text reveal animations (`.animate-fade-up`) using cubic-bezier easing.
+  - Implemented portrait image reveal animation (`.animate-image-reveal`).
+  - Added subtle hover zoom on profile image frame and bouncing indicator on scroll-down arrow.
+  - Configured `@media (prefers-reduced-motion)` in global stylesheet to disable all animations for users with reduced motion preferences.
+- **Verification:**
+  - Tested build output and verified GPU-accelerated transforms (`translateY`, `scale`) prevent layout reflows.
+
+---

@@ -183,15 +183,15 @@ Mobile:
 
 ## TASK-008 — Build Hero Section
 
-- [ ] Create `Hero.jsx`.
-- [ ] Add "I'm".
-- [ ] Add developer name.
-- [ ] Add professional title.
-- [ ] Add short introduction.
-- [ ] Add profile image.
-- [ ] Add Projects CTA.
-- [ ] Add Contact CTA.
-- [ ] Add social links.
+- [x] Create `Hero.jsx`.
+- [x] Add "I'm".
+- [x] Add developer name.
+- [x] Add professional title.
+- [x] Add short introduction.
+- [x] Add profile image.
+- [x] Add Projects CTA.
+- [x] Add Contact CTA.
+- [x] Add social links.
 
 The developer name should be one of the largest elements
 on the page.
@@ -200,11 +200,11 @@ on the page.
 
 ## TASK-009 — Hero Animations
 
-- [ ] Add initial text reveal.
-- [ ] Add image reveal.
-- [ ] Add subtle movement.
-- [ ] Respect reduced-motion preferences.
-- [ ] Verify animation performance.
+- [x] Add initial text reveal.
+- [x] Add image reveal.
+- [x] Add subtle movement.
+- [x] Respect reduced-motion preferences.
+- [x] Verify animation performance.
 
 Animations must remain subtle.
 
@@ -1089,7 +1089,7 @@ making changes.
 
 Current task:
 
-    TASK-008
+    TASK-010
 
 After completing a task:
 
@@ -1117,11 +1117,13 @@ Completed:
     TASK-005 — Configure Global Styling
     TASK-006 — Build Navbar
     TASK-007 — Build Footer
+    TASK-008 — Build Hero Section
+    TASK-009 — Hero Animations
 
 Current Phase:
 
-    Phase 4 — Home / Hero
+    Phase 5 — About
 
 Next Task:
 
-    TASK-008 — Build Hero Section
+    TASK-010 — Build About Section
