@@ -1,860 +1,816 @@
-1. Project Overview
+# ARCHITECTURE.md
 
-This project is a personal portfolio website built as a full-stack web application.
+# Personal Portfolio Architecture
 
-The portfolio will present the developer's background, technical skills, projects, and contact information through a modern, responsive interface.
+## 1. Project Overview
 
-The application will use:
+This is a personal developer portfolio built with:
 
-Frontend: React + Vite
-Backend: Go
-API: REST API
-Database: SQLite
-Styling: CSS
-Frontend communication: HTTP/JSON
-Version control: Git
+- React
+- Vite
+- JavaScript
+- CSS
+- Go
+- REST API
+- SQLite
 
-The architecture separates the user interface from backend logic so that the frontend and backend can be developed, tested, and maintained independently.
+The website should visually follow the structure, composition, spacing,
+section flow, typography hierarchy, image placement, and storytelling
+approach of the provided reference portfolio:
 
-2. Application Goals
+https://syedameen-elonmuskporfolio.netlify.app/
 
-The application should:
+The implementation must be original and use the developer's own content,
+projects, images, branding, and information.
 
-Present a professional personal brand.
-Clearly communicate the developer's technical abilities.
-Showcase completed and ongoing projects.
-Allow visitors to learn about the developer.
-Provide a simple way for visitors to make contact.
-Provide a foundation that can later be expanded without restructuring the entire application.
-3. High-Level Architecture
-                         USER
-                           │
-                           ▼
-                  ┌─────────────────┐
-                  │   React + Vite  │
-                  │    Frontend     │
-                  └────────┬────────┘
-                           │
-                    HTTP / JSON
-                           │
-                           ▼
-                  ┌─────────────────┐
-                  │    Go API       │
-                  │    Backend      │
-                  └────────┬────────┘
-                           │
-                           ▼
-                  ┌─────────────────┐
-                  │    Services     │
-                  │ Business Logic  │
-                  └────────┬────────┘
-                           │
-                           ▼
-                  ┌─────────────────┐
-                  │    SQLite DB    │
-                  └─────────────────┘
+The portfolio will NOT include:
 
-The frontend is responsible for the user interface and user interactions.
+- Net Worth section
+- Articles section
+- Blog page
+- Elon Musk-related content
+- Unrelated corporate/company sections
 
-The Go backend is responsible for:
+---
 
-API endpoints
-Business logic
-Data validation
-Database operations
-Contact form processing
-Project data retrieval
+# 2. Main Navigation
 
-The SQLite database stores dynamic portfolio information.
+The website will contain five primary sections:
 
-4. Frontend Architecture
-Technology
-React
-Vite
-JavaScript
-CSS
-React Router
-Fetch API
+1. Home
+2. About
+3. Projects
+4. Skills
+5. Contact
 
-React will be responsible for building reusable UI components.
-
-Vite will provide the development server and production build system.
-
-React Router will manage navigation between the portfolio pages.
-
-5. Frontend Page Structure
-
-The application will contain five primary pages:
-
-/
-├── Home
-├── About
-├── Projects
-├── Skills
-└── Contact
-
-Navigation should allow the visitor to move between all five pages without a full browser reload.
-
-6. Home Page
-Purpose
-
-The Home page is the main entry point of the portfolio.
-
-It should immediately communicate:
-
-Who the developer is
-What the developer does
-Main technical focus
-A clear call to action
-UI Structure
-┌──────────────────────────────────────────────┐
-│ LOGO / NAME             Home About Projects │
-│                          Skills Contact      │
-├──────────────────────────────────────────────┤
-│                                              │
-│              HERO SECTION                   │
-│                                              │
-│              Hi, I'm [Name]                │
-│              Full-Stack Developer           │
-│                                              │
-│      Building modern web applications       │
-│      with React and Go.                     │
-│                                              │
-│       [View Projects] [Contact Me]           │
-│                                              │
-├──────────────────────────────────────────────┤
-│              TECH STACK                     │
-│                                              │
-│       React   JavaScript   Go   SQL         │
-│                                              │
-├──────────────────────────────────────────────┤
-│              FEATURED PROJECTS              │
-│                                              │
-│       Project 1   Project 2   Project 3     │
-│                                              │
-├──────────────────────────────────────────────┤
-│              SHORT INTRO                    │
-│                                              │
-│        Brief developer introduction          │
-│                                              │
-└──────────────────────────────────────────────┘
-Functionality
-
-The Home page should:
-
-Navigate to Projects when "View Projects" is selected.
-Navigate to Contact when "Contact Me" is selected.
-Display selected featured projects.
-Provide links to professional external profiles where applicable.
-7. About Page
-Purpose
-
-The About page explains the developer's background and development journey.
-
-UI Structure
-┌──────────────────────────────────────────────┐
-│                 ABOUT                        │
-│                                              │
-│     [Profile / Developer Image]              │
-│                                              │
-│     About Me                                 │
-│                                              │
-│     Introduction                             │
-│                                              │
-│     Education                                │
-│                                              │
-│     Development Journey                      │
-│                                              │
-│     What I Build                             │
-│                                              │
-├──────────────────────────────────────────────┤
-│              EXPERIENCE / JOURNEY            │
-│                                              │
-│       Education → Projects → Development     │
-│                                              │
-└──────────────────────────────────────────────┘
-Functionality
-
-The About page will primarily contain static information.
-
-Information should be stored as frontend content unless there is a future requirement for an admin dashboard.
-
-8. Projects Page
-Purpose
-
-The Projects page is the main portfolio showcase.
-
-It should allow visitors to understand what has been built, which technologies were used, and what problem each project solves.
-
-UI Structure
-┌──────────────────────────────────────────────┐
-│                 PROJECTS                     │
-│                                              │
-│  All   Web   Backend   Full Stack             │
-│                                              │
-├──────────────────────────────────────────────┤
-│                                              │
-│  ┌────────────────┐  ┌────────────────┐      │
-│  │ Project Image  │  │ Project Image  │      │
-│  │                │  │                │      │
-│  │ Project Name   │  │ Project Name   │      │
-│  │ Description    │  │ Description    │      │
-│  │ React | Go     │  │ React | Go     │      │
-│  │                │  │                │      │
-│  │ [View Project] │  │ [View Project] │      │
-│  └────────────────┘  └────────────────┘      │
-│                                              │
-│  ┌────────────────┐  ┌────────────────┐      │
-│  │ Project Image  │  │ Project Image  │      │
-│  │                │  │                │      │
-│  │ Project Name   │  │ Project Name   │      │
-│  │ Description    │  │ Description    │      │
-│  │ Technologies   │  │ Technologies   │      │
-│  └────────────────┘  └────────────────┘      │
-│                                              │
-└──────────────────────────────────────────────┘
-Project Data
-
-Projects will eventually be retrieved from the Go backend.
-
-Example:
-
-{
-  "id": 1,
-  "title": "Safeguarding Reporting Platform",
-  "description": "Anonymous reporting platform...",
-  "technologies": ["React", "Go", "SQLite"],
-  "image": "/projects/project-1.png",
-  "githubUrl": "...",
-  "liveUrl": "...",
-  "category": "Full Stack"
-}
-API
-
-The frontend will request projects through:
-
-GET /api/projects
-
-A single project can be retrieved using:
-
-GET /api/projects/:id
-9. Skills Page
-Purpose
-
-The Skills page presents the technologies and technical areas the developer works with.
-
-UI Structure
-┌──────────────────────────────────────────────┐
-│                 SKILLS                       │
-│                                              │
-│  Frontend                                    │
-│  ┌────────────────────────────────────────┐  │
-│  │ HTML    CSS    JavaScript    React     │  │
-│  └────────────────────────────────────────┘  │
-│                                              │
-│  Backend                                     │
-│  ┌────────────────────────────────────────┐  │
-│  │ Go      REST APIs      SQL              │  │
-│  └────────────────────────────────────────┘  │
-│                                              │
-│  Tools                                       │
-│  ┌────────────────────────────────────────┐  │
-│  │ Git    Linux    GitHub    VS Code      │  │
-│  └────────────────────────────────────────┘  │
-│                                              │
-│  Other                                       │
-│  ┌────────────────────────────────────────┐  │
-│  │ Networking    Debugging    Problem      │  │
-│  │ Solving                                   │  │
-│  └────────────────────────────────────────┘  │
-└──────────────────────────────────────────────┘
-
-Skills should be grouped rather than displayed as one large list.
-
-10. Contact Page
-Purpose
-
-The Contact page allows visitors to send a message.
-
-UI Structure
-┌──────────────────────────────────────────────┐
-│                 CONTACT                      │
-│                                              │
-│      Let's work together                    │
-│                                              │
-│  Name                                        │
-│  ┌────────────────────────────────────────┐  │
-│  │ Enter your name                        │  │
-│  └────────────────────────────────────────┘  │
-│                                              │
-│  Email                                       │
-│  ┌────────────────────────────────────────┐  │
-│  │ Enter your email                       │  │
-│  └────────────────────────────────────────┘  │
-│                                              │
-│  Subject                                     │
-│  ┌────────────────────────────────────────┐  │
-│  │ Subject                                │  │
-│  └────────────────────────────────────────┘  │
-│                                              │
-│  Message                                     │
-│  ┌────────────────────────────────────────┐  │
-│  │ Write your message                     │  │
-│  │                                        │  │
-│  └────────────────────────────────────────┘  │
-│                                              │
-│              [ Send Message ]                │
-│                                              │
-│  GitHub | LinkedIn | Email                   │
-└──────────────────────────────────────────────┘
-Functionality
-
-When the visitor submits the form:
-
-React Form
-     ↓
-Client-side validation
-     ↓
-POST /api/contact
-     ↓
-Go API
-     ↓
-Validate request
-     ↓
-Store message in SQLite
-     ↓
-Return JSON response
-     ↓
-React displays success/error state
-
-Example endpoint:
-
-POST /api/contact
-
-Example request:
-
-{
-  "name": "John Doe",
-  "email": "john@example.com",
-  "subject": "Project Inquiry",
-  "message": "I would like to work with you."
-}
-11. Backend Architecture
-
-The Go backend will follow a layered architecture.
-
-HTTP Request
-     │
-     ▼
-Router
-     │
-     ▼
-Handler
-     │
-     ▼
-Service
-     │
-     ▼
-Repository
-     │
-     ▼
-SQLite
-Router
-
-Responsible for mapping URLs to handlers.
-
-Example:
-
-GET  /api/projects
-GET  /api/projects/:id
-GET  /api/skills
-POST /api/contact
-Handlers
-
-Handlers are responsible for:
-
-Receiving HTTP requests
-Reading request data
-Validating basic request structure
-Calling services
-Returning HTTP responses
-
-Handlers should not contain database logic.
-
-Services
-
-Services contain application/business logic.
-
-Example:
-
-ProjectService
-ContactService
-SkillService
-Repository
-
-Repositories handle database operations.
-
-Example:
-
-ProjectRepository
-ContactRepository
-SkillRepository
-
-This keeps database logic separate from HTTP logic.
-
-12. Backend Folder Structure
-backend/
-│
-├── cmd/
-│   └── server/
-│       └── main.go
-│
-├── internal/
-│   │
-│   ├── handlers/
-│   │   ├── project_handler.go
-│   │   ├── skill_handler.go
-│   │   └── contact_handler.go
-│   │
-│   ├── services/
-│   │   ├── project_service.go
-│   │   ├── skill_service.go
-│   │   └── contact_service.go
-│   │
-│   ├── repositories/
-│   │   ├── project_repository.go
-│   │   ├── skill_repository.go
-│   │   └── contact_repository.go
-│   │
-│   ├── models/
-│   │   ├── project.go
-│   │   ├── skill.go
-│   │   └── contact.go
-│   │
-│   └── database/
-│       └── database.go
-│
-├── migrations/
-│
-├── go.mod
-└── go.sum
-13. Frontend Folder Structure
-frontend/
-│
-├── public/
-│   ├── images/
-│   └── projects/
-│
-├── src/
-│   │
-│   ├── assets/
-│   │
-│   ├── components/
-│   │   ├── Navbar.jsx
-│   │   ├── Footer.jsx
-│   │   ├── Button.jsx
-│   │   ├── ProjectCard.jsx
-│   │   ├── SkillCard.jsx
-│   │   └── Loading.jsx
-│   │
-│   ├── pages/
-│   │   ├── Home.jsx
-│   │   ├── About.jsx
-│   │   ├── Projects.jsx
-│   │   ├── Skills.jsx
-│   │   └── Contact.jsx
-│   │
-│   ├── services/
-│   │   ├── projectService.js
-│   │   ├── skillService.js
-│   │   └── contactService.js
-│   │
-│   ├── hooks/
-│   │
-│   ├── utils/
-│   │
-│   ├── App.jsx
-│   ├── main.jsx
-│   └── index.css
-│
-├── package.json
-└── vite.config.js
-14. Database Architecture
-
-SQLite will initially contain three main tables.
-
-projects
-skills
-contacts
-Projects
-projects
-──────────────
-id
-title
-description
-category
-image
-github_url
-live_url
-created_at
-Skills
-skills
-──────────────
-id
-name
-category
-level
-created_at
-Contacts
-contacts
-──────────────
-id
-name
-email
-subject
-message
-created_at
-
-The database should only be accessed by the Go backend.
-
-The React application must never connect directly to SQLite.
-
-15. API Architecture
-
-The API will use REST principles.
-
-Projects
-GET /api/projects
-
-Returns all projects.
-
-GET /api/projects/:id
-
-Returns one project.
-
-Skills
-GET /api/skills
-
-Returns skills.
-
-Contact
-POST /api/contact
-
-Creates a contact message.
-
-16. API Response Structure
-
-Successful responses should use JSON.
-
-Example:
-
-{
-  "success": true,
-  "data": []
-}
-
-Errors should follow a consistent structure.
-
-{
-  "success": false,
-  "error": "Unable to process request"
-}
-
-The frontend should use the response status and JSON body to determine whether to display success, loading, or error states.
-
-17. Frontend ↔ Backend Communication
-
-The communication flow should be:
-
-React Component
-      │
-      ▼
-Service Function
-      │
-      ▼
-Fetch API
-      │
-      ▼
-Go REST API
-      │
-      ▼
-Service Layer
-      │
-      ▼
-Repository
-      │
-      ▼
-SQLite
-
-For example:
-
-Projects.jsx
-     ↓
-projectService.js
-     ↓
-GET /api/projects
-     ↓
-Go ProjectHandler
-     ↓
-ProjectService
-     ↓
-ProjectRepository
-     ↓
-SQLite
-18. UI State Architecture
-
-Dynamic pages must account for three primary states.
-
-Loading
-Projects
-   ↓
-Loading projects...
-Success
-Projects
-   ↓
-Project cards
-Error
-Projects
-   ↓
-Unable to load projects.
-[Try Again]
-
-The Contact page should additionally have:
-
-Idle
-  ↓
-Submitting
-  ↓
-Success / Error
-19. Navigation Architecture
-
-The navigation bar will remain consistent across the application.
-
-Home
-About
-Projects
-Skills
-Contact
+The navigation should remain visible at the top of the website.
 
 Desktop:
 
-[NAME]       Home  About  Projects  Skills  Contact
+    [ VALENTINE ]     HOME   ABOUT   PROJECTS   SKILLS   CONTACT
 
 Mobile:
 
-[NAME]                                      [MENU]
+    [ VALENTINE ]                         [ MENU ]
 
-The mobile menu should expand into a vertical navigation menu.
+The navigation should smoothly scroll to the corresponding section.
 
-Navigation should be handled through React Router rather than manually reloading pages.
+---
 
-20. Responsive Architecture
+# 3. Overall UI Concept
 
-The website must work across:
+The website should feel like a personal story rather than a
+traditional dashboard-style portfolio.
 
-Mobile
-   ↓
-Tablet
-   ↓
-Desktop
+The design should use:
 
-Primary target sizes:
+- Large typography
+- Large visual sections
+- Generous whitespace
+- Strong image placement
+- Minimal cards
+- Clean navigation
+- Subtle animations
+- Smooth scrolling
+- Strong section headings
+- Full-width sections
+- Timeline-style project presentation
+- Professional developer aesthetic
 
-375px
-768px
-1024px
-1440px+
+Avoid:
 
-The layout should adapt rather than simply shrinking the desktop interface.
+- Excessive rounded cards
+- Excessive gradients
+- Generic AI-generated dashboard styling
+- Excessive icons
+- Emoji
+- Unnecessary animations
+- Overloaded UI
 
-For example:
+The website should feel like a premium personal portfolio.
 
-Desktop
+---
 
-[ Project ] [ Project ] [ Project ]
+# 4. Overall Page Structure
 
+The complete website should follow this structure:
 
-Tablet
+    ┌─────────────────────────────┐
+    │          NAVBAR             │
+    ├─────────────────────────────┤
+    │                             │
+    │          HOME               │
+    │        HERO SECTION         │
+    │                             │
+    ├─────────────────────────────┤
+    │                             │
+    │          ABOUT              │
+    │      PERSONAL STORY         │
+    │                             │
+    ├─────────────────────────────┤
+    │                             │
+    │        PROJECTS             │
+    │      PROJECT TIMELINE       │
+    │                             │
+    ├─────────────────────────────┤
+    │                             │
+    │         SKILLS              │
+    │      TECHNICAL AREAS        │
+    │                             │
+    ├─────────────────────────────┤
+    │                             │
+    │        CONTACT              │
+    │      CONTACT SECTION        │
+    │                             │
+    ├─────────────────────────────┤
+    │          FOOTER             │
+    └─────────────────────────────┘
 
-[ Project ] [ Project ]
+The application should behave primarily as a single-page portfolio.
 
+React Router may still be used if individual routes are required later.
 
-Mobile
+---
 
-[ Project ]
-[ Project ]
-[ Project ]
-21. Component Architecture
+# 5. HOME SECTION
 
-Components should be reusable.
+## Purpose
 
-For example:
+The Home section should create the first impression.
 
-ProjectCard
+The layout should closely follow the reference site's hero composition.
 
-should receive project data rather than containing a specific project's information.
+## Layout
 
-<ProjectCard project={project} />
+    ┌─────────────────────────────────────────────┐
+    │                                             │
+    │                  I'M                        │
+    │                                             │
+    │              VALENTINE                      │
+    │                                             │
+    │        FULL-STACK DEVELOPER                 │
+    │                                             │
+    │   I build modern web applications using     │
+    │   React, JavaScript and Go.                 │
+    │                                             │
+    │        [ VIEW MY WORK ]                     │
+    │                                             │
+    │              [ IMAGE ]                      │
+    │                                             │
+    └─────────────────────────────────────────────┘
 
-Similarly:
+The hero should use a large profile image or developer photograph.
 
-<SkillCard skill={skill} />
+The image should have strong visual presence but should not overwhelm
+the name and introduction.
 
-The same component should be reusable throughout the application.
-
-22. Architectural Rules
-
-The following rules must be maintained throughout development.
-
-Frontend
-UI logic belongs in React components.
-API communication belongs in service files.
-Reusable UI belongs in components/.
-Pages belong in pages/.
-Do not place database logic in React components.
-Do not hardcode API responses into components when the data is supposed to come from the backend.
-Backend
-HTTP handling belongs in handlers.
-Business logic belongs in services.
-Database operations belong in repositories.
-Database models should be separated from HTTP handling.
-Handlers should not directly contain SQL queries.
-Database
-SQLite is only accessed by Go.
-Database queries must be parameterized.
-Database schema changes should be tracked through migrations.
-23. Security Architecture
-
-Even though this is initially a portfolio website, basic security should be included.
-
-The backend should:
-
-Validate contact form input.
-Validate email format.
-Limit excessive contact submissions.
-Sanitize or safely handle stored user input.
-Use parameterized SQL queries.
-Never expose database credentials or secrets.
-Never expose private backend configuration to React.
-Configure CORS appropriately.
-Return safe error messages to clients.
-
-Environment-specific configuration should use environment variables.
+## Hero Content
 
 Example:
 
-.env
+    I'M
 
-PORT=8080
-DATABASE_URL=./portfolio.db
-FRONTEND_URL=http://localhost:5173
+    VALENTINE OMONDI AWILI
 
-Secrets must never be committed to Git.
+    FULL-STACK DEVELOPER
 
-24. Development Environment
+    I build modern, responsive and practical web applications
+    using React, JavaScript and Go.
 
-During development:
+Primary CTA:
 
-React + Vite
-http://localhost:5173
+    VIEW MY PROJECTS
 
-Go API:
+Secondary CTA:
 
-http://localhost:8080
+    CONTACT ME
 
-Communication:
+---
 
-React
-localhost:5173
-      │
-      │ HTTP
-      ▼
-Go API
-localhost:8080
+# 6. ABOUT SECTION
 
-The Go server should be configured to allow requests from the frontend development origin.
+## Purpose
 
-25. Production Architecture
+The About section should tell the developer's story.
 
-The final deployment can follow this structure:
+It should use a large editorial layout rather than a traditional
+profile card.
 
-                 INTERNET
-                     │
-                     ▼
-              ┌──────────────┐
-              │   Frontend   │
-              │ React + Vite │
-              └──────┬───────┘
-                     │
-                     │ HTTPS
-                     ▼
-              ┌──────────────┐
-              │  Go Backend  │
-              │   REST API   │
-              └──────┬───────┘
-                     │
-                     ▼
-              ┌──────────────┐
-              │    SQLite    │
-              └──────────────┘
+Layout:
 
-The exact hosting provider will be decided separately and should not be hardcoded into the application architecture.
+    ┌─────────────────────────────────────────────┐
+    │                                             │
+    │              ABOUT ME                       │
+    │                                             │
+    │    [ LARGE IMAGE ]     WHO I AM             │
+    │                                             │
+    │                         Introduction        │
+    │                         Education           │
+    │                         Development journey │
+    │                         Career interests    │
+    │                                             │
+    └─────────────────────────────────────────────┘
 
-26. Overall User Journey
+Below the introduction:
 
-A typical visitor experience should be:
+    WHAT I DO
 
-                VISITOR
-                   │
-                   ▼
-                 HOME
-                   │
-        ┌──────────┼──────────┐
-        ▼          ▼          ▼
-      ABOUT     PROJECTS    SKILLS
-        │          │          │
-        └──────────┼──────────┘
-                   ▼
-                CONTACT
-                   │
-                   ▼
-             Send Message
-                   │
-                   ▼
-               Go API
-                   │
-                   ▼
-                SQLite
+    Frontend Development
+    Backend Development
+    Full-Stack Development
+    Web Applications
+    API Development
 
-The visitor should be able to understand the developer and navigate the entire portfolio without unnecessary interactions.
+The content should be presented as part of the page narrative rather
+than as excessive UI cards.
 
-27. Final Architecture Principle
+---
 
-The project should follow a clear separation of responsibilities:
+# 7. PROJECTS SECTION
 
-React
-─────
-Presentation
-UI
-Navigation
-User Interaction
-Frontend State
+## Purpose
 
-        ↓
+Projects are one of the most important parts of the portfolio.
 
-Go API
-──────
-HTTP
-Validation
-Business Logic
-API Responses
+The reference website presents accomplishments using large visual
+sections and timeline-like storytelling.
 
-        ↓
+The portfolio should use the same general concept for projects.
 
-SQLite
-──────
-Persistent Data
+## Layout
 
-The central architectural principle is:
+    PROJECTS
 
-The frontend should know how to present and request data. The backend should know how to process and manage data. The database should only be accessed by the backend.
+    SELECTED WORK
+
+    ─────────────────────────────────────
+
+    01
+
+    [ PROJECT IMAGE ]
+
+    PROJECT NAME
+
+    Short description explaining the problem,
+    solution and purpose.
+
+    React
+    JavaScript
+    Go
+    SQLite
+
+    [ GITHUB ]     [ LIVE PROJECT ]
+
+
+    ─────────────────────────────────────
+
+    02
+
+    [ PROJECT IMAGE ]
+
+    PROJECT NAME
+
+    Description
+
+    Technologies
+
+    [ GITHUB ]     [ LIVE PROJECT ]
+
+
+    ─────────────────────────────────────
+
+    03
+
+    [ PROJECT IMAGE ]
+
+    PROJECT NAME
+
+    Description
+
+    Technologies
+
+    [ GITHUB ]     [ LIVE PROJECT ]
+
+Projects should appear as large sections rather than small generic
+three-column cards.
+
+## Project Data
+
+Projects will be retrieved from the Go backend.
+
+Example:
+
+    GET /api/projects
+
+Example project:
+
+    {
+      "id": 1,
+      "title": "Safeguarding Reporting Platform",
+      "description": "Anonymous safeguarding reporting platform.",
+      "year": 2026,
+      "technologies": [
+        "React",
+        "Go",
+        "MongoDB"
+      ],
+      "image": "/projects/safeguarding.png",
+      "githubUrl": "...",
+      "liveUrl": "..."
+    }
+
+---
+
+# 8. PROJECT TIMELINE
+
+Projects should optionally contain a year.
+
+Example:
+
+    2026
+       │
+       ├── Safeguarding Reporting Platform
+       │
+       ├── Career Guidance Platform
+       │
+       └── Portfolio Website
+
+This creates the same storytelling feeling as the reference
+accomplishment sections without copying its content.
+
+---
+
+# 9. SKILLS SECTION
+
+## Purpose
+
+The Skills section should communicate technical capability visually.
+
+Instead of using progress bars such as:
+
+    React      90%
+    JavaScript 80%
+
+the portfolio should use grouped technical areas.
+
+Layout:
+
+    SKILLS
+
+    FRONTEND
+
+    HTML
+    CSS
+    JavaScript
+    React
+    Vite
+    Responsive Design
+
+
+    BACKEND
+
+    Go
+    REST APIs
+    SQLite
+    MongoDB
+
+
+    TOOLS
+
+    Git
+    GitHub
+    Linux
+    VS Code
+
+
+    OTHER
+
+    Networking
+    Debugging
+    Problem Solving
+
+The section should remain minimal and typography-focused.
+
+---
+
+# 10. TECHNOLOGY PRESENTATION
+
+Technologies can be displayed as simple text labels.
+
+Example:
+
+    React  •  JavaScript  •  Go  •  REST API
+    SQLite •  Git         •  Linux
+
+Avoid excessive technology logos.
+
+Icons may be used sparingly where they improve recognition.
+
+---
+
+# 11. CONTACT SECTION
+
+## Purpose
+
+The Contact section should provide a direct way to communicate.
+
+Layout:
+
+    ┌─────────────────────────────────────────────┐
+    │                                             │
+    │              LET'S TALK                     │
+    │                                             │
+    │      Have a project or opportunity?         │
+    │                                             │
+    │              [ CONTACT ME ]                 │
+    │                                             │
+    ├─────────────────────────────────────────────┤
+    │                                             │
+    │ Name                                        │
+    │ [____________________________________]      │
+    │                                             │
+    │ Email                                       │
+    │ [____________________________________]      │
+    │                                             │
+    │ Subject                                     │
+    │ [____________________________________]      │
+    │                                             │
+    │ Message                                     │
+    │ [____________________________________]      │
+    │                                             │
+    │              [ SEND MESSAGE ]               │
+    │                                             │
+    └─────────────────────────────────────────────┘
+
+The form will communicate with:
+
+    POST /api/contact
+
+The Go backend will validate the request and store the message in
+SQLite.
+
+---
+
+# 12. FOOTER
+
+The footer should remain minimal.
+
+Example:
+
+    VALENTINE OMONDI AWILI
+
+    Full-Stack Developer
+
+    GitHub
+    LinkedIn
+    Email
+
+    © 2026 Valentine Omondi Awili
+
+The footer should not contain a blog, articles or unnecessary
+navigation.
+
+---
+
+# 13. VISUAL HIERARCHY
+
+The visual hierarchy should be:
+
+    1. Developer name
+    2. Professional title
+    3. Large imagery
+    4. Section titles
+    5. Project names
+    6. Descriptions
+    7. Supporting information
+
+Large headings should be used to create strong visual transitions
+between sections.
+
+Example:
+
+    ABOUT
+
+    PROJECTS
+
+    SKILLS
+
+    CONTACT
+
+---
+
+# 14. IMAGE ARCHITECTURE
+
+Images should be used as major visual elements.
+
+Suggested assets:
+
+    public/
+    └── images/
+        ├── profile.jpg
+        ├── about.jpg
+        └── projects/
+            ├── project-1.jpg
+            ├── project-2.jpg
+            └── project-3.jpg
+
+Images should use consistent aspect ratios.
+
+Project images should be large enough to visually communicate what
+each project is about.
+
+---
+
+# 15. ANIMATION
+
+Animations should be subtle.
+
+Use:
+
+- Fade-in
+- Slide-in
+- Image reveal
+- Hover transitions
+- Smooth scrolling
+- Navigation transitions
+
+Example:
+
+    Section enters viewport
+            ↓
+       Fade + Slide
+            ↓
+       Content visible
+
+Do not animate every element.
+
+Animation should support the storytelling of the portfolio.
+
+---
+
+# 16. RESPONSIVE DESIGN
+
+Desktop:
+
+    Large hero
+    Large typography
+    Side-by-side layouts
+    Large project imagery
+
+
+Tablet:
+
+    Reduced typography
+    Flexible columns
+    Reduced spacing
+
+
+Mobile:
+
+    Single-column layout
+    Mobile navigation
+    Full-width images
+    Smaller typography
+    Stacked project content
+
+Example:
+
+Desktop:
+
+    [ IMAGE ]       [ PROJECT INFORMATION ]
+
+
+Mobile:
+
+    [ IMAGE ]
+
+    [ PROJECT INFORMATION ]
+
+---
+
+# 17. FRONTEND COMPONENT ARCHITECTURE
+
+    src/
+    │
+    ├── components/
+    │   ├── Navbar.jsx
+    │   ├── Hero.jsx
+    │   ├── SectionTitle.jsx
+    │   ├── About.jsx
+    │   ├── ProjectTimeline.jsx
+    │   ├── ProjectItem.jsx
+    │   ├── Skills.jsx
+    │   ├── ContactForm.jsx
+    │   └── Footer.jsx
+    │
+    ├── pages/
+    │   └── Home.jsx
+    │
+    ├── services/
+    │   ├── projectService.js
+    │   ├── skillService.js
+    │   └── contactService.js
+    │
+    ├── assets/
+    │
+    ├── App.jsx
+    └── main.jsx
+
+---
+
+# 18. BACKEND ARCHITECTURE
+
+    backend/
+    │
+    ├── cmd/
+    │   └── server/
+    │       └── main.go
+    │
+    ├── internal/
+    │   ├── handlers/
+    │   │   ├── project_handler.go
+    │   │   ├── skill_handler.go
+    │   │   └── contact_handler.go
+    │   │
+    │   ├── services/
+    │   │   ├── project_service.go
+    │   │   ├── skill_service.go
+    │   │   └── contact_service.go
+    │   │
+    │   ├── repositories/
+    │   │   ├── project_repository.go
+    │   │   ├── skill_repository.go
+    │   │   └── contact_repository.go
+    │   │
+    │   ├── models/
+    │   │   ├── project.go
+    │   │   ├── skill.go
+    │   │   └── contact.go
+    │   │
+    │   └── database/
+    │       └── database.go
+    │
+    └── go.mod
+
+---
+
+# 19. DATA FLOW
+
+Projects:
+
+    React
+      ↓
+    GET /api/projects
+      ↓
+    Go Handler
+      ↓
+    Project Service
+      ↓
+    Project Repository
+      ↓
+    SQLite
+      ↓
+    JSON
+      ↓
+    React
+      ↓
+    Project Timeline
+
+
+Contact:
+
+    Contact Form
+       ↓
+    React Validation
+       ↓
+    POST /api/contact
+       ↓
+    Go Handler
+       ↓
+    Contact Service
+       ↓
+    Contact Repository
+       ↓
+    SQLite
+       ↓
+    Success Response
+       ↓
+    Success Message
+
+---
+
+# 20. RESPONSIBILITY SEPARATION
+
+React is responsible for:
+
+- UI
+- Navigation
+- Animations
+- Form interaction
+- Displaying API data
+
+Go is responsible for:
+
+- API
+- Validation
+- Business logic
+- Database operations
+- Contact submissions
+
+SQLite is responsible for:
+
+- Project data
+- Skills data
+- Contact messages
+
+React must never communicate directly with SQLite.
+
+---
+
+# 21. IMPORTANT DESIGN RULE
+
+The portfolio should be inspired by the reference website's:
+
+- Layout philosophy
+- Visual hierarchy
+- Large typography
+- Full-width sections
+- Storytelling approach
+- Image placement
+- Timeline presentation
+- Minimal navigation
+- Section spacing
+- Animation style
+
+However, the actual implementation must use original:
+
+- Text
+- Images
+- Branding
+- Developer information
+- Project content
+- Skills
+- Colors where appropriate
+- Component implementation
+
+Do not copy the reference site's source code or proprietary assets.
+
+---
+
+# 22. EXCLUDED SECTIONS
+
+The following sections from the reference concept must NOT be implemented:
+
+- Net Worth
+- Articles
+- Blog
+- News
+- Elon Musk biography
+- Elon Musk accomplishments
+- Corporate company showcase
+- Celebrity quotations
+
+The portfolio should remain focused on the developer and their work.
+
+---
+
+# 23. FINAL UI FLOW
+
+The final experience should be:
+
+    NAVBAR
+       ↓
+    HERO
+       ↓
+    ABOUT
+       ↓
+    PROJECTS
+       ↓
+    SKILLS
+       ↓
+    CONTACT
+       ↓
+    FOOTER
+
+The website should feel like one continuous professional story rather
+than five unrelated pages.
+
+The visitor should move naturally from:
+
+    "Who is this developer?"
+
+            ↓
+
+    "What does this developer do?"
+
+            ↓
+
+    "What has this developer built?"
+
+            ↓
+
+    "What technologies does this developer use?"
+
+            ↓
+
+    "How can I contact this developer?"
