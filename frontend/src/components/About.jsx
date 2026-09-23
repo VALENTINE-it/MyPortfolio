@@ -1,116 +1,101 @@
 import './About.css'
 
-const WHAT_I_DO_ITEMS = [
-  {
-    number: '01',
-    title: 'Full-Stack Web Development',
-    description: 'Engineering responsive, modern web applications from frontend interfaces in React to high-performance Go backends.',
-  },
-  {
-    number: '02',
-    title: 'REST API Design & Architecture',
-    description: 'Designing clean, modular, and maintainable RESTful services following standard HTTP conventions and robust validation.',
-  },
-  {
-    number: '03',
-    title: 'Database Architecture & SQLite',
-    description: 'Constructing normalized database schemas, parameterized SQL queries, indexing, and persistent storage pipelines.',
-  },
-  {
-    number: '04',
-    title: 'Security-First Engineering',
-    description: 'Implementing defense-in-depth principles, strict input sanitization, rate limiting, and zero-trust backend boundaries.',
-  },
-  {
-    number: '05',
-    title: 'Performance & Editorial Interfaces',
-    description: 'Crafting lightweight, accessible user experiences using fluid typography, semantic markup, and zero unnecessary bloat.',
-  },
+const PROFICIENCY_BARS = [
+  { label: 'Frontend Development (React, JavaScript, Vite, CSS)', percentage: 95 },
+  { label: 'Backend Systems (Go, REST APIs, Architecture)', percentage: 90 },
+  { label: 'Databases & Storage (SQLite, SQL, Normalization)', percentage: 85 },
+  { label: 'Security & DevOps (Linux, Git, Zero-Trust Validation)', percentage: 88 },
 ]
 
 export default function About() {
+  const scrollToContact = (e) => {
+    e.preventDefault()
+    const target = document.getElementById('contact')
+    if (target) {
+      const offset = 65
+      const bodyRect = document.body.getBoundingClientRect().top
+      const elementRect = target.getBoundingClientRect().top
+      const elementPosition = elementRect - bodyRect
+      const offsetPosition = elementPosition - offset
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth',
+      })
+      window.history.pushState(null, '', '#contact')
+    }
+  }
+
   return (
-    <section id="about" className="section container about-section">
-      <div className="about-header">
-        <span className="label-editorial">Biography &amp; Focus</span>
-        <h2 className="heading-editorial">ABOUT ME</h2>
-      </div>
-
-      <div className="about-grid">
-        {/* Left Column: Large Editorial Image */}
-        <div className="about-image-column">
-          <div className="about-image-frame">
-            <img
-              src="/images/about.svg"
-              alt="Valentine Omondi Awili workspace and engineering concept"
-              loading="lazy"
-              width="900"
-              height="1100"
-            />
-          </div>
-        </div>
-
-        {/* Right Column: Editorial Narrative & What I Do */}
-        <div className="about-story-column">
-          {/* Who I Am */}
-          <div className="about-block">
-            <h3 className="about-subheading">Who I Am</h3>
-            <p className="about-paragraph">
-              I am <strong>Valentine Omondi Awili</strong>, a dedicated full-stack software developer
-              focused on building robust, dependable, and high-quality web applications. I approach
-              software engineering with an emphasis on clarity, reliability, and thoughtful digital
-              craftsmanship.
-            </p>
+    <div className="about" id="about">
+      <div className="container-fluid">
+        <div className="about-row">
+          {/* Left Column: Image */}
+          <div className="about-col-img">
+            <div className="about-img">
+              <img
+                src="/images/about.svg"
+                alt="Valentine Omondi Awili Workspace"
+                loading="lazy"
+              />
+            </div>
           </div>
 
-          {/* Education */}
-          <div className="about-block">
-            <h3 className="about-subheading">Education</h3>
-            <p className="about-paragraph">
-              With a solid educational foundation in computer science and technology disciplines, my
-              studies provided deep grounding in computer systems, algorithms, networking architecture,
-              and software engineering methodology.
-            </p>
-          </div>
+          {/* Right Column: Narrative Content & Skill Bars */}
+          <div className="about-col-content">
+            <div className="about-content">
+              <div className="section-header text-left">
+                <p>Learn About Me</p>
+                <h2>Full-Stack Developer</h2>
+              </div>
 
-          {/* Development Journey */}
-          <div className="about-block">
-            <h3 className="about-subheading">Development Journey</h3>
-            <p className="about-paragraph">
-              My engineering journey began with exploring how computing platforms communicate and scale.
-              Over time, I expanded from foundational web development into backend systems programming,
-              specializing in <strong>Go</strong> for concurrent backend services and <strong>React</strong> for
-              expressive client-side interfaces.
-            </p>
-          </div>
+              <div className="about-text">
+                <p>
+                  I am <strong>Valentine Omondi Awili</strong>, a dedicated full-stack software engineer
+                  passionate about engineering reliable, scalable, and responsive digital systems. My approach
+                  combines clean architectural discipline with modern, intuitive user interfaces.
+                </p>
+                <p>
+                  My engineering journey spans developing concurrent, high-throughput backend services
+                  in <strong>Go</strong> to crafting expressive client interfaces with <strong>React</strong>.
+                  With a solid grounding in computer science principles, algorithms, and secure systems design,
+                  I focus on writing code that is performant, maintainable, and built to last.
+                </p>
+                <p>
+                  Whether architecting RESTful microservices, designing persistent database schemas in SQLite,
+                  or refining user interactions, I strive for purposeful craftsmanship over unnecessary bloat.
+                </p>
+              </div>
 
-          {/* Current Focus */}
-          <div className="about-block">
-            <h3 className="about-subheading">Current Professional Focus</h3>
-            <p className="about-paragraph">
-              Presently, I am focused on architecting resilient full-stack systems, clean RESTful APIs,
-              lightweight relational persistence with <strong>SQLite</strong>, and editorial web experiences
-              that prioritize speed, accessibility, and purposeful aesthetics over generic templates.
-            </p>
-          </div>
-
-          {/* What I Do Section */}
-          <div className="what-i-do-container">
-            <h3 className="what-i-do-title">What I Do</h3>
-            <div className="what-i-do-list">
-              {WHAT_I_DO_ITEMS.map((item) => (
-                <div key={item.number} className="what-i-do-item">
-                  <span className="what-i-do-number">{item.number}</span>
-                  <div className="what-i-do-content">
-                    <h4>{item.title}</h4>
-                    <p>{item.description}</p>
+              {/* Skill Proficiency Progress Bars */}
+              <div className="skills">
+                {PROFICIENCY_BARS.map((item) => (
+                  <div key={item.label} className="skill-wrapper">
+                    <div className="skill-name">
+                      <p>{item.label}</p>
+                      <p>{item.percentage}%</p>
+                    </div>
+                    <div className="progress">
+                      <div
+                        className="progress-bar"
+                        role="progressbar"
+                        style={{ width: `${item.percentage}%` }}
+                        aria-valuenow={item.percentage}
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                      ></div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
+
+              <a className="btn" href="#contact" onClick={scrollToContact}>
+                Get In Touch
+              </a>
             </div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
   )
 }
