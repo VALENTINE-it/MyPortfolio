@@ -1,5 +1,3 @@
-# DESIGN.md
-
 # Personal Developer Portfolio Design System
 
 ## 1. Design Reference
