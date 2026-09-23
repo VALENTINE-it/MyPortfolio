@@ -42,11 +42,11 @@ Do not implement multiple unrelated tasks at once.
 
 ## TASK-001 — Create Project Repository
 
-- [ ] Create the project root directory.
-- [ ] Initialize Git.
-- [ ] Create the basic documentation structure.
-- [ ] Add `.gitignore`.
-- [ ] Add `README.md`.
+- [x] Create the project root directory.
+- [x] Initialize Git.
+- [x] Create the basic documentation structure.
+- [x] Add `.gitignore`.
+- [x] Add `README.md`.
 
 Expected structure:
 
@@ -1089,7 +1089,7 @@ making changes.
 
 Current task:
 
-    TASK-001
+    TASK-002
 
 After completing a task:
 
@@ -1106,11 +1106,11 @@ Do not skip tasks without documenting the reason.
 
 Status:
 
-    NOT STARTED
+    IN PROGRESS
 
 Completed:
 
-    None
+    TASK-001 — Create Project Repository
 
 Current Phase:
 
@@ -1118,4 +1118,4 @@ Current Phase:
 
 Next Task:
 
-    TASK-001 — Create Project Repository
+    TASK-002 — Initialize React + Vite
