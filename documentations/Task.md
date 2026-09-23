@@ -145,16 +145,16 @@ Use the design system defined in `DESIGN.md`.
 
 ## TASK-006 — Build Navbar
 
-- [ ] Create `Navbar.jsx`.
-- [ ] Add developer name/logo.
-- [ ] Add Home navigation.
-- [ ] Add About navigation.
-- [ ] Add Projects navigation.
-- [ ] Add Skills navigation.
-- [ ] Add Contact navigation.
-- [ ] Add mobile menu.
-- [ ] Add active section state.
-- [ ] Add smooth scrolling.
+- [x] Create `Navbar.jsx`.
+- [x] Add developer name/logo.
+- [x] Add Home navigation.
+- [x] Add About navigation.
+- [x] Add Projects navigation.
+- [x] Add Skills navigation.
+- [x] Add Contact navigation.
+- [x] Add mobile menu.
+- [x] Add active section state.
+- [x] Add smooth scrolling.
 
 Desktop:
 
@@ -1089,7 +1089,7 @@ making changes.
 
 Current task:
 
-    TASK-006
+    TASK-007
 
 After completing a task:
 
@@ -1115,6 +1115,7 @@ Completed:
     TASK-003 — Initialize Go Backend
     TASK-004 — Create Frontend Folder Structure
     TASK-005 — Configure Global Styling
+    TASK-006 — Build Navbar
 
 Current Phase:
 
@@ -1122,4 +1123,4 @@ Current Phase:
 
 Next Task:
 
-    TASK-006 — Build Navbar
+    TASK-007 — Build Footer
