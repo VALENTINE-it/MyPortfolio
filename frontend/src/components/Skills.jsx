@@ -3,6 +3,7 @@ import { skillService } from '../services/skillService'
 import './Skills.css'
 
 const SKILL_ICONS = {
+  blockchain: 'fas fa-cubes',
   frontend: 'fas fa-laptop-code',
   backend: 'fas fa-server',
   databases: 'fas fa-database',
@@ -11,6 +12,12 @@ const SKILL_ICONS = {
 }
 
 const FALLBACK_SKILLS = [
+  {
+    category: 'Blockchain Technology Developer',
+    icon: 'fas fa-cubes',
+    description: 'Smart Contracts, Web3 Architecture, Distributed Ledgers, Decentralized Protocols, Cryptography',
+    skills: ['Smart Contracts', 'Web3', 'Distributed Ledgers', 'Decentralized Apps', 'Consensus Algorithms'],
+  },
   {
     category: 'Frontend Development',
     icon: 'fas fa-laptop-code',
@@ -48,7 +55,8 @@ function Skills() {
         const enriched = data.map((item) => {
           const lower = (item.category || '').toLowerCase()
           let icon = SKILL_ICONS.other
-          if (lower.includes('front')) icon = SKILL_ICONS.frontend
+          if (lower.includes('block') || lower.includes('chain')) icon = SKILL_ICONS.blockchain
+          else if (lower.includes('front')) icon = SKILL_ICONS.frontend
           else if (lower.includes('back')) icon = SKILL_ICONS.backend
           else if (lower.includes('data')) icon = SKILL_ICONS.databases
           else if (lower.includes('tool')) icon = SKILL_ICONS.tools

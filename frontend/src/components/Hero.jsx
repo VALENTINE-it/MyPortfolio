@@ -3,6 +3,7 @@ import './Hero.css'
 
 const TYPED_STRINGS = [
   'Full-Stack Developer',
+  'Blockchain Technology Developer',
   'React & JavaScript Specialist',
   'Go Backend Engineer',
   'REST API & SQLite Architect',
