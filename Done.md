@@ -115,7 +115,7 @@ This document tracks all completed tasks, architectural milestones, and verifica
 - **Actions Taken:**
   - Created `frontend/src/components/Footer.jsx` and `frontend/src/components/Footer.css`.
   - Added developer branding: `VALENTINE OMONDI AWILI` and professional title `Full-Stack Developer`.
-  - Added external professional links for GitHub (`https://github.com/VALENTINE-it`), LinkedIn (`https://linkedin.com/in/valentine-awili`), and Email (`mailto:valentineawili@gmail.com`).
+  - Added external professional links for GitHub (`https://github.com/VALENTINE-it`), LinkedIn (`https://www.linkedin.com/in/valentine-omondi-434aa12ab/`), and Email (`mailto:valentineawili@gmail.com`).
   - Added copyright notice (`© 2026 Valentine Omondi Awili. All rights reserved.`).
   - Implemented smooth back-to-top scroll button.
   - Built fully responsive footer layout with dark theme styling adhering to `DESIGN.md`.
@@ -189,3 +189,308 @@ This document tracks all completed tasks, architectural milestones, and verifica
   - Verified viewport scaling across desktop (1440px), tablet (768px), and mobile (375px) without horizontal scrolling.
 
 ---
+
+## Phase 6 — Database
+
+### TASK-012 — Configure SQLite
+- **Date Completed:** 2026-09-23
+- **Status:** COMPLETED
+- **Actions Taken:**
+  - Integrated `modernc.org/sqlite` pure-Go driver (no CGO required).
+  - Implemented database connection initialization in `backend/internal/database/database.go` via `InitDB()`.
+  - Configured database path fallback (`DATABASE_URL` environment variable or `./portfolio.db`).
+  - Added parent directory auto-creation if necessary.
+  - Configured SQLite performance and durability PRAGMAs:
+    - `PRAGMA journal_mode = WAL;` (Write-Ahead Logging)
+    - `PRAGMA foreign_keys = ON;` (Foreign key enforcement)
+    - `PRAGMA busy_timeout = 5000;` (5-second lock timeout)
+    - `PRAGMA synchronous = NORMAL;` (Safe write durability)
+  - Implemented comprehensive error handling and logging.
+- **Verification:**
+  - Unit tests in `backend/internal/database/database_test.go` executed and passed (`PASS: TestInitDB`).
+  - SQLite database file created and verified.
+
+---
+
+### TASK-013 — Create Database Schema
+- **Date Completed:** 2026-09-23
+- **Status:** COMPLETED
+- **Actions Taken:**
+  - Designed and executed DDL schema in `backend/internal/database/database.go`:
+    - `projects`: `id`, `title`, `description`, `category`, `year`, `technologies`, `image`, `github_url`, `live_url`, `created_at`.
+    - `skills`: `id`, `name`, `category`, `created_at`.
+    - `contacts`: `id`, `name`, `email`, `subject`, `message`, `created_at`.
+  - Added performance indexes:
+    - `idx_projects_year` on `projects(year DESC)`
+    - `idx_skills_category` on `skills(category)`
+    - `idx_contacts_created_at` on `contacts(created_at DESC)`
+  - Added automated idempotent seed function `seedInitialData()` providing real initial developer projects and categorized technical skills.
+- **Verification:**
+  - Verified table schemas and indexes using `sqlite3` CLI and automated test suite.
+
+---
+
+## Phase 7 — Go Backend
+
+### TASK-014 — Create Backend Models
+- **Date Completed:** 2026-09-23
+- **Status:** COMPLETED
+- **Actions Taken:**
+  - Created `backend/internal/models/project.go` with JSON serialization mapping.
+  - Created `backend/internal/models/skill.go` with `Skill` and `SkillsByCategory` models.
+  - Created `backend/internal/models/contact.go` with `Contact` and `ContactRequest` payload models.
+- **Verification:**
+  - Model definitions compiled cleanly and verified with JSON marshaling/unmarshaling in test suites.
+
+---
+
+### TASK-015 — Create Project Repository
+- **Date Completed:** 2026-09-23
+- **Status:** COMPLETED
+- **Actions Taken:**
+  - Implemented `ProjectRepository` in `backend/internal/repositories/project_repository.go`.
+  - Added `GetAllProjects()` returning projects ordered by year descending and id ascending.
+  - Added `GetProjectByID(id int64)` with parameterized query (`WHERE id = ?`) to eliminate SQL injection risks.
+  - Added JSON unmarshaling for project technologies array.
+  - Implemented custom error `ErrProjectNotFound`.
+- **Verification:**
+  - Unit test `TestProjectHandler_GetAll` and `TestProjectHandler_GetByID` passed (`200 OK`, `404 Not Found`, `400 Bad Request`).
+
+---
+
+### TASK-016 — Create Skill Repository
+- **Date Completed:** 2026-09-23
+- **Status:** COMPLETED
+- **Actions Taken:**
+  - Implemented `SkillRepository` in `backend/internal/repositories/skill_repository.go`.
+  - Added `GetAllSkills(category string)` supporting both unfiltered queries and category filtering using parameterized statements.
+  - Added safe error handling and scan mapping.
+- **Verification:**
+  - Verified retrieval and filtering via unit and HTTP integration tests.
+
+---
+
+### TASK-017 — Create Contact Repository
+- **Date Completed:** 2026-09-23
+- **Status:** COMPLETED
+- **Actions Taken:**
+  - Implemented `ContactRepository` in `backend/internal/repositories/contact_repository.go`.
+  - Added `CreateContact(contact *models.Contact)` with parameterized insertion query (`INSERT INTO contacts (name, email, subject, message, created_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)`).
+  - Populated auto-generated `LastInsertId` and timestamp.
+- **Verification:**
+  - Unit test `TestContactHandler_Submit` confirmed database insertion and ID generation.
+
+---
+
+## Phase 8 — Backend Services
+
+### TASK-018 — Create Project Service
+- **Date Completed:** 2026-09-23
+- **Status:** COMPLETED
+- **Actions Taken:**
+  - Implemented `ProjectService` in `backend/internal/services/project_service.go`.
+  - Added ID validation preventing non-positive ID database calls.
+  - Connected service layer to `ProjectRepository`.
+- **Verification:**
+  - Verified error propagation and validation via test cases.
+
+---
+
+### TASK-019 — Create Skill Service
+- **Date Completed:** 2026-09-23
+- **Status:** COMPLETED
+- **Actions Taken:**
+  - Implemented `SkillService` in `backend/internal/services/skill_service.go`.
+  - Added `GetSkillsGrouped()` to group skills by category in editorial order: `Frontend`, `Backend`, `Tools`, `Other`.
+- **Verification:**
+  - Verified grouped responses via integration test `TestSkillHandler_GetAll`.
+
+---
+
+### TASK-020 — Create Contact Service
+- **Date Completed:** 2026-09-23
+- **Status:** COMPLETED
+- **Actions Taken:**
+  - Implemented `ContactService` in `backend/internal/services/contact_service.go`.
+  - Added comprehensive validation conforming strictly to `SECURITY.md`:
+    - Name: Required, trimmed, max 100 characters.
+    - Email: Required, trimmed, 3-254 characters, RFC email parsing via `net/mail`.
+    - Subject: Required, trimmed, max 200 characters.
+    - Message: Required, trimmed, 5 to 5000 characters.
+  - Created structured `ValidationErrors` providing per-field validation feedback.
+- **Verification:**
+  - Tested valid and invalid submissions through service and HTTP handler tests.
+
+---
+
+## Phase 9 — REST API
+
+### TASK-021 — Projects API
+- **Date Completed:** 2026-09-23
+- **Status:** COMPLETED
+- **Actions Taken:**
+  - Implemented `ProjectHandler` in `backend/internal/handlers/project_handler.go`.
+  - Configured routes `GET /api/projects` and `GET /api/projects/:id`.
+  - Standardized JSON responses (`{"success": true, "data": [...]}`).
+  - Added 404 handling for non-existent IDs and 400 for malformed IDs.
+- **Verification:**
+  - Executed `curl -i http://localhost:8080/api/projects` (200 OK, returns 3 projects).
+  - Executed `curl -i http://localhost:8080/api/projects/1` (200 OK, returns project 1).
+
+---
+
+### TASK-022 — Skills API
+- **Date Completed:** 2026-09-23
+- **Status:** COMPLETED
+- **Actions Taken:**
+  - Implemented `SkillHandler` in `backend/internal/handlers/skill_handler.go`.
+  - Configured route `GET /api/skills`.
+  - Supported grouped format by default and category filtering via query parameters.
+- **Verification:**
+  - Executed `curl -i http://localhost:8080/api/skills` (200 OK, returns grouped categories: Frontend, Backend, Tools, Other).
+
+---
+
+### TASK-023 — Contact API
+- **Date Completed:** 2026-09-23
+- **Status:** COMPLETED
+- **Actions Taken:**
+  - Implemented `ContactHandler` in `backend/internal/handlers/contact_handler.go`.
+  - Configured route `POST /api/contact`.
+  - Enforced `Content-Type: application/json` (returns 415 on mismatch).
+  - Restricted request body size with `http.MaxBytesReader` to 64KB.
+  - Added in-memory sliding-window IP rate limiter allowing 5 submissions/minute (returns 429 on abuse).
+  - Returned 201 Created on valid submission with confirmation ID and timestamp.
+  - Returned 400 Bad Request with field errors on invalid input.
+- **Verification:**
+  - Submitted valid contact message via `curl` (201 Created, stored in SQLite).
+  - Verified 400 on invalid email.
+  - Verified 405 on GET request.
+  - Verified 415 on non-JSON body.
+  - Verified 429 after exceeding 5 requests/minute threshold.
+
+---
+
+## Phase 10 — Projects UI
+
+### TASK-024 — Build Project Timeline
+- **Date Completed:** 2026-09-23
+- **Status:** COMPLETED
+- **Actions Taken:**
+  - Created `frontend/src/components/ProjectItem.jsx` and `frontend/src/components/ProjectTimeline.jsx`.
+  - Implemented editorial timeline layout avoiding generic 3-column dashboard cards.
+  - Formatted project items with sequential index (`01 / 2026`), category label, large title, description, and bulleted tech list.
+  - Included direct links for GitHub repository and Live Project demo.
+  - Added alternating layout (`isReversed`) for desktop editorial storytelling.
+- **Verification:**
+  - Visual layout verified against `DESIGN.md`. Production build compiled cleanly.
+
+---
+
+### TASK-025 — Connect Projects to API
+- **Date Completed:** 2026-09-23
+- **Status:** COMPLETED
+- **Actions Taken:**
+  - Created `frontend/src/services/api.js` base client with status handling.
+  - Created `frontend/src/services/projectService.js` calling `/api/projects`.
+  - Integrated loading state, live data state, error notice, and retry action button.
+  - Configured Vite dev proxy in `vite.config.js` forwarding `/api` to `http://localhost:8080`.
+- **Verification:**
+  - Projects load dynamically from the Go REST API backend and render into the timeline.
+
+---
+
+### TASK-026 — Project Animations
+- **Date Completed:** 2026-09-23
+- **Status:** COMPLETED
+- **Actions Taken:**
+  - Added image hover scale transition (`scale(1.03)`) with cubic-bezier easing.
+  - Added editorial loading bar animation.
+  - Enforced `@media (prefers-reduced-motion: reduce)` disabling all transforms and transitions for accessibility.
+- **Verification:**
+  - Build verified; reduced-motion CSS rules verified.
+
+---
+
+## Phase 11 — Skills UI
+
+### TASK-027 — Build Skills Section
+- **Date Completed:** 2026-09-23
+- **Status:** COMPLETED
+- **Actions Taken:**
+  - Created `frontend/src/components/Skills.jsx` and `frontend/src/components/Skills.css`.
+  - Implemented 4-column editorial grid for Frontend, Backend, Tools, and Other.
+  - Displayed skills using typography and minimal dash indicators, strictly avoiding artificial percentage bars.
+  - Added hover translation transitions on skill items.
+- **Verification:**
+  - Desktop, tablet, and mobile layouts verified in accordance with `DESIGN.md`.
+
+---
+
+### TASK-028 — Connect Skills to API
+- **Date Completed:** 2026-09-23
+- **Status:** COMPLETED
+- **Actions Taken:**
+  - Created `frontend/src/services/skillService.js`.
+  - Connected `Skills.jsx` to `GET /api/skills`.
+  - Added loading indicator and retry connection functionality.
+- **Verification:**
+  - Verified live data retrieval from Go backend.
+
+---
+
+## Phase 12 — Contact
+
+### TASK-029 — Build Contact UI
+- **Date Completed:** 2026-09-23
+- **Status:** COMPLETED
+- **Actions Taken:**
+  - Created `frontend/src/components/ContactForm.jsx` and `frontend/src/components/ContactForm.css`.
+  - Designed 2-column editorial layout: Left column with bold heading ("LET'S BUILD SOMETHING TOGETHER."), introduction, and direct contact channels (Email, Location, GitHub, LinkedIn); Right column with editorial bottom-bordered form inputs.
+  - Avoided dashboard card aesthetics in compliance with `DESIGN.md`.
+- **Verification:**
+  - Form UI renders cleanly and responsive across all viewports.
+
+---
+
+### TASK-030 — Contact Form Validation
+- **Date Completed:** 2026-09-23
+- **Status:** COMPLETED
+- **Actions Taken:**
+  - Implemented client-side validation for name, email regex, subject, and message length.
+  - Added inline accessible error messages linked with `aria-invalid` and `aria-describedby`.
+  - Real-time error dismissal upon typing.
+- **Verification:**
+  - Tested invalid inputs; appropriate inline feedback renders accurately.
+
+---
+
+### TASK-031 — Connect Contact Form to API
+- **Date Completed:** 2026-09-23
+- **Status:** COMPLETED
+- **Actions Taken:**
+  - Created `frontend/src/services/contactService.js` calling `POST /api/contact`.
+  - Added submission loading indicator ("TRANSMITTING...").
+  - Implemented success confirmation state ("Message Delivered.") with an option to send another message.
+  - Added error banner for server-side validation or rate limiting (429) errors.
+- **Verification:**
+  - Live message submitted through frontend; persisted in SQLite database and confirmed via API response.
+
+---
+
+## Phase 13–21 — Refinements, Security & Production Build
+
+### TASK-032 to TASK-052
+- **Date Completed:** 2026-09-23
+- **Status:** COMPLETED
+- **Actions Taken:**
+  - **Environment Configuration (TASK-040):** Created `.env.example` defining `PORT`, `DATABASE_URL`, `FRONTEND_URL`, and `VITE_API_URL`. Verified `.env` in `.gitignore`.
+  - **Backend Security (TASK-039):** Parameterized queries throughout repositories, CORS origin restriction, security headers (`nosniff`, `DENY`, `strict-origin-when-cross-origin`), 64KB request body limiting, rate limiting on contact form.
+  - **Accessibility (TASK-038):** Semantic HTML5 (`<header>`, `<main>`, `<article>`, `<section>`, `<footer>`), keyboard navigation, accessible labels, aria attributes, reduced-motion media query support.
+  - **App Composition:** Mounted `Hero`, `About`, `ProjectTimeline`, `Skills`, `ContactForm`, and `Footer` in `App.jsx`.
+  - **Full Production Build (TASK-052):**
+    - Go backend compiled cleanly with `go build -o /tmp/server ./cmd/server` (0 errors).
+    - React + Vite frontend compiled cleanly with `npm run build` (0 warnings, 0 errors, output generated in `frontend/dist/`).
+    - Backend test suite passed: `go test -v ./...` (All tests passed in database and handlers packages).
+- **Verification:**
+  - End-to-end integration verified: Frontend talks to Go backend, Go validates and queries SQLite, SQLite stores and returns data.
