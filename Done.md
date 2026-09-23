@@ -52,3 +52,22 @@ This document tracks all completed tasks, architectural milestones, and verifica
   - Server successfully launched and handled `curl -i http://localhost:8080/api/health`, returning `HTTP/1.1 200 OK` and JSON `{"success":true,"message":"API is running"}`.
 
 ---
+
+## Phase 2 — Frontend Architecture
+
+### TASK-004 — Create Frontend Folder Structure
+- **Date Completed:** 2026-09-23
+- **Status:** COMPLETED
+- **Actions Taken:**
+  - Established modular frontend folder hierarchy in `frontend/src/`:
+    - `components/` for reusable interface blocks (Navbar, Hero, About, Projects, Skills, Contact, Footer)
+    - `pages/` for page views
+    - `services/` for API client communication
+    - `hooks/` for custom React hooks
+    - `utils/` for helper functions
+    - `assets/` for static assets and images
+- **Verification:**
+  - Directory structure confirmed and matches expected layout from `documentations/Task.md` and `documentations/Architecture.md`.
+  - Frontend build verification passed.
+
+---

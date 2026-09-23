@@ -105,12 +105,12 @@ Expected response:
 
 ## TASK-004 — Create Frontend Folder Structure
 
-- [ ] Create `components/`.
-- [ ] Create `pages/`.
-- [ ] Create `services/`.
-- [ ] Create `hooks/`.
-- [ ] Create `utils/`.
-- [ ] Create `assets/`.
+- [x] Create `components/`.
+- [x] Create `pages/`.
+- [x] Create `services/`.
+- [x] Create `hooks/`.
+- [x] Create `utils/`.
+- [x] Create `assets/`.
 
 Expected structure:
 
@@ -1089,7 +1089,7 @@ making changes.
 
 Current task:
 
-    TASK-004
+    TASK-005
 
 After completing a task:
 
@@ -1113,6 +1113,7 @@ Completed:
     TASK-001 — Create Project Repository
     TASK-002 — Initialize React + Vite
     TASK-003 — Initialize Go Backend
+    TASK-004 — Create Frontend Folder Structure
 
 Current Phase:
 
@@ -1120,4 +1121,4 @@ Current Phase:
 
 Next Task:
 
-    TASK-004 — Create Frontend Folder Structure
+    TASK-005 — Configure Global Styling
