@@ -202,6 +202,12 @@ func seedInitialData(db *sql.DB) error {
 			{"Linux", "Tools"},
 			{"VS Code", "Tools"},
 
+			// Blockchain
+			{"Smart Contracts", "Blockchain Technology Developer"},
+			{"Distributed Ledgers", "Blockchain Technology Developer"},
+			{"Web3 Architecture", "Blockchain Technology Developer"},
+			{"Cryptographic Protocols", "Blockchain Technology Developer"},
+
 			// Other
 			{"Networking", "Other"},
 			{"Debugging", "Other"},
