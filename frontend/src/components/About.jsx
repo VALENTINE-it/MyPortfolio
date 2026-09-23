@@ -3,8 +3,9 @@ import './About.css'
 const PROFICIENCY_BARS = [
   { label: 'Frontend Development (React, JavaScript, Vite, CSS)', percentage: 95 },
   { label: 'Backend Systems (Go, REST APIs, Architecture)', percentage: 90 },
+  { label: 'Blockchain Technology (Smart Contracts, Web3)', percentage: 82 },
   { label: 'Databases & Storage (SQLite, SQL, Normalization)', percentage: 85 },
-  { label: 'Security & DevOps (Linux, Git, Zero-Trust Validation)', percentage: 88 },
+  { label: 'Cybersecurity (Currently Learning)', percentage: 70 },
 ]
 
 export default function About() {
@@ -52,19 +53,20 @@ export default function About() {
               <div className="about-text">
                 <p>
                   I am <strong>Valentine Omondi Awili</strong>, a dedicated full-stack software engineer
-                  passionate about engineering reliable, scalable, and responsive digital systems. My approach
+                  and <strong>blockchain technology developer</strong> passionate about engineering reliable, scalable, and responsive digital systems. My approach
                   combines clean architectural discipline with modern, intuitive user interfaces.
                 </p>
                 <p>
                   My engineering journey spans developing concurrent, high-throughput backend services
-                  in <strong>Go</strong> to crafting expressive client interfaces with <strong>React</strong>.
-                  With a solid grounding in computer science principles, algorithms, and secure systems design,
-                  I focus on writing code that is performant, maintainable, and built to last.
+                  in <strong>Go</strong> to crafting expressive client interfaces with <strong>React</strong>, alongside decentralized Web3 solutions and smart contract development.
                 </p>
                 <p>
-                  Whether architecting RESTful microservices, designing persistent database schemas in SQLite,
-                  or refining user interactions, I strive for purposeful craftsmanship over unnecessary bloat.
+                  With a solid grounding in computer science principles and defense-in-depth architecture,
+                  I am <strong>currently learning cybersecurity</strong> to expand my capabilities in vulnerability analysis, threat modeling, and building hardened, attack-resilient applications.
                 </p>
+                <div className="about-learning-pill">
+                  <i className="fas fa-shield-alt"></i> Currently learning: <strong>Cybersecurity</strong>
+                </div>
               </div>
 
               {/* Skill Proficiency Progress Bars */}

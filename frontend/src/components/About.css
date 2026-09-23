@@ -64,6 +64,28 @@
   font-weight: 600;
 }
 
+.about-learning-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(239, 35, 60, 0.08);
+  border: 1px solid rgba(239, 35, 60, 0.25);
+  border-radius: 4px;
+  color: #414141;
+  font-size: 13.5px;
+  margin-top: 6px;
+  margin-bottom: 20px;
+}
+
+.about-learning-pill i {
+  color: #EF233C;
+}
+
+.about-learning-pill strong {
+  color: #EF233C;
+}
+
 .about .skills {
   margin-top: 25px;
   margin-bottom: 35px;
