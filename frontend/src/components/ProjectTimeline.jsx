@@ -3,23 +3,37 @@ import ProjectItem from './ProjectItem'
 import { projectService } from '../services/projectService'
 import './Projects.css'
 
+// Organizations under Accomplishments (managed one by one)
+const ORGANISATIONS = [
+  {
+    id: 'hopereach',
+    name: 'HopeReach',
+    role: 'Full-Stack Developer & Technical Lead',
+    status: 'Currently Working',
+    period: '2026 – Present',
+    logo: '/images/hopereach.jpeg',
+    description:
+      'Leading the architecture and full-stack engineering of digital systems, including anonymous safeguarding reporting mechanisms, secure database pipelines in Go, and responsive React interfaces.',
+    aboutOrg:
+      'HopeReach is a community-driven NGO based in Kisumu, Kenya, dedicated to empowering vulnerable communities through compassionate support and sustainable solutions—addressing food security (500,000+ meals served), transitional housing (250+ individuals housed), education & skills development, and mental health advocacy.',
+    technologies: ['React', 'JavaScript', 'Go', 'SQLite', 'REST APIs', 'Data Privacy', 'Security'],
+    githubUrl: 'https://github.com/VALENTINE-it/safeguarding-platform',
+    liveUrl: 'https://hope-reach-project-ngo-gdq7.onrender.com/',
+  },
+]
+
 const FALLBACK_PROJECTS = [
   {
     id: 1,
-    title: 'HopeReach NGO & Safeguarding Platform',
-    category: 'Non-Governmental Organization (NGO)',
-    role: 'Full-Stack Developer & Technical Lead',
-    status: 'Currently Working',
-    year: '2026 – Present',
-    logo: '/images/organisations/hopereach.jpeg',
+    title: 'Safeguarding Reporting Platform',
     description:
-      'Leading the architecture and full-stack development of secure digital platforms, including anonymous safeguarding reporting workflows, encrypted submissions, and backend REST APIs built with Go and SQLite.',
-    orgDetail:
-      'HopeReach is a community-driven NGO based in Kisumu, Kenya, dedicated to empowering vulnerable communities through food security (500,000+ meals served), housing support, education & skills development, and mental health advocacy.',
-    technologies: ['React', 'JavaScript', 'Go', 'SQLite', 'REST APIs', 'Data Privacy', 'Security'],
+      'A secure, confidential reporting platform designed for anonymous safeguarding disclosures, encrypted submission workflows, and case audit records.',
+    category: 'Full-Stack Web Application',
+    year: 2026,
+    technologies: ['React', 'JavaScript', 'Go', 'SQLite', 'REST APIs', 'Security'],
     image: '/images/projects/safeguarding.svg',
     githubUrl: 'https://github.com/VALENTINE-it/safeguarding-platform',
-    liveUrl: 'https://hope-reach-project-ngo-gdq7.onrender.com/',
+    liveUrl: 'https://safeguarding.example.com',
   },
   {
     id: 2,
@@ -57,7 +71,6 @@ function ProjectTimeline() {
     try {
       const data = await projectService.getProjects()
       if (Array.isArray(data) && data.length > 0) {
-        // Merge HopeReach organisation data into first project or list
         setProjects(data)
       }
     } catch {
@@ -77,19 +90,19 @@ function ProjectTimeline() {
 
   return (
     <>
-      {/* 1. Accomplishments / Experience Timeline (#experience) */}
+      {/* 1. Accomplishments Section (#experience) — Featuring Organisations */}
       <div className="experience" id="experience">
         <div className="container">
           <div className="section-header text-center">
-            <p>What I Achieved?</p>
+            <p>Where I&apos;ve Worked &amp; Contributing</p>
             <h2>Accomplishments</h2>
           </div>
 
           <div className="timeline">
-            {projects.map((project, index) => (
+            {ORGANISATIONS.map((org, index) => (
               <ProjectItem
-                key={project.id || index}
-                project={project}
+                key={org.id || index}
+                item={org}
                 isLeft={index % 2 === 0}
               />
             ))}

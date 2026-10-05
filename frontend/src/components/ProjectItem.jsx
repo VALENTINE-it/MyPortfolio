@@ -1,38 +1,34 @@
 import './Projects.css'
 
-function ProjectItem({ project, isLeft }) {
-  const technologies = Array.isArray(project.technologies)
-    ? project.technologies
+function ProjectItem({ item, isLeft }) {
+  const technologies = Array.isArray(item.technologies)
+    ? item.technologies
     : []
 
+  const title = item.name || item.title
+  const role = item.role || item.category || 'Full-Stack Project'
+  const date = item.period || item.year || 'Present'
+
   return (
-    <div className={`timeline-item ${isLeft ? 'left' : 'right'}`} id={`timeline-${project.id}`}>
-      <div className="timeline-date">{project.year || '2026'}</div>
+    <div className={`timeline-item ${isLeft ? 'left' : 'right'}`} id={`timeline-${item.id}`}>
+      <div className="timeline-date">{date}</div>
       <div className="timeline-text">
-        {project.logo && (
+        {item.logo && (
           <div className="timeline-header-org">
             <div className="timeline-circular-logo">
-              <img src={project.logo} alt={`${project.title} Logo`} />
+              <img src={item.logo} alt={`${title} Logo`} />
             </div>
-            {project.status && (
+            {item.status && (
               <span className="timeline-status-badge">
                 <span className="status-pulse-dot"></span>
-                {project.status}
+                {item.status}
               </span>
             )}
           </div>
         )}
-        <h2>{project.title}</h2>
-        <h4>{project.category || 'Full-Stack Project'}</h4>
-        <p>{project.description}</p>
-
-        {project.orgDetail && (
-          <div className="timeline-org-detail">
-            <p className="timeline-org-detail-text">
-              <strong>About HopeReach:</strong> {project.orgDetail}
-            </p>
-          </div>
-        )}
+        <h2>{title}</h2>
+        <h4>{role}</h4>
+        <p>{item.description}</p>
 
         {technologies.length > 0 && (
           <div className="timeline-techs">
@@ -45,29 +41,37 @@ function ProjectItem({ project, isLeft }) {
         )}
 
         <div className="timeline-actions">
-          {project.githubUrl && (
+          {item.githubUrl && (
             <a
-              href={project.githubUrl}
+              href={item.githubUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-sm"
-              aria-label={`View ${project.title} on GitHub`}
+              aria-label={`View ${title} on GitHub`}
             >
               GitHub <i className="fab fa-github" style={{ marginLeft: 6 }}></i>
             </a>
           )}
-          {project.liveUrl && (
+          {item.liveUrl && (
             <a
-              href={project.liveUrl}
+              href={item.liveUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-secondary btn-sm"
-              aria-label={`Visit live site for ${project.title}`}
+              aria-label={`Visit live site for ${title}`}
             >
               Live Site <i className="fas fa-external-link-alt" style={{ marginLeft: 6 }}></i>
             </a>
           )}
         </div>
+
+        {(item.aboutOrg || item.orgDetail) && (
+          <div className="timeline-org-detail">
+            <p className="timeline-org-detail-text">
+              <strong>About {title}:</strong> {item.aboutOrg || item.orgDetail}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   )
