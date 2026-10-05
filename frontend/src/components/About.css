@@ -34,7 +34,7 @@
   max-width: 520px;
   border-radius: 4px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid #dddddd;
 }
 
 .about .about-img img {

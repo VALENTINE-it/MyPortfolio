@@ -1,6 +1,6 @@
 /* ==========================================================================
    Experience / Accomplishments Timeline & Portfolio CSS
-   Inspired by Elon Musk Portfolio Theme
+   Inspired by Elon Musk Portfolio Theme — Flat Solid Design (No Shadows/Gradients)
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -12,219 +12,10 @@
   background: #ffffff;
 }
 
-/* --------------------------------------------------------------------------
-   Organisations & Collaborations Showcase
-   -------------------------------------------------------------------------- */
-.orgs-showcase {
-  margin-top: 35px;
-  margin-bottom: 20px;
-}
-
-.orgs-header {
-  text-align: center;
-  margin-bottom: 28px;
-}
-
-.orgs-title {
-  font-size: 20px;
-  font-weight: 700;
-  color: #313131;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 6px;
-}
-
-.orgs-title i {
-  color: #EF233C;
-  font-size: 18px;
-}
-
-.orgs-subtitle {
-  font-size: 14px;
-  color: #797979;
-  margin: 0;
-}
-
-.orgs-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 24px;
-}
-
-.org-card {
-  background: #ffffff;
-  border: 1px solid #eaeaea;
-  border-radius: 8px;
-  padding: 24px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.04);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  display: flex;
-  flex-direction: column;
-  position: relative;
-}
-
-.org-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-  border-color: rgba(239, 35, 60, 0.3);
-}
-
-.org-card-current {
-  border-top: 3px solid #EF233C;
-}
-
-.org-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  margin-bottom: 16px;
-}
-
-.org-logo-wrapper {
-  width: 58px;
-  height: 58px;
-  border-radius: 8px;
-  background: #ffffff;
-  border: 1px solid #eeeeee;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-.org-logo-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  padding: 4px;
-}
-
-.org-logo-icon {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  color: #EF233C;
-  background: rgba(239, 35, 60, 0.06);
-}
-
-.org-header-meta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
-}
-
-.org-status-badge {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: 4px 10px;
-  border-radius: 20px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.status-current {
-  background: rgba(239, 35, 60, 0.1);
-  color: #EF233C;
-  border: 1px solid rgba(239, 35, 60, 0.25);
-}
-
-.status-pulse-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #EF233C;
-  display: inline-block;
-  animation: pulseDot 1.8s infinite;
-}
-
-@keyframes pulseDot {
-  0% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(239, 35, 60, 0.7);
-  }
-  70% {
-    transform: scale(1);
-    box-shadow: 0 0 0 6px rgba(239, 35, 60, 0);
-  }
-  100% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(239, 35, 60, 0);
-  }
-}
-
-.status-past {
-  background: #f1f1f1;
-  color: #666666;
-  border: 1px solid #e2e2e2;
-}
-
-.org-period {
-  font-size: 12px;
-  font-weight: 600;
-  color: #888888;
-}
-
-.org-card-body {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
-.org-name {
-  font-size: 18px;
-  font-weight: 700;
-  color: #313131;
-  margin: 0 0 4px 0;
-}
-
-.org-role {
-  font-size: 13px;
-  font-weight: 600;
-  color: #EF233C;
-  margin: 0 0 12px 0;
-  letter-spacing: 0.3px;
-}
-
-.org-desc {
-  font-size: 13.5px;
-  color: #666666;
-  line-height: 1.65;
-  margin: 0 0 16px 0;
-  flex: 1;
-}
-
-.org-tech-stack {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: auto;
-}
-
-.org-tech-pill {
-  font-size: 11px;
-  font-weight: 600;
-  color: #444444;
-  background: #f5f5f5;
-  padding: 3px 9px;
-  border-radius: 4px;
-  border: 1px solid #e8e8e8;
-}
-
 .experience .timeline {
   position: relative;
   width: 100%;
-  margin-top: 30px;
+  margin-top: 40px;
 }
 
 /* Central Red Vertical Line */
@@ -325,19 +116,71 @@
   padding: 30px;
   background: #ffffff;
   position: relative;
+  border: 1px solid #e0e0e0;
   border-right: 5px solid #dddddd;
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.07);
   transition: all 0.3s ease;
 }
 
 .experience .timeline .timeline-item.right .timeline-text {
-  border-right: none;
+  border-right: 1px solid #e0e0e0;
   border-left: 5px solid #dddddd;
 }
 
 .experience .timeline .timeline-item:hover .timeline-text {
   border-color: #EF233C;
-  box-shadow: 0 10px 45px rgba(239, 35, 60, 0.12);
+}
+
+/* Circular Logo & Status Badge Header in Timeline Item */
+.timeline-header-org {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.timeline-circular-logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #EF233C;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.timeline-circular-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.timeline-status-badge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: #fdf0f2;
+  color: #EF233C;
+  border: 1px solid #f5c2c7;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #EF233C;
+  display: inline-block;
 }
 
 .experience .timeline .timeline-text h2 {
@@ -362,6 +205,27 @@
   color: #797979;
 }
 
+/* Organisation Detail Footer Note */
+.timeline-org-detail {
+  margin-top: 14px;
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  background: #fbfbfb;
+  border-left: 3px solid #EF233C;
+  border-radius: 2px;
+}
+
+.timeline-org-detail-text {
+  font-size: 13px !important;
+  color: #555555 !important;
+  line-height: 1.6 !important;
+  margin: 0 !important;
+}
+
+.timeline-org-detail-text strong {
+  color: #222222;
+}
+
 .timeline-techs {
   display: flex;
   flex-wrap: wrap;
@@ -379,6 +243,7 @@
   background: #f4f4f4;
   color: #555555;
   border-radius: 2px;
+  border: 1px solid #e5e5e5;
 }
 
 .timeline-actions {
@@ -420,17 +285,15 @@
   letter-spacing: 0.8px;
   color: #ffffff;
   background: #EF233C;
-  border: 2px solid transparent;
+  border: 2px solid #EF233C;
   border-radius: 0;
-  box-shadow: inset 0 0 0 50px #EF233C;
-  transition: ease-out 0.3s;
+  transition: all 0.3s ease;
 }
 
 .portfolio #portfolio-filter li:hover,
 .portfolio #portfolio-filter li.filter-active {
   color: #EF233C;
-  background: transparent;
-  box-shadow: inset 0 0 0 0 #EF233C;
+  background: #ffffff;
   border-color: #EF233C;
 }
 
@@ -449,7 +312,7 @@
   position: relative;
   width: 100%;
   background: #ffffff;
-  box-shadow: 0 0 25px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e0e0e0;
   overflow: hidden;
 }
 
@@ -464,12 +327,11 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform: scale(1.05);
-  transition: transform 0.5s ease;
+  transition: transform 0.4s ease;
 }
 
 .portfolio-item:hover .portfolio-img img {
-  transform: scale(1.15) translateX(6px);
+  transform: scale(1.05);
 }
 
 .portfolio-text {
@@ -481,7 +343,7 @@
   align-items: center;
   justify-content: space-between;
   background: #ffffff;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.12);
+  border: 1px solid #dddddd;
   z-index: 2;
   padding: 0 12px;
 }
@@ -507,6 +369,15 @@
   font-size: 26px;
   font-weight: 300;
   line-height: 1;
+  background: #EF233C;
+  color: #ffffff;
+  border: 1px solid #EF233C;
+  transition: all 0.25s ease;
+}
+
+.portfolio-text a.btn:hover {
+  background: #313131;
+  border-color: #313131;
 }
 
 /* --------------------------------------------------------------------------

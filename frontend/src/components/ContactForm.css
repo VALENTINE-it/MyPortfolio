@@ -103,7 +103,7 @@
 .contact-form-wrapper {
   background: #ffffff;
   padding: 40px;
-  box-shadow: 0 0 35px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e0e0e0;
   border-top: 4px solid #EF233C;
   border-radius: 2px;
 }

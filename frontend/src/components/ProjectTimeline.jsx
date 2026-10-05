@@ -6,15 +6,20 @@ import './Projects.css'
 const FALLBACK_PROJECTS = [
   {
     id: 1,
-    title: 'Safeguarding Reporting Platform',
+    title: 'HopeReach NGO & Safeguarding Platform',
+    category: 'Non-Governmental Organization (NGO)',
+    role: 'Full-Stack Developer & Technical Lead',
+    status: 'Currently Working',
+    year: '2026 – Present',
+    logo: '/images/organisations/hopereach.jpeg',
     description:
-      'A secure, confidential reporting platform designed for anonymous safeguarding disclosures, encrypted submission workflows, and case audit records.',
-    category: 'Full-Stack Web Application',
-    year: 2026,
-    technologies: ['React', 'JavaScript', 'Go', 'SQLite', 'REST APIs', 'Security'],
+      'Leading the architecture and full-stack development of secure digital platforms, including anonymous safeguarding reporting workflows, encrypted submissions, and backend REST APIs built with Go and SQLite.',
+    orgDetail:
+      'HopeReach is a community-driven NGO based in Kisumu, Kenya, dedicated to empowering vulnerable communities through food security (500,000+ meals served), housing support, education & skills development, and mental health advocacy.',
+    technologies: ['React', 'JavaScript', 'Go', 'SQLite', 'REST APIs', 'Data Privacy', 'Security'],
     image: '/images/projects/safeguarding.svg',
     githubUrl: 'https://github.com/VALENTINE-it/safeguarding-platform',
-    liveUrl: 'https://safeguarding.example.com',
+    liveUrl: 'https://hope-reach-project-ngo-gdq7.onrender.com/',
   },
   {
     id: 2,
@@ -42,45 +47,6 @@ const FALLBACK_PROJECTS = [
   },
 ]
 
-const ORGANISATIONS = [
-  {
-    id: 'hopereach',
-    name: 'HopeReach',
-    role: 'Full-Stack Developer & Technical Lead',
-    status: 'Currently Working',
-    period: '2026 – Present',
-    logo: '/images/organisations/hopereach.jpeg',
-    description:
-      'Developing and maintaining vital digital solutions, including the anonymous safeguarding reporting platform, secure data architecture in Go, React UI development, and robust data privacy systems.',
-    technologies: ['React', 'Go', 'SQLite', 'REST APIs', 'Data Privacy', 'Security'],
-    isCurrent: true,
-  },
-  {
-    id: 'community-connectivity',
-    name: 'Community Internet & Tech Initiatives',
-    role: 'Network & Systems Specialist',
-    status: 'Collaborator',
-    period: '2025 – 2026',
-    icon: 'fas fa-network-wired',
-    description:
-      'Configured network routing schemas, bandwidth management policies, and local infrastructure to facilitate dependable internet connectivity and digital literacy.',
-    technologies: ['Networking', 'Routing', 'Bandwidth Management', 'Troubleshooting'],
-    isCurrent: false,
-  },
-  {
-    id: 'web3-research',
-    name: 'Web3 & Distributed Systems Lab',
-    role: 'Blockchain Technology Developer',
-    status: 'Milestone',
-    period: '2025',
-    icon: 'fas fa-cubes',
-    description:
-      'Engineered smart contract architectures, explored distributed ledger protocols, and built verifiable decentralized application components.',
-    technologies: ['Smart Contracts', 'Web3', 'Distributed Ledgers', 'Cryptography'],
-    isCurrent: false,
-  },
-]
-
 const FILTER_CATEGORIES = ['All', 'Full-Stack', 'Backend', 'Education']
 
 function ProjectTimeline() {
@@ -91,6 +57,7 @@ function ProjectTimeline() {
     try {
       const data = await projectService.getProjects()
       if (Array.isArray(data) && data.length > 0) {
+        // Merge HopeReach organisation data into first project or list
         setProjects(data)
       }
     } catch {
@@ -116,75 +83,6 @@ function ProjectTimeline() {
           <div className="section-header text-center">
             <p>What I Achieved?</p>
             <h2>Accomplishments</h2>
-          </div>
-
-          {/* Organisations Showcase */}
-          <div className="orgs-showcase">
-            <div className="orgs-header">
-              <h3 className="orgs-title">
-                <i className="fas fa-building"></i> Organisations & Experience
-              </h3>
-              <p className="orgs-subtitle">
-                Organisations I have contributed to and projects I am currently actively engineering.
-              </p>
-            </div>
-
-            <div className="orgs-grid">
-              {ORGANISATIONS.map((org) => (
-                <div
-                  key={org.id}
-                  className={`org-card ${org.isCurrent ? 'org-card-current' : ''}`}
-                >
-                  <div className="org-card-header">
-                    <div className="org-logo-wrapper">
-                      {org.logo ? (
-                        <img
-                          src={org.logo}
-                          alt={`${org.name} Logo`}
-                          className="org-logo-img"
-                        />
-                      ) : (
-                        <div className="org-logo-icon">
-                          <i className={org.icon}></i>
-                        </div>
-                      )}
-                    </div>
-                    <div className="org-header-meta">
-                      <span
-                        className={`org-status-badge ${
-                          org.isCurrent ? 'status-current' : 'status-past'
-                        }`}
-                      >
-                        {org.isCurrent && <span className="status-pulse-dot"></span>}
-                        {org.status}
-                      </span>
-                      <span className="org-period">{org.period}</span>
-                    </div>
-                  </div>
-
-                  <div className="org-card-body">
-                    <h3 className="org-name">{org.name}</h3>
-                    <h4 className="org-role">{org.role}</h4>
-                    <p className="org-desc">{org.description}</p>
-                    <div className="org-tech-stack">
-                      {org.technologies.map((t) => (
-                        <span key={t} className="org-tech-pill">
-                          {t}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div
-            className="section-header text-center"
-            style={{ marginTop: '60px', marginBottom: '20px' }}
-          >
-            <p>Milestone Timeline</p>
-            <h2>Project Milestones</h2>
           </div>
 
           <div className="timeline">

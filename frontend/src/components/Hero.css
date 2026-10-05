@@ -8,10 +8,7 @@
   margin-bottom: 45px;
   padding: 140px 0 60px 0;
   overflow: hidden;
-  background: linear-gradient(135deg, rgba(239, 35, 60, 0.98) 0%, rgba(217, 4, 41, 0.96) 100%);
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  background: #EF233C;
   min-height: 85vh;
   display: flex;
   align-items: center;
@@ -91,7 +88,7 @@
   50% { opacity: 0; }
 }
 
-/* Hero Action Buttons (Signature white buttons with red hover) */
+/* Hero Action Buttons */
 .hero .hero-btn {
   display: flex;
   align-items: center;
@@ -103,19 +100,18 @@
 .hero .hero-btn .btn {
   color: #EF233C;
   background: #ffffff;
-  box-shadow: inset 0 0 0 50px #ffffff;
-  border: 2px solid transparent;
+  border: 2px solid #ffffff;
   padding: 12px 28px;
   font-size: 14px;
   font-weight: 600;
   letter-spacing: 1px;
+  transition: all 0.3s ease;
 }
 
 .hero .hero-btn .btn:hover {
   color: #ffffff;
-  background: transparent;
-  box-shadow: inset 0 0 0 0 #ffffff;
-  border-color: #ffffff;
+  background: #313131;
+  border-color: #313131;
 }
 
 /* Hero Social Icons */
@@ -157,40 +153,18 @@
   align-items: center;
 }
 
-.hero .hero-image::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 110%;
-  height: 110%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(217, 4, 41, 0) 70%);
-  border-radius: 50%;
-  z-index: 0;
-  pointer-events: none;
-}
-
 .hero .hero-image img {
   position: relative;
   z-index: 1;
   width: 100%;
   max-height: 440px;
   object-fit: cover;
-  box-shadow: 
-    0 15px 35px rgba(0, 0, 0, 0.25),
-    0 0 30px rgba(217, 4, 41, 0.4);
-  /* Smooth feathered mask blending edges into the background */
-  -webkit-mask-image: radial-gradient(ellipse 96% 96% at 50% 50%, black 80%, rgba(0, 0, 0, 0.3) 94%, transparent 100%);
-  mask-image: radial-gradient(ellipse 96% 96% at 50% 50%, black 80%, rgba(0, 0, 0, 0.3) 94%, transparent 100%);
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  border: 3px solid rgba(255, 255, 255, 0.4);
+  transition: transform 0.4s ease;
 }
 
 .hero .hero-image:hover img {
   transform: scale(1.02);
-  box-shadow: 
-    0 20px 45px rgba(0, 0, 0, 0.3),
-    0 0 35px rgba(255, 255, 255, 0.2);
 }
 
 /* --------------------------------------------------------------------------

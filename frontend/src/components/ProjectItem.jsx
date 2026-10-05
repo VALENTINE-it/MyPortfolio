@@ -9,9 +9,30 @@ function ProjectItem({ project, isLeft }) {
     <div className={`timeline-item ${isLeft ? 'left' : 'right'}`} id={`timeline-${project.id}`}>
       <div className="timeline-date">{project.year || '2026'}</div>
       <div className="timeline-text">
+        {project.logo && (
+          <div className="timeline-header-org">
+            <div className="timeline-circular-logo">
+              <img src={project.logo} alt={`${project.title} Logo`} />
+            </div>
+            {project.status && (
+              <span className="timeline-status-badge">
+                <span className="status-pulse-dot"></span>
+                {project.status}
+              </span>
+            )}
+          </div>
+        )}
         <h2>{project.title}</h2>
         <h4>{project.category || 'Full-Stack Project'}</h4>
         <p>{project.description}</p>
+
+        {project.orgDetail && (
+          <div className="timeline-org-detail">
+            <p className="timeline-org-detail-text">
+              <strong>About HopeReach:</strong> {project.orgDetail}
+            </p>
+          </div>
+        )}
 
         {technologies.length > 0 && (
           <div className="timeline-techs">
@@ -43,7 +64,7 @@ function ProjectItem({ project, isLeft }) {
               className="btn btn-secondary btn-sm"
               aria-label={`Visit live site for ${project.title}`}
             >
-              Demo <i className="fas fa-external-link-alt" style={{ marginLeft: 6 }}></i>
+              Live Site <i className="fas fa-external-link-alt" style={{ marginLeft: 6 }}></i>
             </a>
           )}
         </div>

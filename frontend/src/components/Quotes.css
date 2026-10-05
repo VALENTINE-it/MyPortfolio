@@ -54,7 +54,7 @@
   text-align: center;
   background: #ffffff;
   border-radius: 500px;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+  border: 2px solid #e0e0e0;
 }
 
 .testimonial .testimonial-item p {
