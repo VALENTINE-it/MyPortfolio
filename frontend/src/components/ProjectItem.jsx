@@ -7,7 +7,7 @@ function ProjectItem({ item, isLeft }) {
 
   const title = item.name || item.title
   const role = item.role || item.category || 'Full-Stack Project'
-  const date = item.period || item.year || 'Present'
+  const date = item.period || item.year || '2026'
 
   return (
     <div className={`timeline-item ${isLeft ? 'left' : 'right'}`} id={`timeline-${item.id}`}>
@@ -18,12 +18,6 @@ function ProjectItem({ item, isLeft }) {
             <div className="timeline-circular-logo">
               <img src={item.logo} alt={`${title} Logo`} />
             </div>
-            {item.status && (
-              <span className="timeline-status-badge">
-                <span className="status-pulse-dot"></span>
-                {item.status}
-              </span>
-            )}
           </div>
         )}
         <h2>{title}</h2>
@@ -54,11 +48,16 @@ function ProjectItem({ item, isLeft }) {
           )}
           {item.liveUrl && (
             <a
-              href={item.liveUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={item.liveUrl === '#' ? '#!' : item.liveUrl}
+              target={item.liveUrl && item.liveUrl !== '#' && item.liveUrl !== '#!' ? '_blank' : undefined}
+              rel={item.liveUrl && item.liveUrl !== '#' && item.liveUrl !== '#!' ? 'noopener noreferrer' : undefined}
               className="btn btn-secondary btn-sm"
               aria-label={`Visit live site for ${title}`}
+              onClick={(e) => {
+                if (item.liveUrl === '#' || item.liveUrl === '#!') {
+                  e.preventDefault()
+                }
+              }}
             >
               Live Site <i className="fas fa-external-link-alt" style={{ marginLeft: 6 }}></i>
             </a>
