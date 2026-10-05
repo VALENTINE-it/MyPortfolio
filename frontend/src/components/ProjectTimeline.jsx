@@ -16,6 +16,17 @@ const ORGANISATIONS = [
     technologies: ['React', 'JavaScript', 'Go', 'REST APIs', 'UI/UX', 'Community Platforms'],
     liveUrl: 'https://hope-reach-project-ngo-gdq7.onrender.com/',
   },
+  {
+    id: 'afrinit',
+    name: 'Afrinit',
+    role: 'Co-Founder',
+    period: '2026',
+    logo: '/images/afrinit.jpeg',
+    description:
+      'Afrinit is a technology company delivering end-to-end software development and comprehensive tech-related solutions, specializing primarily in building robust custom software, responsive web applications, and digital systems.',
+    technologies: ['Software Development', 'Full-Stack Engineering', 'Web Applications', 'Tech Solutions'],
+    liveUrl: '#',
+  },
 ]
 
 const FALLBACK_PROJECTS = [
