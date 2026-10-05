@@ -8,16 +8,12 @@ const ORGANISATIONS = [
   {
     id: 'hopereach',
     name: 'HopeReach',
-    role: 'Full-Stack Developer & Technical Lead',
-    status: 'Currently Working',
-    period: '2026 – Present',
+    role: 'Founder and CEO',
+    period: '2026',
     logo: '/images/hopereach.jpeg',
     description:
-      'Leading the architecture and full-stack engineering of digital systems, including anonymous safeguarding reporting mechanisms, secure database pipelines in Go, and responsive React interfaces.',
-    aboutOrg:
       'HopeReach is a community-driven NGO based in Kisumu, Kenya, dedicated to empowering vulnerable communities through compassionate support and sustainable solutions—addressing food security (500,000+ meals served), transitional housing (250+ individuals housed), education & skills development, and mental health advocacy.',
-    technologies: ['React', 'JavaScript', 'Go', 'SQLite', 'REST APIs', 'Data Privacy', 'Security'],
-    githubUrl: 'https://github.com/VALENTINE-it/safeguarding-platform',
+    technologies: ['React', 'JavaScript', 'Go', 'REST APIs', 'UI/UX', 'Community Platforms'],
     liveUrl: 'https://hope-reach-project-ngo-gdq7.onrender.com/',
   },
 ]
