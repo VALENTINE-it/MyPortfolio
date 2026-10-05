@@ -79,11 +79,8 @@ const FALLBACK_PROJECTS = [
   },
 ]
 
-const FILTER_CATEGORIES = ['All', 'Full-Stack', 'Backend', 'Education']
-
 function ProjectTimeline() {
   const [projects, setProjects] = useState(FALLBACK_PROJECTS)
-  const [activeFilter, setActiveFilter] = useState('All')
 
   const fetchProjects = useCallback(async () => {
     try {
@@ -99,12 +96,6 @@ function ProjectTimeline() {
   useEffect(() => {
     fetchProjects()
   }, [fetchProjects])
-
-  const filteredProjects = projects.filter((project) => {
-    if (activeFilter === 'All') return true
-    const cat = (project.category || '').toLowerCase()
-    return cat.includes(activeFilter.toLowerCase())
-  })
 
   return (
     <>
@@ -136,22 +127,9 @@ function ProjectTimeline() {
             <h2>Featured Works</h2>
           </div>
 
-          {/* Portfolio Filter Pills */}
-          <ul id="portfolio-filter">
-            {FILTER_CATEGORIES.map((filter) => (
-              <li
-                key={filter}
-                className={activeFilter === filter ? 'filter-active' : ''}
-                onClick={() => setActiveFilter(filter)}
-              >
-                {filter}
-              </li>
-            ))}
-          </ul>
-
           {/* Portfolio Item Cards */}
           <div className="portfolio-grid">
-            {filteredProjects.map((project) => (
+            {projects.map((project) => (
               <div key={project.id} className="portfolio-item">
                 <div className="portfolio-wrap">
                   <div className="portfolio-img">
