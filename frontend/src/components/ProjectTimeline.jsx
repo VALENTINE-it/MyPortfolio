@@ -27,6 +27,17 @@ const ORGANISATIONS = [
     technologies: ['Software Development', 'Full-Stack Engineering', 'Web Applications', 'Tech Solutions'],
     liveUrl: '#',
   },
+  {
+    id: 'zone01',
+    name: 'Zone01 Kisumu',
+    role: 'Software Developer',
+    period: '2026',
+    logo: '/images/zone01.png',
+    description:
+      'Zone01 Kisumu is an innovative tech talent accelerator in Kisumu, Kenya, powered by the 01Edu peer-to-peer learning model. It delivers intensive, tuition-free, project-based training in full-stack software engineering, systems programming, Go, JavaScript, and collaborative problem-solving to cultivate top-tier engineering talent.',
+    technologies: ['Software Engineering', 'Full-Stack Development', 'Go', 'JavaScript', 'System Architecture', 'Peer-to-Peer Learning'],
+    liveUrl: 'https://www.zone01kisumu.ke/',
+  },
 ]
 
 const FALLBACK_PROJECTS = [
