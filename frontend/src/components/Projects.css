@@ -12,10 +12,219 @@
   background: #ffffff;
 }
 
+/* --------------------------------------------------------------------------
+   Organisations & Collaborations Showcase
+   -------------------------------------------------------------------------- */
+.orgs-showcase {
+  margin-top: 35px;
+  margin-bottom: 20px;
+}
+
+.orgs-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.orgs-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #313131;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.orgs-title i {
+  color: #EF233C;
+  font-size: 18px;
+}
+
+.orgs-subtitle {
+  font-size: 14px;
+  color: #797979;
+  margin: 0;
+}
+
+.orgs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.org-card {
+  background: #ffffff;
+  border: 1px solid #eaeaea;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.org-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  border-color: rgba(239, 35, 60, 0.3);
+}
+
+.org-card-current {
+  border-top: 3px solid #EF233C;
+}
+
+.org-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.org-logo-wrapper {
+  width: 58px;
+  height: 58px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.org-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 4px;
+}
+
+.org-logo-icon {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: #EF233C;
+  background: rgba(239, 35, 60, 0.06);
+}
+
+.org-header-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.org-status-badge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-current {
+  background: rgba(239, 35, 60, 0.1);
+  color: #EF233C;
+  border: 1px solid rgba(239, 35, 60, 0.25);
+}
+
+.status-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #EF233C;
+  display: inline-block;
+  animation: pulseDot 1.8s infinite;
+}
+
+@keyframes pulseDot {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(239, 35, 60, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 6px rgba(239, 35, 60, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(239, 35, 60, 0);
+  }
+}
+
+.status-past {
+  background: #f1f1f1;
+  color: #666666;
+  border: 1px solid #e2e2e2;
+}
+
+.org-period {
+  font-size: 12px;
+  font-weight: 600;
+  color: #888888;
+}
+
+.org-card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.org-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #313131;
+  margin: 0 0 4px 0;
+}
+
+.org-role {
+  font-size: 13px;
+  font-weight: 600;
+  color: #EF233C;
+  margin: 0 0 12px 0;
+  letter-spacing: 0.3px;
+}
+
+.org-desc {
+  font-size: 13.5px;
+  color: #666666;
+  line-height: 1.65;
+  margin: 0 0 16px 0;
+  flex: 1;
+}
+
+.org-tech-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: auto;
+}
+
+.org-tech-pill {
+  font-size: 11px;
+  font-weight: 600;
+  color: #444444;
+  background: #f5f5f5;
+  padding: 3px 9px;
+  border-radius: 4px;
+  border: 1px solid #e8e8e8;
+}
+
 .experience .timeline {
   position: relative;
   width: 100%;
-  margin-top: 40px;
+  margin-top: 30px;
 }
 
 /* Central Red Vertical Line */
