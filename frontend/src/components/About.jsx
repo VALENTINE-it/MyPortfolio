@@ -1,31 +1,8 @@
+import { useState } from 'react'
 import './About.css'
 
-const PROFICIENCY_BARS = [
-  { label: 'Frontend Development (React, JavaScript, Vite, CSS)', percentage: 95 },
-  { label: 'Backend Systems (Go, REST APIs, Architecture)', percentage: 90 },
-  { label: 'Blockchain Technology (Smart Contracts, Web3)', percentage: 82 },
-  { label: 'Databases & Storage (SQLite, SQL, Normalization)', percentage: 85 },
-  { label: 'Cybersecurity (Currently Learning)', percentage: 70 },
-]
-
 export default function About() {
-  const scrollToContact = (e) => {
-    e.preventDefault()
-    const target = document.getElementById('contact')
-    if (target) {
-      const offset = 65
-      const bodyRect = document.body.getBoundingClientRect().top
-      const elementRect = target.getBoundingClientRect().top
-      const elementPosition = elementRect - bodyRect
-      const offsetPosition = elementPosition - offset
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth',
-      })
-      window.history.pushState(null, '', '#contact')
-    }
-  }
+  const [isExpanded, setIsExpanded] = useState(false)
 
   return (
     <div className="about" id="about">
@@ -35,14 +12,14 @@ export default function About() {
           <div className="about-col-img">
             <div className="about-img">
               <img
-                src="/images/about.svg"
+                src="/images/about-me.jpeg"
                 alt="Valentine Omondi Awili Workspace"
                 loading="lazy"
               />
             </div>
           </div>
 
-          {/* Right Column: Narrative Content & Skill Bars */}
+          {/* Right Column: Narrative Content */}
           <div className="about-col-content">
             <div className="about-content">
               <div className="section-header text-left">
@@ -64,33 +41,44 @@ export default function About() {
                   With a solid grounding in computer science principles and defense-in-depth architecture,
                   I am <strong>currently learning cybersecurity</strong> to expand my capabilities in vulnerability analysis, threat modeling, and building hardened, attack-resilient applications.
                 </p>
-              </div>
 
-              {/* Skill Proficiency Progress Bars */}
-              <div className="skills">
-                {PROFICIENCY_BARS.map((item) => (
-                  <div key={item.label} className="skill-wrapper">
-                    <div className="skill-name">
-                      <p>{item.label}</p>
-                      <p>{item.percentage}%</p>
+                <div className="about-section-block">
+                  <h3 className="about-subtitle">Building Solutions That Matter</h3>
+                  <p>
+                    My projects reflect my interest in using technology to address everyday challenges. From an anonymous safeguarding reporting platform to a career guidance application, I’m developing tools that help people access support and make informed decisions. These projects are strengthening my skills in application design, databases, authentication, and user privacy.
+                  </p>
+                </div>
+
+                {isExpanded && (
+                  <div className="about-expanded-content">
+                    <div className="about-section-block">
+                      <h3 className="about-subtitle">My Networking Journey</h3>
+                      <p>
+                        I’m also looking to venture into computer networking and internet connectivity. I want to understand how networks are designed, configured, secured, and maintained—from routers and IP addressing to bandwidth management and troubleshooting. My longer-term goal is to explore providing reliable internet access to homes and communities, bringing together my software development skills and practical networking knowledge.
+                      </p>
                     </div>
-                    <div className="progress">
-                      <div
-                        className="progress-bar"
-                        role="progressbar"
-                        style={{ width: `${item.percentage}%` }}
-                        aria-valuenow={item.percentage}
-                        aria-valuemin="0"
-                        aria-valuemax="100"
-                      ></div>
+
+                    <div className="about-section-block">
+                      <h3 className="about-subtitle">Where I’m Heading</h3>
+                      <p>
+                        My goal is to grow into a well-rounded technology professional who can build applications and understand the infrastructure that keeps them running. Through my ICT studies, practical projects, and continued learning, I’m working toward a career that combines software development, networking, and cybersecurity.
+                      </p>
                     </div>
                   </div>
-                ))}
+                )}
               </div>
 
-              <a className="btn" href="#contact" onClick={scrollToContact}>
-                Get In Touch
-              </a>
+              <div className="about-actions">
+                <button
+                  type="button"
+                  className="btn-read-more"
+                  onClick={() => setIsExpanded(!isExpanded)}
+                  aria-expanded={isExpanded}
+                >
+                  {isExpanded ? 'Read Less' : 'Read More'}
+                  <i className={`fas fa-chevron-${isExpanded ? 'up' : 'down'}`}></i>
+                </button>
+              </div>
             </div>
           </div>
         </div>

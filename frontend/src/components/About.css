@@ -41,11 +41,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.4s ease;
-}
-
-.about .about-img:hover img {
-  transform: scale(1.02);
+  display: block;
 }
 
 .about .about-content {
@@ -64,51 +60,72 @@
   font-weight: 600;
 }
 
-.about .skills {
-  margin-top: 25px;
-  margin-bottom: 35px;
-}
-
-.about .skill-wrapper {
-  margin-bottom: 18px;
-}
-
-.about .skill-name {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 6px;
-}
-
-.about .skill-name p {
-  margin-bottom: 0;
-  font-size: 14px;
-  font-weight: 500;
+.about .about-subtitle {
+  font-size: 18px;
+  font-weight: 700;
   color: var(--heading);
+  margin-top: 20px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.about .skill-name p:last-child {
-  font-weight: 600;
-  color: #EF233C;
-}
-
-.about .progress {
-  height: 10px;
-  border-radius: 10px;
-  background: #eeeeee;
-  overflow: hidden;
-  position: relative;
-}
-
-.about .progress .progress-bar {
-  height: 100%;
+.about .about-subtitle::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 16px;
   background: #EF233C;
-  border-radius: 10px;
-  transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 2px;
 }
 
-.about .about-content .btn {
-  margin-top: 10px;
+.about .about-section-block {
+  margin-top: 14px;
+}
+
+.about .about-expanded-content {
+  animation: fadeInAbout 0.4s ease-in-out;
+}
+
+@keyframes fadeInAbout {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.about .about-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 25px;
+}
+
+.about .btn-read-more {
+  background: transparent;
+  border: 1px solid #EF233C;
+  color: #EF233C;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+}
+
+.about .btn-read-more:hover {
+  background: #EF233C;
+  color: #ffffff;
 }
 
 /* --------------------------------------------------------------------------
