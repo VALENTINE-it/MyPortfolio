@@ -152,20 +152,45 @@
   text-align: center;
   width: 100%;
   max-width: 420px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero .hero-image::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 110%;
+  height: 110%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(217, 4, 41, 0) 70%);
+  border-radius: 50%;
+  z-index: 0;
+  pointer-events: none;
 }
 
 .hero .hero-image img {
+  position: relative;
+  z-index: 1;
   width: 100%;
   max-height: 440px;
   object-fit: cover;
-  border-radius: 4px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  transition: transform 0.4s ease;
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.25),
+    0 0 30px rgba(217, 4, 41, 0.4);
+  /* Smooth feathered mask blending edges into the background */
+  -webkit-mask-image: radial-gradient(ellipse 96% 96% at 50% 50%, black 80%, rgba(0, 0, 0, 0.3) 94%, transparent 100%);
+  mask-image: radial-gradient(ellipse 96% 96% at 50% 50%, black 80%, rgba(0, 0, 0, 0.3) 94%, transparent 100%);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
 
 .hero .hero-image:hover img {
   transform: scale(1.02);
+  box-shadow: 
+    0 20px 45px rgba(0, 0, 0, 0.3),
+    0 0 35px rgba(255, 255, 255, 0.2);
 }
 
 /* --------------------------------------------------------------------------

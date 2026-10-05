@@ -126,7 +126,7 @@ export default function Hero() {
           <div className="hero-col-image">
             <div className="hero-image">
               <img
-                src="/images/profile.svg"
+                src="/images/hero-profile.jpeg"
                 alt="Valentine Omondi Awili"
                 loading="eager"
               />
