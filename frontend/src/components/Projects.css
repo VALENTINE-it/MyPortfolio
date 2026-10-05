@@ -130,19 +130,19 @@
   border-color: #EF233C;
 }
 
-/* Circular Logo & Status Badge Header in Timeline Item */
+/* Circular Logo Header in Timeline Item */
 .timeline-header-org {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 14px;
+  justify-content: center;
+  margin-bottom: 16px;
   padding-bottom: 12px;
   border-bottom: 1px solid #f0f0f0;
 }
 
 .timeline-circular-logo {
-  width: 64px;
-  height: 64px;
+  width: 88px;
+  height: 88px;
   border-radius: 50%;
   overflow: hidden;
   border: 2px solid #EF233C;
@@ -151,7 +151,8 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  padding: 4px;
+  padding: 6px;
+  box-sizing: border-box;
 }
 
 .timeline-circular-logo img {
@@ -160,29 +161,8 @@
   border-radius: 50%;
   object-fit: contain;
   display: block;
-}
-
-.timeline-status-badge {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: 4px 10px;
-  border-radius: 20px;
-  background: #fdf0f2;
-  color: #EF233C;
-  border: 1px solid #f5c2c7;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.status-pulse-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #EF233C;
-  display: inline-block;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: high-quality;
 }
 
 .experience .timeline .timeline-text h2 {
