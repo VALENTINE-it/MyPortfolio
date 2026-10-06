@@ -1,9 +1,8 @@
 package handlers
 
 import (
-	"encoding/json"
 	"errors"
-	"log"
+	"log/slog"
 	"net/http"
 	"strconv"
 	"strings"
@@ -23,45 +22,35 @@ func NewProjectHandler(service *services.ProjectService) *ProjectHandler {
 // HandleProjects routes GET /api/projects and GET /api/projects/{id}
 func (h *ProjectHandler) HandleProjects(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
-		writeJSON(w, http.StatusMethodNotAllowed, map[string]interface{}{
-			"success": false,
-			"message": "Method not allowed",
-		})
+		w.Header().Set("Allow", http.MethodGet)
+		WriteError(w, http.StatusMethodNotAllowed, "METHOD_NOT_ALLOWED", "Method not allowed")
 		return
 	}
 
-	// Check if an ID was provided via path or PathValue
+	// Check if a specific ID was passed in URL path
 	path := strings.TrimPrefix(r.URL.Path, "/api/projects")
 	path = strings.Trim(path, "/")
 
 	if path != "" {
 		id, err := strconv.ParseInt(path, 10, 64)
 		if err != nil || id <= 0 {
-			writeJSON(w, http.StatusBadRequest, map[string]interface{}{
-				"success": false,
-				"message": "Invalid project ID: must be a positive integer",
-			})
+			WriteError(w, http.StatusBadRequest, "INVALID_PROJECT_ID", "Invalid project ID: must be a positive integer")
 			return
 		}
 
-		project, err := h.service.GetProjectByID(id)
+		project, err := h.service.GetProjectByID(r.Context(), id)
 		if err != nil {
 			if errors.Is(err, repositories.ErrProjectNotFound) {
-				writeJSON(w, http.StatusNotFound, map[string]interface{}{
-					"success": false,
-					"message": "Project not found",
-				})
+				WriteError(w, http.StatusNotFound, "PROJECT_NOT_FOUND", "Project not found")
 				return
 			}
-			log.Printf("Error fetching project %d: %v", id, err)
-			writeJSON(w, http.StatusInternalServerError, map[string]interface{}{
-				"success": false,
-				"message": "Internal server error",
-			})
+
+			slog.Error("Error fetching project by ID", "id", id, "error", err)
+			WriteError(w, http.StatusInternalServerError, "INTERNAL_ERROR", "Unable to retrieve project details")
 			return
 		}
 
-		writeJSON(w, http.StatusOK, map[string]interface{}{
+		WriteJSON(w, http.StatusOK, map[string]interface{}{
 			"success": true,
 			"data":    project,
 		})
@@ -69,25 +58,15 @@ func (h *ProjectHandler) HandleProjects(w http.ResponseWriter, r *http.Request) 
 	}
 
 	// GetAllProjects
-	projects, err := h.service.GetAllProjects()
+	projects, err := h.service.GetAllProjects(r.Context())
 	if err != nil {
-		log.Printf("Error fetching all projects: %v", err)
-		writeJSON(w, http.StatusInternalServerError, map[string]interface{}{
-			"success": false,
-			"message": "Internal server error",
-		})
+		slog.Error("Error fetching projects", "error", err)
+		WriteError(w, http.StatusInternalServerError, "INTERNAL_ERROR", "Unable to retrieve projects list")
 		return
 	}
 
-	writeJSON(w, http.StatusOK, map[string]interface{}{
+	WriteJSON(w, http.StatusOK, map[string]interface{}{
 		"success": true,
 		"data":    projects,
 	})
-}
-
-// writeJSON is a helper to serialize response payload
-func writeJSON(w http.ResponseWriter, status int, data interface{}) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status)
-	_ = json.NewEncoder(w).Encode(data)
 }
