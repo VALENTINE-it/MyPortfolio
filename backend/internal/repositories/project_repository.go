@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"context"
 	"database/sql"
 	"encoding/json"
 	"errors"
@@ -22,16 +23,16 @@ func NewProjectRepository(db *sql.DB) *ProjectRepository {
 	return &ProjectRepository{db: db}
 }
 
-// GetAllProjects retrieves all projects ordered by year descending, then id descending.
-func (r *ProjectRepository) GetAllProjects() ([]models.Project, error) {
+// GetAllProjects retrieves all projects ordered by year descending, then id ascending.
+func (r *ProjectRepository) GetAllProjects(ctx context.Context) ([]models.Project, error) {
 	query := `
 		SELECT id, title, description, category, year, technologies, image, github_url, live_url, created_at
 		FROM projects
 		ORDER BY year DESC, id ASC
 	`
-	rows, err := r.db.Query(query)
+	rows, err := r.db.QueryContext(ctx, query)
 	if err != nil {
-		return nil, fmt.Errorf("failed to query projects: %w", err)
+		return nil, fmt.Errorf("project_repo: failed to query projects: %w", err)
 	}
 	defer rows.Close()
 
@@ -55,7 +56,7 @@ func (r *ProjectRepository) GetAllProjects() ([]models.Project, error) {
 			&createdAtStr,
 		)
 		if err != nil {
-			return nil, fmt.Errorf("failed to scan project: %w", err)
+			return nil, fmt.Errorf("project_repo: failed to scan project: %w", err)
 		}
 
 		if githubURL.Valid {
@@ -84,7 +85,7 @@ func (r *ProjectRepository) GetAllProjects() ([]models.Project, error) {
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("error iterating project rows: %w", err)
+		return nil, fmt.Errorf("project_repo: error iterating project rows: %w", err)
 	}
 
 	if projects == nil {
@@ -94,14 +95,14 @@ func (r *ProjectRepository) GetAllProjects() ([]models.Project, error) {
 	return projects, nil
 }
 
-// GetProjectByID retrieves a single project by its ID.
-func (r *ProjectRepository) GetProjectByID(id int64) (*models.Project, error) {
+// GetProjectByID retrieves a single project by its ID using parameterized query.
+func (r *ProjectRepository) GetProjectByID(ctx context.Context, id int64) (*models.Project, error) {
 	query := `
 		SELECT id, title, description, category, year, technologies, image, github_url, live_url, created_at
 		FROM projects
 		WHERE id = ?
 	`
-	row := r.db.QueryRow(query, id)
+	row := r.db.QueryRowContext(ctx, query, id)
 
 	var p models.Project
 	var techJSON string
@@ -124,7 +125,7 @@ func (r *ProjectRepository) GetProjectByID(id int64) (*models.Project, error) {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrProjectNotFound
 		}
-		return nil, fmt.Errorf("failed to scan project by id: %w", err)
+		return nil, fmt.Errorf("project_repo: failed to scan project by id: %w", err)
 	}
 
 	if githubURL.Valid {
