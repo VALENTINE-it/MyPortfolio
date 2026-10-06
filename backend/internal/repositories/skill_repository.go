@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"time"
@@ -16,21 +17,21 @@ func NewSkillRepository(db *sql.DB) *SkillRepository {
 	return &SkillRepository{db: db}
 }
 
-// GetAllSkills retrieves all skills, optionally filtered by category.
-func (r *SkillRepository) GetAllSkills(category string) ([]models.Skill, error) {
+// GetAllSkills retrieves all skills, optionally filtered by category using parameterized query.
+func (r *SkillRepository) GetAllSkills(ctx context.Context, category string) ([]models.Skill, error) {
 	var rows *sql.Rows
 	var err error
 
 	if category != "" {
 		query := `SELECT id, name, category, created_at FROM skills WHERE category = ? ORDER BY id ASC`
-		rows, err = r.db.Query(query, category)
+		rows, err = r.db.QueryContext(ctx, query, category)
 	} else {
 		query := `SELECT id, name, category, created_at FROM skills ORDER BY id ASC`
-		rows, err = r.db.Query(query)
+		rows, err = r.db.QueryContext(ctx, query)
 	}
 
 	if err != nil {
-		return nil, fmt.Errorf("failed to query skills: %w", err)
+		return nil, fmt.Errorf("skill_repo: failed to query skills: %w", err)
 	}
 	defer rows.Close()
 
@@ -40,7 +41,7 @@ func (r *SkillRepository) GetAllSkills(category string) ([]models.Skill, error) 
 		var createdAtStr sql.NullString
 
 		if err := rows.Scan(&s.ID, &s.Name, &s.Category, &createdAtStr); err != nil {
-			return nil, fmt.Errorf("failed to scan skill: %w", err)
+			return nil, fmt.Errorf("skill_repo: failed to scan skill: %w", err)
 		}
 
 		if createdAtStr.Valid {
@@ -53,7 +54,7 @@ func (r *SkillRepository) GetAllSkills(category string) ([]models.Skill, error) 
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("error iterating skill rows: %w", err)
+		return nil, fmt.Errorf("skill_repo: error iterating skill rows: %w", err)
 	}
 
 	if skills == nil {
