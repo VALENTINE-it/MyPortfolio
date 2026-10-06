@@ -8,6 +8,7 @@ const SKILL_ICONS = {
   backend: 'fas fa-server',
   databases: 'fas fa-database',
   tools: 'fas fa-tools',
+  networking: 'fas fa-network-wired',
   other: 'fas fa-brain',
 }
 
@@ -29,6 +30,12 @@ const FALLBACK_SKILLS = [
     icon: 'fas fa-server',
     description: 'Go (Golang), RESTful APIs, HTTP Handlers, Routing, Concurrency, Architecture',
     skills: ['Go', 'REST APIs', 'HTTP Handlers', 'Routing', 'Concurrency'],
+  },
+  {
+    category: 'Networking & Infrastructure',
+    icon: 'fas fa-network-wired',
+    description: 'TCP/IP, Routing & Switching, Network Architecture, Socket Programming, Protocols & Security',
+    skills: ['Networking', 'TCP/IP', 'Routing & Switching', 'Network Security', 'Protocols'],
   },
   {
     category: 'Databases & Storage',
@@ -58,6 +65,7 @@ function Skills() {
           if (lower.includes('block') || lower.includes('chain')) icon = SKILL_ICONS.blockchain
           else if (lower.includes('front')) icon = SKILL_ICONS.frontend
           else if (lower.includes('back')) icon = SKILL_ICONS.backend
+          else if (lower.includes('network')) icon = SKILL_ICONS.networking
           else if (lower.includes('data')) icon = SKILL_ICONS.databases
           else if (lower.includes('tool')) icon = SKILL_ICONS.tools
 
