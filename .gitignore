@@ -12,11 +12,16 @@ bin/
 
 # Environment files
 .env
+.env*
+*.env
+*.env*
+**/.env*
+**/*.env*
 .env.local
 .env.*.local
 .env.production
 .env.development
-!.env.example
+.env.example
 
 # Database files
 *.db
