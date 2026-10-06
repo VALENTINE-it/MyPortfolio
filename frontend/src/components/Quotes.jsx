@@ -12,7 +12,7 @@ const QUOTES = [
     quote: '“Simplicity is prerequisite for reliability. Great software begins with clear thinking.”',
     author: 'Edsger W. Dijkstra',
     role: 'Turing Laureate & Pioneer',
-    image: '/images/about.svg',
+    image: '/images/profile.svg',
   },
   {
     quote: '“Any fool can write code that a computer can understand. Good programmers write code that humans can understand.”',
