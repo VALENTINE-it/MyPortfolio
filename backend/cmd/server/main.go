@@ -2,128 +2,88 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
+	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
-	"strings"
 	"syscall"
 	"time"
 
+	"portfolio-backend/internal/config"
 	"portfolio-backend/internal/database"
 	"portfolio-backend/internal/handlers"
+	"portfolio-backend/internal/middleware"
 	"portfolio-backend/internal/repositories"
 	"portfolio-backend/internal/services"
 )
 
-type HealthResponse struct {
-	Success bool   `json:"success"`
-	Message string `json:"message"`
-}
-
-// corsAndSecurityMiddleware handles restricted CORS and attaches recommended security headers
-func corsAndSecurityMiddleware(allowedOrigins []string, next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		origin := r.Header.Get("Origin")
-		if origin != "" {
-			for _, allowed := range allowedOrigins {
-				if allowed == "*" || allowed == origin || strings.TrimRight(allowed, "/") == strings.TrimRight(origin, "/") {
-					w.Header().Set("Access-Control-Allow-Origin", origin)
-					w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-					w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-					w.Header().Set("Access-Control-Max-Age", "86400")
-					break
-				}
-			}
-		}
-
-		// Security headers
-		w.Header().Set("X-Content-Type-Options", "nosniff")
-		w.Header().Set("X-Frame-Options", "DENY")
-		w.Header().Set("X-XSS-Protection", "1; mode=block")
-		w.Header().Set("Referrer-Policy", "strict-origin-when-cross-origin")
-		w.Header().Set("Permissions-Policy", "camera=(), microphone=(), geolocation=()")
-
-		if r.Method == http.MethodOptions {
-			w.WriteHeader(http.StatusNoContent)
-			return
-		}
-
-		next.ServeHTTP(w, r)
-	})
-}
-
-// healthHandler handles GET /api/health
-func healthHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		_ = json.NewEncoder(w).Encode(map[string]interface{}{
-			"success": false,
-			"error":   "Method not allowed",
-		})
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	_ = json.NewEncoder(w).Encode(HealthResponse{
-		Success: true,
-		Message: "API is running",
-	})
-}
-
 func main() {
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	}
-
-	dbURL := os.Getenv("DATABASE_URL")
-	if dbURL == "" {
-		dbURL = "./portfolio.db"
-	}
-
-	frontendURL := os.Getenv("FRONTEND_URL")
-	allowedOrigins := []string{
-		"http://localhost:5173",
-		"http://127.0.0.1:5173",
-		"http://localhost:3000",
-	}
-	if frontendURL != "" && frontendURL != "http://localhost:5173" {
-		allowedOrigins = append(allowedOrigins, frontendURL)
-	}
-
-	// Initialize Database (SQLite server-side persistence)
-	db, err := database.InitDB(dbURL)
+	// 1. Load and validate configuration
+	cfg, err := config.LoadConfig()
 	if err != nil {
-		log.Fatalf("Failed to initialize database: %v", err)
+		fmt.Fprintf(os.Stderr, "Configuration error: %v\n", err)
+		os.Exit(1)
+	}
+
+	// 2. Initialize structured logging with slog
+	var logHandler slog.Handler
+	if cfg.IsProduction() {
+		logHandler = slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+			Level: slog.LevelInfo,
+		})
+	} else {
+		logHandler = slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+			Level: slog.LevelDebug,
+		})
+	}
+	logger := slog.New(logHandler)
+	slog.SetDefault(logger)
+
+	slog.Info("Starting portfolio backend server...",
+		"env", cfg.AppEnv,
+		"port", cfg.Port,
+		"db_path", cfg.DatabasePath,
+		"trust_proxy", cfg.TrustProxy,
+	)
+
+	// 3. Initialize SQLite Database
+	db, err := database.InitDB(cfg.DatabasePath)
+	if err != nil {
+		slog.Error("Failed to initialize database", "error", err)
+		os.Exit(1)
 	}
 	defer db.Close()
-	log.Printf("Database initialized successfully at %s", dbURL)
+	slog.Info("Database initialized successfully with WAL mode & connection pooling")
 
-	// Initialize Repositories
+	// 4. Initialize Repositories
 	projectRepo := repositories.NewProjectRepository(db)
 	skillRepo := repositories.NewSkillRepository(db)
 	contactRepo := repositories.NewContactRepository(db)
 
-	// Initialize Services
+	// 5. Initialize Services
 	projectService := services.NewProjectService(projectRepo)
 	skillService := services.NewSkillService(skillRepo)
 	contactService := services.NewContactService(contactRepo)
 
-	// Initialize Handlers
+	// 6. Initialize Handlers
 	projectHandler := handlers.NewProjectHandler(projectService)
 	skillHandler := handlers.NewSkillHandler(skillService)
 	contactHandler := handlers.NewContactHandler(contactService)
 
+	// 7. Initialize Rate Limiters
+	generalLimiter := middleware.NewMemoryRateLimiter(5 * time.Minute)
+	defer generalLimiter.Close()
+
+	contactLimiter := middleware.NewMemoryRateLimiter(5 * time.Minute)
+	defer contactLimiter.Close()
+
+	// 8. Register Routes using Go standard library net/http ServeMux
 	mux := http.NewServeMux()
 
-	// Health
-	mux.HandleFunc("/api/health", healthHandler)
+	// Health Check
+	mux.HandleFunc("/api/health", handlers.HandleHealth)
 
 	// Projects
 	mux.HandleFunc("/api/projects", projectHandler.HandleProjects)
@@ -132,48 +92,73 @@ func main() {
 	// Skills
 	mux.HandleFunc("/api/skills", skillHandler.HandleSkills)
 
-	// Contact
-	mux.HandleFunc("/api/contact", contactHandler.HandleContact)
+	// Contact (Wrapped with dedicated sensitive rate limiter and body size limit)
+	contactLimiterMiddleware := middleware.RateLimit(
+		contactLimiter,
+		cfg.RateLimitContactReq,
+		cfg.RateLimitContactWindow,
+		cfg.TrustProxy,
+	)
+	bodyLimitMiddleware := middleware.BodyLimit(cfg.MaxRequestBodyBytes)
+	mux.Handle("/api/contact", bodyLimitMiddleware(contactLimiterMiddleware(http.HandlerFunc(contactHandler.HandleContact))))
 
-	handler := corsAndSecurityMiddleware(allowedOrigins, mux)
+	// 9. Build Global Middleware Chain:
+	// PanicRecovery -> RequestID -> RequestLogger -> SecurityHeaders -> CORS -> GeneralRateLimit -> ServeMux
+	generalRateLimitMiddleware := middleware.RateLimit(
+		generalLimiter,
+		cfg.RateLimitGeneralReq,
+		cfg.RateLimitGeneralWindow,
+		cfg.TrustProxy,
+	)
 
-	// Server with configured timeouts
+	var handler http.Handler = mux
+	handler = generalRateLimitMiddleware(handler)
+	handler = middleware.CORS(cfg.AllowedOrigins, handler)
+	handler = middleware.SecurityHeaders(cfg.IsProduction(), handler)
+	handler = middleware.RequestLogger(cfg.TrustProxy, handler)
+	handler = middleware.RequestIDMiddleware(handler)
+	handler = middleware.PanicRecovery(handler)
+
+	// 10. Configure HTTP Server with strict timeouts and header limits
 	server := &http.Server{
-		Addr:         fmt.Sprintf(":%s", port),
-		Handler:      handler,
-		ReadTimeout:  10 * time.Second,
-		WriteTimeout: 15 * time.Second,
-		IdleTimeout:  60 * time.Second,
+		Addr:              fmt.Sprintf(":%s", cfg.Port),
+		Handler:           handler,
+		ReadTimeout:       cfg.ReadTimeout,
+		ReadHeaderTimeout: cfg.ReadHeaderTimeout,
+		WriteTimeout:      cfg.WriteTimeout,
+		IdleTimeout:       cfg.IdleTimeout,
+		MaxHeaderBytes:    cfg.MaxHeaderBytes,
 	}
 
-	// Channel to listen for errors coming from listener
+	// Channel to listen for listener errors
 	serverErrors := make(chan error, 1)
 
 	go func() {
-		log.Printf("Server listening on port %s (http://localhost:%s/api)...", port, port)
+		slog.Info(fmt.Sprintf("Server listening at http://localhost:%s", cfg.Port))
 		serverErrors <- server.ListenAndServe()
 	}()
 
-	// Channel to listen for interrupt/terminate signal from OS (Graceful shutdown)
+	// 11. Graceful Shutdown listener (SIGINT, SIGTERM)
 	shutdown := make(chan os.Signal, 1)
 	signal.Notify(shutdown, os.Interrupt, syscall.SIGTERM)
 
 	select {
 	case err := <-serverErrors:
 		if err != nil && !errors.Is(err, http.ErrServerClosed) {
-			log.Fatalf("Server startup failed: %v", err)
+			slog.Error("Server listener failed", "error", err)
+			os.Exit(1)
 		}
 
 	case sig := <-shutdown:
-		log.Printf("Shutdown signal %v received: initiating graceful shutdown...", sig)
+		slog.Info("Shutdown signal received: starting graceful shutdown...", "signal", sig.String())
 
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 
 		if err := server.Shutdown(ctx); err != nil {
-			log.Printf("Graceful shutdown failed: %v, forcing server to close", err)
+			slog.Error("Graceful shutdown failed, forcing server close", "error", err)
 			_ = server.Close()
 		}
-		log.Println("Server gracefully stopped.")
+		slog.Info("Server stopped cleanly.")
 	}
 }
