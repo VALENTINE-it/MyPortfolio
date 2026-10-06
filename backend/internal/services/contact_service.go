@@ -1,13 +1,20 @@
 package services
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/mail"
+	"regexp"
 	"strings"
 
 	"portfolio-backend/internal/models"
 	"portfolio-backend/internal/repositories"
+)
+
+var (
+	ErrSpamDetected = errors.New("spam detected")
+	emailRegex      = regexp.MustCompile(`^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$`)
 )
 
 type ValidationError struct {
@@ -33,9 +40,15 @@ func NewContactService(repo *repositories.ContactRepository) *ContactService {
 	return &ContactService{repo: repo}
 }
 
-// ValidateContactRequest checks all fields according to security and business rules.
+// ValidateContactRequest checks all fields according to strict security and length rules.
 func (s *ContactService) ValidateContactRequest(req *models.ContactRequest) ValidationErrors {
 	var errs ValidationErrors
+
+	// Honeypot anti-spam check: if bot filled this hidden field, fail validation
+	if strings.TrimSpace(req.Honeypot) != "" {
+		errs = append(errs, ValidationError{Field: "honeypot", Message: "Spam submission detected."})
+		return errs
+	}
 
 	name := strings.TrimSpace(req.Name)
 	if name == "" {
@@ -50,9 +63,9 @@ func (s *ContactService) ValidateContactRequest(req *models.ContactRequest) Vali
 	} else if len(email) < 3 || len(email) > 254 {
 		errs = append(errs, ValidationError{Field: "email", Message: "Email must be between 3 and 254 characters."})
 	} else {
-		// Verify email structure
+		// Strict address parsing and regex verification
 		addr, err := mail.ParseAddress(email)
-		if err != nil || addr.Address != email || !strings.Contains(email, ".") {
+		if err != nil || addr.Address != email || !emailRegex.MatchString(email) {
 			errs = append(errs, ValidationError{Field: "email", Message: "Please provide a valid email address."})
 		}
 	}
@@ -77,7 +90,7 @@ func (s *ContactService) ValidateContactRequest(req *models.ContactRequest) Vali
 }
 
 // SubmitContact validates and stores a contact message.
-func (s *ContactService) SubmitContact(req *models.ContactRequest) (*models.Contact, error) {
+func (s *ContactService) SubmitContact(ctx context.Context, req *models.ContactRequest) (*models.Contact, error) {
 	if req == nil {
 		return nil, errors.New("contact request cannot be nil")
 	}
@@ -93,7 +106,7 @@ func (s *ContactService) SubmitContact(req *models.ContactRequest) (*models.Cont
 		Message: strings.TrimSpace(req.Message),
 	}
 
-	saved, err := s.repo.CreateContact(contact)
+	saved, err := s.repo.CreateContact(ctx, contact)
 	if err != nil {
 		return nil, fmt.Errorf("contact_service: failed to save message: %w", err)
 	}
