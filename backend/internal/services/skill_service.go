@@ -1,6 +1,7 @@
 package services
 
 import (
+	"context"
 	"fmt"
 
 	"portfolio-backend/internal/models"
@@ -16,8 +17,8 @@ func NewSkillService(repo *repositories.SkillRepository) *SkillService {
 }
 
 // GetAllSkills retrieves all skills optionally filtered by category.
-func (s *SkillService) GetAllSkills(category string) ([]models.Skill, error) {
-	skills, err := s.repo.GetAllSkills(category)
+func (s *SkillService) GetAllSkills(ctx context.Context, category string) ([]models.Skill, error) {
+	skills, err := s.repo.GetAllSkills(ctx, category)
 	if err != nil {
 		return nil, fmt.Errorf("skill_service: %w", err)
 	}
@@ -25,13 +26,21 @@ func (s *SkillService) GetAllSkills(category string) ([]models.Skill, error) {
 }
 
 // GetSkillsGrouped returns skills grouped by their categories in defined order.
-func (s *SkillService) GetSkillsGrouped() ([]models.SkillsByCategory, error) {
-	skills, err := s.repo.GetAllSkills("")
+func (s *SkillService) GetSkillsGrouped(ctx context.Context) ([]models.SkillsByCategory, error) {
+	skills, err := s.repo.GetAllSkills(ctx, "")
 	if err != nil {
 		return nil, fmt.Errorf("skill_service: %w", err)
 	}
 
-	categoryOrder := []string{"Frontend", "Backend", "Tools", "Other"}
+	categoryOrder := []string{
+		"Blockchain Technology Developer",
+		"Frontend Development",
+		"Backend Systems",
+		"Networking & Infrastructure",
+		"Databases & Storage",
+		"Tools & DevOps",
+		"Other",
+	}
 	groupedMap := make(map[string][]string)
 
 	for _, sk := range skills {
