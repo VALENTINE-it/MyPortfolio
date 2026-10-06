@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"log"
+	"log/slog"
 	"net/http"
 
 	"portfolio-backend/internal/services"
@@ -18,10 +18,8 @@ func NewSkillHandler(service *services.SkillService) *SkillHandler {
 // HandleSkills handles GET /api/skills
 func (h *SkillHandler) HandleSkills(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
-		writeJSON(w, http.StatusMethodNotAllowed, map[string]interface{}{
-			"success": false,
-			"message": "Method not allowed",
-		})
+		w.Header().Set("Allow", http.MethodGet)
+		WriteError(w, http.StatusMethodNotAllowed, "METHOD_NOT_ALLOWED", "Method not allowed")
 		return
 	}
 
@@ -29,52 +27,44 @@ func (h *SkillHandler) HandleSkills(w http.ResponseWriter, r *http.Request) {
 	groupedQuery := r.URL.Query().Get("grouped")
 
 	if category != "" {
-		skills, err := h.service.GetAllSkills(category)
+		skills, err := h.service.GetAllSkills(r.Context(), category)
 		if err != nil {
-			log.Printf("Error fetching skills for category %s: %v", category, err)
-			writeJSON(w, http.StatusInternalServerError, map[string]interface{}{
-				"success": false,
-				"message": "Internal server error",
-			})
+			slog.Error("Error fetching skills by category", "category", category, "error", err)
+			WriteError(w, http.StatusInternalServerError, "INTERNAL_ERROR", "Unable to retrieve skills")
 			return
 		}
-		writeJSON(w, http.StatusOK, map[string]interface{}{
+
+		WriteJSON(w, http.StatusOK, map[string]interface{}{
 			"success": true,
 			"data":    skills,
 		})
 		return
 	}
 
-	// If grouped is requested or default
-	grouped, err := h.service.GetSkillsGrouped()
-	if err != nil {
-		log.Printf("Error fetching grouped skills: %v", err)
-		writeJSON(w, http.StatusInternalServerError, map[string]interface{}{
-			"success": false,
-			"message": "Internal server error",
-		})
-		return
-	}
-
 	if groupedQuery == "false" {
-		raw, err := h.service.GetAllSkills("")
+		raw, err := h.service.GetAllSkills(r.Context(), "")
 		if err != nil {
-			log.Printf("Error fetching all raw skills: %v", err)
-			writeJSON(w, http.StatusInternalServerError, map[string]interface{}{
-				"success": false,
-				"message": "Internal server error",
-			})
+			slog.Error("Error fetching raw skills", "error", err)
+			WriteError(w, http.StatusInternalServerError, "INTERNAL_ERROR", "Unable to retrieve skills")
 			return
 		}
-		writeJSON(w, http.StatusOK, map[string]interface{}{
+
+		WriteJSON(w, http.StatusOK, map[string]interface{}{
 			"success": true,
 			"data":    raw,
 		})
 		return
 	}
 
-	// By default return grouped categories, with individual count
-	writeJSON(w, http.StatusOK, map[string]interface{}{
+	// Default: return grouped categories
+	grouped, err := h.service.GetSkillsGrouped(r.Context())
+	if err != nil {
+		slog.Error("Error fetching grouped skills", "error", err)
+		WriteError(w, http.StatusInternalServerError, "INTERNAL_ERROR", "Unable to retrieve skills")
+		return
+	}
+
+	WriteJSON(w, http.StatusOK, map[string]interface{}{
 		"success": true,
 		"data":    grouped,
 	})
