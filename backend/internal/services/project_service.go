@@ -1,6 +1,7 @@
 package services
 
 import (
+	"context"
 	"errors"
 	"fmt"
 
@@ -21,8 +22,8 @@ func NewProjectService(repo *repositories.ProjectRepository) *ProjectService {
 }
 
 // GetAllProjects retrieves all projects from repository.
-func (s *ProjectService) GetAllProjects() ([]models.Project, error) {
-	projects, err := s.repo.GetAllProjects()
+func (s *ProjectService) GetAllProjects(ctx context.Context) ([]models.Project, error) {
+	projects, err := s.repo.GetAllProjects(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("project_service: %w", err)
 	}
@@ -30,11 +31,11 @@ func (s *ProjectService) GetAllProjects() ([]models.Project, error) {
 }
 
 // GetProjectByID validates ID and retrieves project by ID.
-func (s *ProjectService) GetProjectByID(id int64) (*models.Project, error) {
+func (s *ProjectService) GetProjectByID(ctx context.Context, id int64) (*models.Project, error) {
 	if id <= 0 {
 		return nil, ErrInvalidProjectID
 	}
-	project, err := s.repo.GetProjectByID(id)
+	project, err := s.repo.GetProjectByID(ctx, id)
 	if err != nil {
 		return nil, err
 	}
