@@ -49,33 +49,33 @@ const FALLBACK_PROJECTS = [
     category: 'Full-Stack Web Application',
     year: 2026,
     technologies: ['React', 'JavaScript', 'Go', 'SQLite', 'REST APIs', 'Security'],
-    image: '/images/projects/safeguarding.svg',
-    githubUrl: 'https://github.com/VALENTINE-it/safeguarding-platform',
-    liveUrl: 'https://safeguarding.example.com',
+    image: '/images/projects/safeguarding.png',
+    githubUrl: 'https://github.com/VALENTINE-it/safeguarding-project',
+    liveUrl: 'https://safeguarding-app-1.onrender.com/',
   },
   {
     id: 2,
-    title: 'Career Guidance Platform',
+    title: 'Nemo',
     description:
-      'An educational guidance system that assesses academic performance and technical interests to recommend career pathways, skill milestones, and mentorship.',
-    category: 'Education Technology',
+      'An award-winning IoT security system recognized at the Kijani Space Hackathon, engineered to secure, monitor, and protect fish cages in Lake Victoria through real-time telemetry and intrusion alerts.',
+    category: 'IoT & Embedded Security',
     year: 2026,
-    technologies: ['React', 'JavaScript', 'Go', 'REST APIs', 'SQLite'],
-    image: '/images/projects/career-guidance.svg',
-    githubUrl: 'https://github.com/VALENTINE-it/career-guidance',
+    technologies: ['IoT', 'Embedded Systems', 'Sensors', 'Telemetry', 'Hardware Security', 'Go'],
+    image: '/images/projects/fish-cage-iot.jpeg',
+    githubUrl: 'https://github.com/nyabokegrace/nemo',
     liveUrl: '',
   },
   {
     id: 3,
-    title: 'Personal Developer Portfolio',
+    title: 'Anga Guard',
     description:
-      'A digital editorial portfolio and professional showcase engineered with React and Go, featuring responsive fluid typography, clean REST architecture, and SQLite persistence.',
-    category: 'Full-Stack Portfolio',
+      'A decentralized dMRV oracle and SME ESG platform empowering Western Kenya smallholders with verifiable biochar carbon removal credits compliant with Kenya National Carbon Registry.',
+    category: 'Web3 & Climate Tech Oracle',
     year: 2026,
-    technologies: ['React', 'Vite', 'JavaScript', 'Go', 'REST API', 'SQLite'],
-    image: '/images/projects/portfolio.svg',
-    githubUrl: 'https://github.com/VALENTINE-it/MyPortfolio',
-    liveUrl: '',
+    technologies: ['dMRV Oracle', 'Web3', 'React', 'Go', 'IoT Telemetry', 'Smart Contracts', 'ESG Analytics'],
+    image: '/images/projects/angaguard.png',
+    githubUrl: 'https://github.com/ClayMichael2004/angaguard',
+    liveUrl: 'https://angaguard-d96o.onrender.com/',
   },
 ]
 
@@ -129,32 +129,107 @@ function ProjectTimeline() {
 
           {/* Portfolio Item Cards */}
           <div className="portfolio-grid">
-            {projects.map((project) => (
-              <div key={project.id} className="portfolio-item">
-                <div className="portfolio-wrap">
-                  <div className="portfolio-img">
-                    <img
-                      src={project.image || '/images/projects/portfolio.svg'}
-                      alt={project.title}
-                      loading="lazy"
-                    />
-                  </div>
-                  <div className="portfolio-text">
-                    <h3 title={project.title}>{project.title}</h3>
-                    <a
-                      className="btn"
-                      href={project.liveUrl || project.githubUrl || '#'}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      title="View Details"
-                      aria-label={`View ${project.title}`}
-                    >
-                      +
-                    </a>
+            {projects.map((project) => {
+              const techs = Array.isArray(project.technologies)
+                ? project.technologies
+                : typeof project.technologies === 'string'
+                ? JSON.parse(project.technologies || '[]')
+                : []
+
+              return (
+                <div key={project.id} className="portfolio-item">
+                  <div className="portfolio-wrap">
+                    <div className="portfolio-img">
+                      <img
+                        src={project.image || '/images/projects/portfolio.svg'}
+                        alt={project.title}
+                        loading="lazy"
+                      />
+                    </div>
+                    <div className="portfolio-text">
+                      <div className="portfolio-info">
+                        <h3 title={project.title}>{project.title}</h3>
+                        {project.category && (
+                          <span className="portfolio-card-category">{project.category}</span>
+                        )}
+                      </div>
+                      <a
+                        className="btn"
+                        href={project.liveUrl || project.githubUrl || '#'}
+                        target={project.liveUrl || project.githubUrl ? '_blank' : undefined}
+                        rel="noopener noreferrer"
+                        title="View Details"
+                        aria-label={`View ${project.title}`}
+                      >
+                        +
+                      </a>
+                    </div>
+
+                    {/* Full Details Reveal on Hover */}
+                    <div className="portfolio-overlay">
+                      <div className="portfolio-overlay-header">
+                        {project.category && (
+                          <span className="portfolio-overlay-cat">{project.category}</span>
+                        )}
+                        {project.year && (
+                          <span className="portfolio-overlay-year">{project.year}</span>
+                        )}
+                      </div>
+                      <h3 className="portfolio-overlay-title">{project.title}</h3>
+                      <p className="portfolio-overlay-desc">{project.description}</p>
+
+                      {techs.length > 0 && (
+                        <div className="portfolio-overlay-techs">
+                          {techs.map((tech) => (
+                            <span key={tech} className="portfolio-tech-tag">
+                              {tech}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
+                      <div className="portfolio-overlay-actions">
+                        {project.liveUrl && (
+                          <a
+                            href={project.liveUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn btn-sm"
+                            aria-label={`Live demo for ${project.title}`}
+                          >
+                            Live Site <i className="fas fa-external-link-alt" style={{ marginLeft: 5 }}></i>
+                          </a>
+                        )}
+                        {project.githubUrl && (
+                          <a
+                            href={project.githubUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn btn-secondary btn-sm"
+                            aria-label={`GitHub repo for ${project.title}`}
+                          >
+                            GitHub <i className="fab fa-github" style={{ marginLeft: 5 }}></i>
+                          </a>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
+          </div>
+
+          {/* View Profile on GitHub */}
+          <div className="portfolio-more text-center">
+            <a
+              href="https://github.com/VALENTINE-it"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-primary"
+              aria-label="Visit my GitHub profile"
+            >
+              View GitHub Profile <i className="fab fa-github" style={{ marginLeft: 8 }}></i>
+            </a>
           </div>
         </div>
       </div>
