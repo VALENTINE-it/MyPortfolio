@@ -4,27 +4,22 @@ import (
 	"net/http"
 )
 
-// SecurityHeaders applies essential security headers to every response.
-func SecurityHeaders(isProduction bool, next http.Handler) http.Handler {
+// SecurityHeaders applies defense-in-depth HTTP headers to protect against common web vulnerabilities
+func SecurityHeaders(isProd bool, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Prevent MIME-sniffing
 		w.Header().Set("X-Content-Type-Options", "nosniff")
-
-		// Prevent clickjacking / iframe embedding
 		w.Header().Set("X-Frame-Options", "DENY")
-
-		// Restrict referrer leakage
+		w.Header().Set("X-XSS-Protection", "1; mode=block")
 		w.Header().Set("Referrer-Policy", "strict-origin-when-cross-origin")
-
-		// Restrict browser hardware permissions
 		w.Header().Set("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=()")
 
-		// Content Security Policy for API endpoints
-		w.Header().Set("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none';")
+		// Content-Security-Policy designed for React + Vite + Google Fonts + SVG assets
+		csp := "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' http://localhost:* ws://localhost:* http://127.0.0.1:*;"
+		w.Header().Set("Content-Security-Policy", csp)
 
-		// Strict-Transport-Security (only in production over HTTPS)
-		if isProduction {
-			w.Header().Set("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload")
+		// Strict-Transport-Security (HSTS) only enabled in production over HTTPS
+		if isProd || r.TLS != nil || r.Header.Get("X-Forwarded-Proto") == "https" {
+			w.Header().Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload")
 		}
 
 		next.ServeHTTP(w, r)
