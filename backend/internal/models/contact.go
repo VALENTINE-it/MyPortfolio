@@ -9,6 +9,8 @@ type Contact struct {
 	Email     string    `json:"email"`
 	Subject   string    `json:"subject"`
 	Message   string    `json:"message"`
+	Status    string    `json:"status"` // "unread", "read", "archived"
+	IPAddress string    `json:"ipAddress,omitempty"`
 	CreatedAt time.Time `json:"createdAt,omitempty"`
 }
 
