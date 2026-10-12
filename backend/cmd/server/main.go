@@ -4,161 +4,189 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
+	"portfolio-backend/internal/cache"
 	"portfolio-backend/internal/config"
 	"portfolio-backend/internal/database"
 	"portfolio-backend/internal/handlers"
 	"portfolio-backend/internal/middleware"
+	"portfolio-backend/internal/monitoring"
 	"portfolio-backend/internal/repositories"
 	"portfolio-backend/internal/services"
+	"portfolio-backend/internal/tasks"
 )
 
 func main() {
-	// 1. Load and validate configuration
+	// 1. Load configuration
 	cfg, err := config.LoadConfig()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Configuration error: %v\n", err)
+		fmt.Printf("Configuration error: %v\n", err)
 		os.Exit(1)
 	}
 
-	// 2. Initialize structured logging with slog
-	var logHandler slog.Handler
-	if cfg.IsProduction() {
-		logHandler = slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
-			Level: slog.LevelInfo,
-		})
-	} else {
-		logHandler = slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
-			Level: slog.LevelDebug,
-		})
-	}
-	logger := slog.New(logHandler)
-	slog.SetDefault(logger)
-
-	slog.Info("Starting portfolio backend server...",
-		"env", cfg.AppEnv,
+	// 2. Initialize structured logging
+	logger := monitoring.InitLogger(cfg.Environment, os.Stdout)
+	logger.Info("Starting portfolio backend server",
+		"environment", cfg.Environment,
 		"port", cfg.Port,
-		"db_path", cfg.DatabasePath,
-		"trust_proxy", cfg.TrustProxy,
 	)
 
-	// 3. Initialize SQLite Database
-	db, err := database.InitDB(cfg.DatabasePath)
+	// 3. Initialize SQLite database, run migrations, and seed data
+	db, err := database.InitDB(cfg.DatabaseURL)
 	if err != nil {
-		slog.Error("Failed to initialize database", "error", err)
+		logger.Error("Failed to initialize database", "error", err)
 		os.Exit(1)
 	}
 	defer db.Close()
-	slog.Info("Database initialized successfully with WAL mode & connection pooling")
 
-	// 4. Initialize Repositories
+	if err := database.CheckIntegrity(db); err != nil {
+		logger.Warn("Database integrity check warning", "warning", err)
+	} else {
+		logger.Info("Database integrity check passed (healthy)")
+	}
+
+	// 4. In-Memory Cache
+	memCache := cache.NewMemoryCache(1000, 10*time.Minute)
+	defer memCache.Close()
+
+	// 5. Initialize Repositories
 	projectRepo := repositories.NewProjectRepository(db)
 	skillRepo := repositories.NewSkillRepository(db)
 	contactRepo := repositories.NewContactRepository(db)
+	adminRepo := repositories.NewAdminRepository(db)
+	sessionRepo := repositories.NewSessionRepository(db)
 
-	// 5. Initialize Services
+	// 6. Initialize Services
 	projectService := services.NewProjectService(projectRepo)
 	skillService := services.NewSkillService(skillRepo)
 	contactService := services.NewContactService(contactRepo)
+	authService := services.NewAuthService(adminRepo, sessionRepo, cfg.SessionTTL)
 
-	// 6. Initialize Handlers
-	projectHandler := handlers.NewProjectHandler(projectService)
-	skillHandler := handlers.NewSkillHandler(skillService)
+	// 7. Background Worker
+	worker := tasks.NewBackgroundWorker(db, authService, "./backups")
+	worker.Start()
+	defer worker.Stop()
+
+	// 8. Initialize Handlers
+	healthHandler := monitoring.NewHealthHandler(db)
+	authHandler := handlers.NewAuthHandler(authService, cfg)
+	projectHandler := handlers.NewProjectHandler(projectService, memCache)
+	skillHandler := handlers.NewSkillHandler(skillService, memCache)
 	contactHandler := handlers.NewContactHandler(contactService)
+	dashboardHandler := handlers.NewAdminDashboardHandler(db)
 
-	// 7. Initialize Rate Limiters
-	generalLimiter := middleware.NewMemoryRateLimiter(5 * time.Minute)
-	defer generalLimiter.Close()
+	// 9. Rate Limiters
+	publicLimiter := middleware.NewIPRateLimiter(cfg.PublicRPM, cfg.PublicRPM/2, cfg)
+	defer publicLimiter.Close()
 
-	contactLimiter := middleware.NewMemoryRateLimiter(5 * time.Minute)
+	contactLimiter := middleware.NewIPRateLimiter(cfg.ContactRPM, 3, cfg)
 	defer contactLimiter.Close()
 
-	// 8. Register Routes using Go standard library net/http ServeMux
+	loginLimiter := middleware.NewIPRateLimiter(cfg.LoginRPM, 5, cfg)
+	defer loginLimiter.Close()
+
+	adminLimiter := middleware.NewIPRateLimiter(cfg.AdminRPM, 20, cfg)
+	defer adminLimiter.Close()
+
+	// 10. HTTP ServeMux Routing
 	mux := http.NewServeMux()
 
-	// Health Check
-	mux.HandleFunc("/api/health", handlers.HandleHealth)
+	// System & Health Endpoints
+	mux.HandleFunc("/health/live", healthHandler.LivenessHandler)
+	mux.HandleFunc("/health/ready", healthHandler.ReadinessHandler)
+	mux.HandleFunc("/api/health", healthHandler.LegacyHealthHandler)
 
-	// Projects
-	mux.HandleFunc("/api/projects", projectHandler.HandleProjects)
-	mux.HandleFunc("/api/projects/", projectHandler.HandleProjects)
+	if cfg.MetricsEnabled {
+		mux.HandleFunc("/metrics", monitoring.GetMetrics().PrometheusHandler())
+	}
 
-	// Skills
-	mux.HandleFunc("/api/skills", skillHandler.HandleSkills)
+	// Public Portfolio Routes
+	mux.Handle("/api/projects", publicLimiter.Middleware(http.HandlerFunc(projectHandler.HandleProjects)))
+	mux.Handle("/api/projects/", publicLimiter.Middleware(http.HandlerFunc(projectHandler.HandleProjects)))
 
-	// Contact (Wrapped with dedicated sensitive rate limiter and body size limit)
-	contactLimiterMiddleware := middleware.RateLimit(
-		contactLimiter,
-		cfg.RateLimitContactReq,
-		cfg.RateLimitContactWindow,
-		cfg.TrustProxy,
-	)
-	bodyLimitMiddleware := middleware.BodyLimit(cfg.MaxRequestBodyBytes)
-	mux.Handle("/api/contact", bodyLimitMiddleware(contactLimiterMiddleware(http.HandlerFunc(contactHandler.HandleContact))))
+	mux.Handle("/api/skills", publicLimiter.Middleware(http.HandlerFunc(skillHandler.HandleSkills)))
+	mux.Handle("/api/skills/", publicLimiter.Middleware(http.HandlerFunc(skillHandler.HandleSkills)))
 
-	// 9. Build Global Middleware Chain:
-	// PanicRecovery -> RequestID -> RequestLogger -> SecurityHeaders -> CORS -> GeneralRateLimit -> ServeMux
-	generalRateLimitMiddleware := middleware.RateLimit(
-		generalLimiter,
-		cfg.RateLimitGeneralReq,
-		cfg.RateLimitGeneralWindow,
-		cfg.TrustProxy,
-	)
+	mux.Handle("/api/contact", contactLimiter.Middleware(http.HandlerFunc(contactHandler.HandleContact)))
 
-	var handler http.Handler = mux
-	handler = generalRateLimitMiddleware(handler)
-	handler = middleware.CORS(cfg.AllowedOrigins, handler)
-	handler = middleware.SecurityHeaders(cfg.IsProduction(), handler)
-	handler = middleware.RequestLogger(cfg.TrustProxy, handler)
-	handler = middleware.RequestIDMiddleware(handler)
-	handler = middleware.PanicRecovery(handler)
+	// Admin Authentication Routes
+	mux.Handle("/api/admin/login", loginLimiter.Middleware(http.HandlerFunc(authHandler.HandleLogin)))
+	mux.HandleFunc("/api/admin/logout", authHandler.HandleLogout)
+	mux.Handle("/api/admin/me", middleware.RequireAdmin(http.HandlerFunc(authHandler.HandleMe)))
+	mux.HandleFunc("/api/admin/csrf", authHandler.HandleCSRF)
 
-	// 10. Configure HTTP Server with strict timeouts and header limits
+	// Admin Protected CRUD Routes
+	mux.Handle("/api/admin/dashboard", middleware.RequireAdmin(adminLimiter.Middleware(http.HandlerFunc(dashboardHandler.HandleDashboard))))
+
+	mux.Handle("/api/admin/projects", middleware.RequireAdmin(adminLimiter.Middleware(http.HandlerFunc(projectHandler.HandleAdminProjects))))
+	mux.Handle("/api/admin/projects/", middleware.RequireAdmin(adminLimiter.Middleware(http.HandlerFunc(projectHandler.HandleAdminProjects))))
+
+	mux.Handle("/api/admin/skills", middleware.RequireAdmin(adminLimiter.Middleware(http.HandlerFunc(skillHandler.HandleAdminSkills))))
+	mux.Handle("/api/admin/skills/", middleware.RequireAdmin(adminLimiter.Middleware(http.HandlerFunc(skillHandler.HandleAdminSkills))))
+
+	mux.Handle("/api/admin/messages", middleware.RequireAdmin(adminLimiter.Middleware(http.HandlerFunc(contactHandler.HandleAdminMessages))))
+	mux.Handle("/api/admin/messages/", middleware.RequireAdmin(adminLimiter.Middleware(http.HandlerFunc(contactHandler.HandleAdminMessages))))
+
+	// 11. Compose Global Middleware Chain
+	// Order: Recovery -> RequestID -> Logging -> SecurityHeaders -> CORS -> BodyLimit -> Authenticate -> CSRF -> Router
+	var rootHandler http.Handler = mux
+	rootHandler = middleware.CSRFProtection(cfg)(rootHandler)
+	rootHandler = middleware.Authenticate(authService)(rootHandler)
+	rootHandler = middleware.BodyLimit(cfg.MaxRequestBodyBytes)(rootHandler)
+	rootHandler = middleware.CORS(cfg.AllowedOrigins, rootHandler)
+	rootHandler = middleware.SecurityHeaders(cfg.IsProduction(), rootHandler)
+	rootHandler = middleware.Logging(rootHandler)
+	rootHandler = middleware.RequestID(rootHandler)
+	rootHandler = middleware.Recovery(rootHandler)
+
+	// 12. HTTP Server with Strict Production Timeouts
 	server := &http.Server{
 		Addr:              fmt.Sprintf(":%s", cfg.Port),
-		Handler:           handler,
+		Handler:           rootHandler,
 		ReadTimeout:       cfg.ReadTimeout,
-		ReadHeaderTimeout: cfg.ReadHeaderTimeout,
 		WriteTimeout:      cfg.WriteTimeout,
 		IdleTimeout:       cfg.IdleTimeout,
+		ReadHeaderTimeout: cfg.ReadHeaderTimeout,
 		MaxHeaderBytes:    cfg.MaxHeaderBytes,
 	}
 
-	// Channel to listen for listener errors
 	serverErrors := make(chan error, 1)
 
 	go func() {
-		slog.Info(fmt.Sprintf("Server listening at http://localhost:%s", cfg.Port))
+		logger.Info("HTTP server running and listening",
+			"addr", server.Addr,
+			"url", fmt.Sprintf("http://localhost:%s", cfg.Port),
+		)
 		serverErrors <- server.ListenAndServe()
 	}()
 
-	// 11. Graceful Shutdown listener (SIGINT, SIGTERM)
+	// 13. Graceful Shutdown on SIGINT / SIGTERM
 	shutdown := make(chan os.Signal, 1)
 	signal.Notify(shutdown, os.Interrupt, syscall.SIGTERM)
 
 	select {
 	case err := <-serverErrors:
 		if err != nil && !errors.Is(err, http.ErrServerClosed) {
-			slog.Error("Server listener failed", "error", err)
+			logger.Error("Server terminated unexpectedly", "error", err)
 			os.Exit(1)
 		}
 
 	case sig := <-shutdown:
-		slog.Info("Shutdown signal received: starting graceful shutdown...", "signal", sig.String())
+		logger.Info("Shutdown signal received: starting graceful shutdown", "signal", sig.String())
 
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 
 		if err := server.Shutdown(ctx); err != nil {
-			slog.Error("Graceful shutdown failed, forcing server close", "error", err)
+			logger.Error("Graceful shutdown failed: forcing close", "error", err)
 			_ = server.Close()
 		}
-		slog.Info("Server stopped cleanly.")
+
+		logger.Info("Server stopped cleanly")
 	}
 }
