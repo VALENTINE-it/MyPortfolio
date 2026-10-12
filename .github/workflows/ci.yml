@@ -1,0 +1,71 @@
+name: CI / Production Quality Gate
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  backend-test:
+    name: Backend Tests & Quality Gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.25'
+          cache-dependency-path: backend/go.sum
+
+      - name: Verify Formatting
+        run: |
+          cd backend
+          test -z "$(gofmt -l .)"
+
+      - name: Go Vet Static Analysis
+        run: |
+          cd backend
+          go vet ./...
+
+      - name: Run Unit & Integration Tests
+        run: |
+          cd backend
+          go test -v ./...
+
+      - name: Run Race Detector
+        run: |
+          cd backend
+          go test -race ./...
+
+      - name: Build Binaries
+        run: |
+          cd backend
+          go build -o /tmp/server ./cmd/server
+          go build -o /tmp/admin-cli ./cmd/admin-cli
+
+  frontend-test:
+    name: Frontend Build & Asset Verification
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install Dependencies
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Build Frontend
+        run: |
+          cd frontend
+          npm run build
