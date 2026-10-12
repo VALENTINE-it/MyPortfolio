@@ -1027,3 +1027,18 @@ The initial implementation should prioritize:
 Cookies and authentication should be introduced only when required by future protected functionality.
 
 This keeps the first release secure without adding unnecessary complexity.
+
+
+## 18. Backend Security Verification & Hardening Summary
+
+The Go backend implementation satisfies all defense-in-depth security requirements:
+
+- **Authentication**: Bcrypt (cost 12) password hashing, 256-bit cryptographically secure session IDs generated via `crypto/rand`.
+- **Session Security**: Server-side session store in SQLite, session rotation upon login, `HttpOnly`, `SameSite=Lax`, and configurable `Secure` cookie attributes.
+- **CSRF Protection**: Double-submit cookie pattern with cryptographic HMAC token and origin/referer header verification on state-changing endpoints.
+- **Rate Limiting**: In-memory token bucket limiter with automatic stale IP cleanup. Trusted proxy verification via CIDR avoids `X-Forwarded-For` spoofing.
+- **DDoS Mitigation**: Global 1MB request body limit, read/write/idle HTTP timeouts, connection pool limits.
+- **SQL Injection Prevention**: 100% parameterized queries across all repositories.
+- **XSS & Input Sanitization**: HTML escaping and regex validation on all contact and admin inputs. Honeypot spam filtering.
+- **Security Headers**: HSTS, CSP, `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`.
+- **Container Hardening**: Multi-stage Docker build running under an unprivileged `appuser` (non-root UID/GID) with isolated persistent `/data` volume.
