@@ -9,6 +9,7 @@ export async function request(endpoint, options = {}) {
   };
 
   const config = {
+    credentials: options.credentials || 'include',
     ...options,
     headers,
   };
@@ -18,7 +19,8 @@ export async function request(endpoint, options = {}) {
     const data = await response.json().catch(() => null);
 
     if (!response.ok) {
-      const error = new Error(data?.message || `Request failed with status ${response.status}`);
+      const message = data?.message || data?.error?.message || `Request failed with status ${response.status}`;
+      const error = new Error(message);
       error.status = response.status;
       error.data = data;
       throw error;
