@@ -1,0 +1,153 @@
+openapi: 3.0.3
+info:
+  title: Valentine Omondi Awili Portfolio API
+  description: High-performance, production-ready REST API for personal portfolio and admin management.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+paths:
+  /health/live:
+    get:
+      summary: Liveness probe
+      responses:
+        '200':
+          description: Process alive
+
+  /health/ready:
+    get:
+      summary: Readiness probe
+      responses:
+        '200':
+          description: Database and dependencies ready
+        '503':
+          description: Service unavailable
+
+  /api/health:
+    get:
+      summary: Legacy health check
+      responses:
+        '200':
+          description: API running
+
+  /metrics:
+    get:
+      summary: Prometheus exposition metrics
+      responses:
+        '200':
+          description: Plaintext Prometheus telemetry
+
+  /api/projects:
+    get:
+      summary: Get all projects (cached with ETags)
+      responses:
+        '200':
+          description: List of projects
+        '304':
+          description: Not modified
+
+  /api/projects/{id}:
+    get:
+      summary: Get single project by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Project details
+        '404':
+          description: Project not found
+
+  /api/skills:
+    get:
+      summary: Get technical skills (grouped or filtered)
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: grouped
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Grouped or flat skills
+
+  /api/contact:
+    post:
+      summary: Submit contact message (rate-limited, sanitized)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, email, subject, message]
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                subject:
+                  type: string
+                message:
+                  type: string
+                honeypot:
+                  type: string
+      responses:
+        '201':
+          description: Message submitted
+        '400':
+          description: Validation failed
+        '429':
+          description: Rate limit exceeded
+
+  /api/admin/login:
+    post:
+      summary: Administrator login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, password]
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful, sets HttpOnly session cookie
+        '401':
+          description: Invalid credentials
+
+  /api/admin/logout:
+    post:
+      summary: Administrator logout
+      responses:
+        '200':
+          description: Session invalidated
+
+  /api/admin/dashboard:
+    get:
+      summary: Admin dashboard metrics
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Dashboard stats
+        '401':
+          description: Unauthorized
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: portfolio_session
