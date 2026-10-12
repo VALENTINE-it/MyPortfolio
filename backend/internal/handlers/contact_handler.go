@@ -1,13 +1,17 @@
 package handlers
 
 import (
+	"encoding/json"
 	"errors"
 	"log/slog"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"portfolio-backend/internal/models"
+	"portfolio-backend/internal/repositories"
 	"portfolio-backend/internal/services"
+	"portfolio-backend/internal/utils"
 )
 
 type ContactHandler struct {
@@ -20,47 +24,41 @@ func NewContactHandler(service *services.ContactService) *ContactHandler {
 	}
 }
 
-// HandleContact handles POST /api/contact with validation and honeypot protection.
+// HandleContact handles public POST /api/contact
 func (h *ContactHandler) HandleContact(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		w.Header().Set("Allow", http.MethodPost)
-		WriteError(w, http.StatusMethodNotAllowed, "METHOD_NOT_ALLOWED", "Method not allowed")
+		utils.SendError(w, http.StatusMethodNotAllowed, utils.CodeMethodNotAllowed, "Method not allowed")
 		return
 	}
 
-	// 1. Content-Type check
 	contentType := r.Header.Get("Content-Type")
 	if !strings.HasPrefix(strings.ToLower(contentType), "application/json") {
-		WriteError(w, http.StatusUnsupportedMediaType, "UNSUPPORTED_MEDIA_TYPE", "Content-Type must be application/json")
+		utils.SendError(w, http.StatusUnsupportedMediaType, utils.CodeUnsupportedMedia, "Content-Type must be application/json")
 		return
 	}
 
-	// 2. Decode and validate single JSON object without unknown fields
 	var req models.ContactRequest
-	if err := DecodeJSON(w, r, &req); err != nil {
-		if strings.Contains(err.Error(), "payload too large") {
-			WriteError(w, http.StatusRequestEntityTooLarge, "PAYLOAD_TOO_LARGE", "Request payload exceeds maximum allowed size (64KB)")
-			return
-		}
-		WriteError(w, http.StatusBadRequest, "INVALID_JSON", err.Error())
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+	if err := decoder.Decode(&req); err != nil {
+		utils.SendError(w, http.StatusBadRequest, utils.CodeBadRequest, "Malformed JSON payload or invalid request body format")
 		return
 	}
 
-	// 3. Submit contact message with validation and honeypot check
 	saved, err := h.service.SubmitContact(r.Context(), &req)
 	if err != nil {
 		var valErrs services.ValidationErrors
 		if errors.As(err, &valErrs) {
-			WriteError(w, http.StatusBadRequest, "VALIDATION_FAILED", "Validation failed", valErrs)
+			utils.SendErrorWithDetails(w, http.StatusBadRequest, utils.CodeValidationError, "Validation failed", valErrs)
 			return
 		}
 
-		slog.Error("Internal error saving contact message", "error", err)
-		WriteError(w, http.StatusInternalServerError, "INTERNAL_ERROR", "Unable to process your request at this time. Please try again later.")
+		slog.Error("Internal error submitting contact message", "error", err)
+		utils.SendError(w, http.StatusInternalServerError, utils.CodeInternalServerError, "Unable to process your request at this time. Please try again later.")
 		return
 	}
 
-	WriteJSON(w, http.StatusCreated, map[string]interface{}{
+	utils.WriteJSON(w, http.StatusCreated, map[string]interface{}{
 		"success": true,
 		"message": "Thank you for reaching out! Your message has been received.",
 		"data": map[string]interface{}{
@@ -68,4 +66,118 @@ func (h *ContactHandler) HandleContact(w http.ResponseWriter, r *http.Request) {
 			"createdAt": saved.CreatedAt,
 		},
 	})
+}
+
+// HandleAdminMessages handles admin routes under /api/admin/messages
+func (h *ContactHandler) HandleAdminMessages(w http.ResponseWriter, r *http.Request) {
+	path := strings.TrimPrefix(r.URL.Path, "/api/admin/messages")
+	path = strings.Trim(path, "/")
+
+	switch r.Method {
+	case http.MethodGet:
+		if path != "" {
+			// GET /api/admin/messages/{id}
+			id, err := strconv.ParseInt(path, 10, 64)
+			if err != nil || id <= 0 {
+				utils.SendError(w, http.StatusBadRequest, utils.CodeBadRequest, "Invalid message ID")
+				return
+			}
+			msg, err := h.service.GetMessageByID(r.Context(), id)
+			if err != nil {
+				if errors.Is(err, repositories.ErrContactNotFound) {
+					utils.SendError(w, http.StatusNotFound, utils.CodeNotFound, "Message not found")
+					return
+				}
+				utils.SendError(w, http.StatusInternalServerError, utils.CodeInternalServerError, "Failed to retrieve message")
+				return
+			}
+			utils.SendSuccess(w, http.StatusOK, msg)
+			return
+		}
+
+		// GET /api/admin/messages (paginated)
+		limit := 20
+		offset := 0
+		if lStr := r.URL.Query().Get("limit"); lStr != "" {
+			if l, err := strconv.Atoi(lStr); err == nil && l > 0 {
+				limit = l
+			}
+		}
+		if oStr := r.URL.Query().Get("offset"); oStr != "" {
+			if o, err := strconv.Atoi(oStr); err == nil && o >= 0 {
+				offset = o
+			}
+		}
+		status := r.URL.Query().Get("status")
+
+		messages, total, err := h.service.GetMessages(r.Context(), limit, offset, status)
+		if err != nil {
+			slog.Error("Failed to fetch messages for admin", "error", err)
+			utils.SendError(w, http.StatusInternalServerError, utils.CodeInternalServerError, "Failed to retrieve messages")
+			return
+		}
+
+		utils.SendSuccessWithMeta(w, http.StatusOK, messages, map[string]interface{}{
+			"total":  total,
+			"limit":  limit,
+			"offset": offset,
+		})
+
+	case http.MethodPut:
+		// PUT /api/admin/messages/{id}/status
+		parts := strings.Split(path, "/")
+		if len(parts) == 0 || parts[0] == "" {
+			utils.SendError(w, http.StatusBadRequest, utils.CodeBadRequest, "Message ID is required")
+			return
+		}
+		id, err := strconv.ParseInt(parts[0], 10, 64)
+		if err != nil || id <= 0 {
+			utils.SendError(w, http.StatusBadRequest, utils.CodeBadRequest, "Invalid message ID")
+			return
+		}
+
+		var payload struct {
+			Status string `json:"status"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+			utils.SendError(w, http.StatusBadRequest, utils.CodeBadRequest, "Invalid JSON payload")
+			return
+		}
+
+		if err := h.service.UpdateMessageStatus(r.Context(), id, payload.Status); err != nil {
+			if errors.Is(err, repositories.ErrContactNotFound) {
+				utils.SendError(w, http.StatusNotFound, utils.CodeNotFound, "Message not found")
+				return
+			}
+			utils.SendError(w, http.StatusBadRequest, utils.CodeBadRequest, err.Error())
+			return
+		}
+
+		utils.SendSuccessWithMessage(w, http.StatusOK, "Message status updated successfully", map[string]interface{}{
+			"id":     id,
+			"status": payload.Status,
+		})
+
+	case http.MethodDelete:
+		// DELETE /api/admin/messages/{id}
+		id, err := strconv.ParseInt(path, 10, 64)
+		if err != nil || id <= 0 {
+			utils.SendError(w, http.StatusBadRequest, utils.CodeBadRequest, "Invalid message ID")
+			return
+		}
+
+		if err := h.service.DeleteMessage(r.Context(), id); err != nil {
+			if errors.Is(err, repositories.ErrContactNotFound) {
+				utils.SendError(w, http.StatusNotFound, utils.CodeNotFound, "Message not found")
+				return
+			}
+			utils.SendError(w, http.StatusInternalServerError, utils.CodeInternalServerError, "Failed to delete message")
+			return
+		}
+
+		utils.SendSuccessWithMessage(w, http.StatusOK, "Message deleted successfully", map[string]int64{"id": id})
+
+	default:
+		utils.SendError(w, http.StatusMethodNotAllowed, utils.CodeMethodNotAllowed, "Method not allowed")
+	}
 }
