@@ -1,41 +1,42 @@
 package middleware
 
 import (
-	"encoding/json"
 	"fmt"
 	"log/slog"
 	"net/http"
 	"runtime/debug"
+
+	"portfolio-backend/internal/monitoring"
+	"portfolio-backend/internal/utils"
 )
 
-// PanicRecovery catches unhandled panics, logs the stack trace server-side via slog,
-// and returns a standard HTTP 500 JSON response without crashing the server.
-func PanicRecovery(next http.Handler) http.Handler {
+// Recovery recovers from unhandled panics, logs stack traces with request ID, and returns HTTP 500
+func Recovery(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if rec := recover(); rec != nil {
-				reqID := GetRequestID(r.Context())
+				reqID := monitoring.GetRequestID(r.Context())
 				stack := string(debug.Stack())
 
-				slog.Error("CRITICAL: Panic recovered in HTTP handler",
-					"request_id", reqID,
+				slog.Error("Unhandled HTTP panic recovered",
 					"error", fmt.Sprintf("%v", rec),
-					"stack", stack,
+					"request_id", reqID,
 					"path", r.URL.Path,
+					"method", r.Method,
+					"stack", stack,
 				)
 
-				w.Header().Set("Content-Type", "application/json")
-				w.WriteHeader(http.StatusInternalServerError)
-				_ = json.NewEncoder(w).Encode(map[string]interface{}{
-					"success": false,
-					"error": map[string]interface{}{
-						"code":    "INTERNAL_SERVER_ERROR",
-						"message": "An internal server error occurred.",
-					},
-				})
+				monitoring.GetMetrics().RecordRequest(r.Method, r.URL.Path, http.StatusInternalServerError, 0)
+
+				utils.SendError(w, http.StatusInternalServerError, utils.CodeInternalServerError, "An internal server error occurred. Please try again later.")
 			}
 		}()
 
 		next.ServeHTTP(w, r)
 	})
+}
+
+// PanicRecovery is an alias for Recovery
+func PanicRecovery(next http.Handler) http.Handler {
+	return Recovery(next)
 }
