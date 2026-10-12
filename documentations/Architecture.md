@@ -814,3 +814,18 @@ The visitor should move naturally from:
             ↓
 
     "How can I contact this developer?"
+
+## 8. Backend Architecture & Hardening
+
+The Go backend follows a modular monolith architecture using exclusively the Go standard library (`net/http`) without third-party frameworks.
+
+### Architecture Layers
+
+1. **Cmd (`cmd/server/main.go`, `cmd/admin-cli`, `cmd/loadtest`)**: Application entrypoint, CLI provisioning, and benchmarking tools.
+2. **Handlers (`internal/handlers`)**: HTTP request decoding, schema validation, HTTP status mapping, and JSON response formatting.
+3. **Services (`internal/services`)**: Business logic, domain rules, password hashing (bcrypt), session tokens, and cache invalidation.
+4. **Repositories (`internal/repositories`)**: Parameterized SQL queries against SQLite, data mapping, and transaction management.
+5. **Database (`internal/database`, `internal/database/migrations`)**: SQLite driver (`modernc.org/sqlite`) configured in WAL mode, connection pooling (max 25 open / 10 idle conns), schema migrations, PRAGMA integrity check, and VACUUM INTO backups.
+6. **Cache (`internal/cache`)**: Thread-safe in-memory TTL cache with background eviction and ETag / HTTP 304 support.
+7. **Middleware (`internal/middleware`)**: Request ID, structured logging, panic recovery, global 1MB body limit, security headers, CORS, token-bucket rate limiter with trusted proxy detection, double-submit CSRF, and admin session authentication.
+8. **Monitoring & Tasks (`internal/monitoring`, `internal/tasks`)**: Prometheus `/metrics`, `/health/live`, `/health/ready`, and background worker for daily backups and hourly session cleanup.
