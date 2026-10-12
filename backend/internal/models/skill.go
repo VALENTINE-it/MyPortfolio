@@ -10,6 +10,12 @@ type Skill struct {
 	CreatedAt time.Time `json:"createdAt,omitempty"`
 }
 
+// SkillInput represents payload for creating or updating a skill.
+type SkillInput struct {
+	Name     string `json:"name"`
+	Category string `json:"category"`
+}
+
 // SkillsByCategory groups skills under their respective categories.
 type SkillsByCategory struct {
 	Category string   `json:"category"`
