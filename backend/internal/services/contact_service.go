@@ -10,6 +10,7 @@ import (
 
 	"portfolio-backend/internal/models"
 	"portfolio-backend/internal/repositories"
+	"portfolio-backend/internal/utils"
 )
 
 var (
@@ -89,7 +90,7 @@ func (s *ContactService) ValidateContactRequest(req *models.ContactRequest) Vali
 	return errs
 }
 
-// SubmitContact validates and stores a contact message.
+// SubmitContact validates, sanitizes, and stores a contact message.
 func (s *ContactService) SubmitContact(ctx context.Context, req *models.ContactRequest) (*models.Contact, error) {
 	if req == nil {
 		return nil, errors.New("contact request cannot be nil")
@@ -100,10 +101,11 @@ func (s *ContactService) SubmitContact(ctx context.Context, req *models.ContactR
 	}
 
 	contact := &models.Contact{
-		Name:    strings.TrimSpace(req.Name),
-		Email:   strings.TrimSpace(req.Email),
-		Subject: strings.TrimSpace(req.Subject),
-		Message: strings.TrimSpace(req.Message),
+		Name:    utils.SanitizeString(req.Name),
+		Email:   utils.CleanPlainString(req.Email),
+		Subject: utils.SanitizeString(req.Subject),
+		Message: utils.SanitizeString(req.Message),
+		Status:  "unread",
 	}
 
 	saved, err := s.repo.CreateContact(ctx, contact)
@@ -112,4 +114,47 @@ func (s *ContactService) SubmitContact(ctx context.Context, req *models.ContactR
 	}
 
 	return saved, nil
+}
+
+// GetMessages retrieves paginated contact messages for administrative review
+func (s *ContactService) GetMessages(ctx context.Context, limit, offset int, status string) ([]models.Contact, int, error) {
+	if limit <= 0 || limit > 100 {
+		limit = 20
+	}
+	if offset < 0 {
+		offset = 0
+	}
+	return s.repo.GetAllMessages(ctx, limit, offset, status)
+}
+
+// GetMessageByID retrieves a single message by ID
+func (s *ContactService) GetMessageByID(ctx context.Context, id int64) (*models.Contact, error) {
+	if id <= 0 {
+		return nil, fmt.Errorf("invalid message ID")
+	}
+	return s.repo.GetByID(ctx, id)
+}
+
+// UpdateMessageStatus updates the status of a message (e.g. "read", "archived")
+func (s *ContactService) UpdateMessageStatus(ctx context.Context, id int64, status string) error {
+	if id <= 0 {
+		return fmt.Errorf("invalid message ID")
+	}
+	validStatuses := map[string]bool{
+		"unread":   true,
+		"read":     true,
+		"archived": true,
+	}
+	if !validStatuses[status] {
+		return fmt.Errorf("invalid status: must be unread, read, or archived")
+	}
+	return s.repo.UpdateStatus(ctx, id, status)
+}
+
+// DeleteMessage deletes a message
+func (s *ContactService) DeleteMessage(ctx context.Context, id int64) error {
+	if id <= 0 {
+		return fmt.Errorf("invalid message ID")
+	}
+	return s.repo.Delete(ctx, id)
 }
