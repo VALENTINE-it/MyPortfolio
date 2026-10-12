@@ -4,49 +4,72 @@ import (
 	"log/slog"
 	"net/http"
 	"time"
+
+	"portfolio-backend/internal/monitoring"
 )
 
-type responseWriter struct {
+type responseWriterWrapper struct {
 	http.ResponseWriter
-	status       int
+	statusCode   int
 	bytesWritten int
 }
 
-func (rw *responseWriter) WriteHeader(status int) {
-	rw.status = status
-	rw.ResponseWriter.WriteHeader(status)
+func (rw *responseWriterWrapper) WriteHeader(code int) {
+	rw.statusCode = code
+	rw.ResponseWriter.WriteHeader(code)
 }
 
-func (rw *responseWriter) Write(b []byte) (int, error) {
-	if rw.status == 0 {
-		rw.status = http.StatusOK
+func (rw *responseWriterWrapper) Write(b []byte) (int, error) {
+	if rw.statusCode == 0 {
+		rw.statusCode = http.StatusOK
 	}
 	n, err := rw.ResponseWriter.Write(b)
 	rw.bytesWritten += n
 	return n, err
 }
 
-// RequestLogger logs incoming HTTP requests and their completion status using structured slog.
-func RequestLogger(trustProxy bool, next http.Handler) http.Handler {
+// Logging logs all HTTP requests structured with log/slog and feeds telemetry to metrics
+func Logging(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
-		reqID := GetRequestID(r.Context())
-		clientIP := GetClientIP(r, trustProxy)
+		reqID := monitoring.GetRequestID(r.Context())
 
-		rw := &responseWriter{ResponseWriter: w, status: http.StatusOK}
+		metrics := monitoring.GetMetrics()
+		metrics.IncActiveRequests()
+		defer metrics.DecActiveRequests()
 
-		next.ServeHTTP(rw, r)
+		wrapper := &responseWriterWrapper{
+			ResponseWriter: w,
+			statusCode:     http.StatusOK,
+		}
+
+		next.ServeHTTP(wrapper, r)
 
 		duration := time.Since(start)
 
-		slog.Info("HTTP Request",
-			"request_id", reqID,
+		// Record in metrics
+		metrics.RecordRequest(r.Method, r.URL.Path, wrapper.statusCode, duration)
+
+		// Don't clutter logs with high-frequency health probes in development unless they fail
+		if r.URL.Path == "/health/live" && wrapper.statusCode == http.StatusOK {
+			return
+		}
+
+		logLevel := slog.LevelInfo
+		if wrapper.statusCode >= 500 {
+			logLevel = slog.LevelError
+		} else if wrapper.statusCode >= 400 {
+			logLevel = slog.LevelWarn
+		}
+
+		slog.Log(r.Context(), logLevel, "HTTP request handled",
 			"method", r.Method,
 			"path", r.URL.Path,
-			"status", rw.status,
-			"duration_ms", duration.Milliseconds(),
-			"ip", clientIP,
-			"user_agent", r.UserAgent(),
+			"status", wrapper.statusCode,
+			"duration_ms", float64(duration.Microseconds())/1000.0,
+			"bytes", wrapper.bytesWritten,
+			"request_id", reqID,
+			"remote_ip", r.RemoteAddr,
 		)
 	})
 }
