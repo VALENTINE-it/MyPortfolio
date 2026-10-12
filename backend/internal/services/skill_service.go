@@ -3,9 +3,11 @@ package services
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"portfolio-backend/internal/models"
 	"portfolio-backend/internal/repositories"
+	"portfolio-backend/internal/utils"
 )
 
 type SkillService struct {
@@ -25,6 +27,70 @@ func (s *SkillService) GetAllSkills(ctx context.Context, category string) ([]mod
 	return skills, nil
 }
 
+// GetSkillByID retrieves a skill by ID
+func (s *SkillService) GetSkillByID(ctx context.Context, id int64) (*models.Skill, error) {
+	if id <= 0 {
+		return nil, fmt.Errorf("invalid skill ID: must be positive")
+	}
+	return s.repo.GetByID(ctx, id)
+}
+
+// CreateSkill validates input and inserts a new skill
+func (s *SkillService) CreateSkill(ctx context.Context, input *models.SkillInput) (*models.Skill, error) {
+	name := utils.SanitizeString(input.Name)
+	category := utils.SanitizeString(input.Category)
+
+	if name == "" || len(name) > 100 {
+		return nil, fmt.Errorf("skill name is required and must not exceed 100 characters")
+	}
+	if category == "" || len(category) > 100 {
+		return nil, fmt.Errorf("skill category is required and must not exceed 100 characters")
+	}
+
+	skill := &models.Skill{
+		Name:     name,
+		Category: category,
+	}
+
+	return s.repo.Create(ctx, skill)
+}
+
+// UpdateSkill updates an existing skill
+func (s *SkillService) UpdateSkill(ctx context.Context, id int64, input *models.SkillInput) (*models.Skill, error) {
+	if id <= 0 {
+		return nil, fmt.Errorf("invalid skill ID: must be positive")
+	}
+
+	name := utils.SanitizeString(input.Name)
+	category := utils.SanitizeString(input.Category)
+
+	if name == "" || len(name) > 100 {
+		return nil, fmt.Errorf("skill name is required and must not exceed 100 characters")
+	}
+	if category == "" || len(category) > 100 {
+		return nil, fmt.Errorf("skill category is required and must not exceed 100 characters")
+	}
+
+	skill := &models.Skill{
+		ID:       id,
+		Name:     name,
+		Category: category,
+	}
+
+	if err := s.repo.Update(ctx, skill); err != nil {
+		return nil, err
+	}
+	return skill, nil
+}
+
+// DeleteSkill deletes a skill by ID
+func (s *SkillService) DeleteSkill(ctx context.Context, id int64) error {
+	if id <= 0 {
+		return fmt.Errorf("invalid skill ID: must be positive")
+	}
+	return s.repo.Delete(ctx, id)
+}
+
 // GetSkillsGrouped returns skills grouped by their categories in defined order.
 func (s *SkillService) GetSkillsGrouped(ctx context.Context) ([]models.SkillsByCategory, error) {
 	skills, err := s.repo.GetAllSkills(ctx, "")
@@ -33,12 +99,10 @@ func (s *SkillService) GetSkillsGrouped(ctx context.Context) ([]models.SkillsByC
 	}
 
 	categoryOrder := []string{
+		"Frontend",
+		"Backend",
+		"Tools",
 		"Blockchain Technology Developer",
-		"Frontend Development",
-		"Backend Systems",
-		"Networking & Infrastructure",
-		"Databases & Storage",
-		"Tools & DevOps",
 		"Other",
 	}
 	groupedMap := make(map[string][]string)
@@ -76,4 +140,8 @@ func (s *SkillService) GetSkillsGrouped(ctx context.Context) ([]models.SkillsByC
 	}
 
 	return result, nil
+}
+
+func containsIgnoreCase(s, substr string) bool {
+	return strings.Contains(strings.ToLower(s), strings.ToLower(substr))
 }
