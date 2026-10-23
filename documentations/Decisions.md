@@ -917,7 +917,7 @@ ICT student/developer
 
 Maseno University
 
-Kisumu, Kenya
+Nairobi, Kenya
 
 web development
 

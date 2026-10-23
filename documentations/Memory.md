@@ -266,7 +266,7 @@ Known professional context that may be useful when creating portfolio content:
 
 Name: Valentine Omondi Awili
 
-Location: Kisumu, Kenya
+Location: Nairobi, Kenya
 
 Education: ICT studies at Maseno University
 

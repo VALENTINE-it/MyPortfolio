@@ -25,7 +25,7 @@ export default function Footer() {
           <div className="container">
             <div className="footer-info">
               <h2>Valentine Omondi Awili</h2>
-              <h3>Full-Stack Software Developer · Kisumu, Kenya</h3>
+              <h3>Full-Stack Software Developer · Nairobi, Kenya</h3>
 
               <div className="footer-menu">
                 <p>valentineawili@gmail.com</p>
@@ -49,6 +49,14 @@ export default function Footer() {
                   aria-label="LinkedIn"
                 >
                   <i className="fab fa-linkedin-in"></i>
+                </a>
+                <a
+                  href="https://wa.me/254758013777"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="WhatsApp"
+                >
+                  <i className="fab fa-whatsapp"></i>
                 </a>
                 <a
                   href="mailto:valentineawili@gmail.com"

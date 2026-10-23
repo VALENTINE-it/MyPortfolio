@@ -130,7 +130,7 @@ function ContactForm() {
                   </div>
                   <div className="contact-detail-text">
                     <h4>Location</h4>
-                    <p>Kisumu, Kenya</p>
+                    <p>Nairobi, Kenya</p>
                   </div>
                 </div>
 
@@ -142,6 +142,25 @@ function ContactForm() {
                     <h4>Email</h4>
                     <p>
                       <a href="mailto:valentineawili@gmail.com">valentineawili@gmail.com</a>
+                    </p>
+                  </div>
+                </div>
+
+                <div className="contact-detail-item">
+                  <div className="contact-detail-icon">
+                    <i className="fab fa-whatsapp"></i>
+                  </div>
+                  <div className="contact-detail-text">
+                    <h4>WhatsApp</h4>
+                    <p>
+                      <a
+                        href="https://wa.me/254758013777"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Chat with Valentine on WhatsApp: 0758013777"
+                      >
+                        +254 758 013 777
+                      </a>
                     </p>
                   </div>
                 </div>

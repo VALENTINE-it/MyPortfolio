@@ -113,6 +113,14 @@ export default function Hero() {
                   <i className="fab fa-linkedin-in"></i>
                 </a>
                 <a
+                  href="https://wa.me/254758013777"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="WhatsApp"
+                >
+                  <i className="fab fa-whatsapp"></i>
+                </a>
+                <a
                   href="mailto:valentineawili@gmail.com"
                   aria-label="Email"
                 >
