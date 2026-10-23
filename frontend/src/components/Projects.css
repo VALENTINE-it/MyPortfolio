@@ -537,6 +537,118 @@
 }
 
 /* --------------------------------------------------------------------------
+   Portfolio Pagination CSS
+   -------------------------------------------------------------------------- */
+.portfolio-pagination {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.pagination-info {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #777777;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.pagination-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  padding: 6px 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
+
+.pagination-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #313131;
+  background: #f7f7f7;
+  border: 1px solid #dddddd;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-family: inherit;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: #EF233C;
+  border-color: #EF233C;
+  color: #ffffff;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: #f0f0f0;
+  border-color: #e5e5e5;
+  color: #999999;
+}
+
+.pagination-pages {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pagination-page-btn {
+  min-width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #414141;
+  background: #ffffff;
+  border: 1px solid #dddddd;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-family: inherit;
+  padding: 0 8px;
+}
+
+.pagination-page-btn:hover {
+  background: #f7f7f7;
+  border-color: #EF233C;
+  color: #EF233C;
+}
+
+.pagination-page-btn.active {
+  background: #EF233C;
+  border-color: #EF233C;
+  color: #ffffff;
+}
+
+@media (max-width: 575.98px) {
+  .pagination-controls {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .pagination-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+  .pagination-page-btn {
+    min-width: 34px;
+    height: 34px;
+    font-size: 12px;
+  }
+}
+
+/* --------------------------------------------------------------------------
    Responsive Layout Rules
    -------------------------------------------------------------------------- */
 @media (max-width: 991.98px) {

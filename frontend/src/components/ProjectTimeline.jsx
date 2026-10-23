@@ -77,10 +77,49 @@ const FALLBACK_PROJECTS = [
     githubUrl: 'https://github.com/ClayMichael2004/angaguard',
     liveUrl: 'https://angaguard-d96o.onrender.com/',
   },
+  {
+    id: 4,
+    title: 'Career Guidance Platform',
+    description:
+      'An interactive educational advisory application helping secondary students in Western Kenya discover tertiary courses and career pathways matching their academic strengths.',
+    category: 'Full-Stack EdTech System',
+    year: 2026,
+    technologies: ['React', 'JavaScript', 'Go', 'SQLite', 'REST APIs', 'Analytics'],
+    image: '/images/projects/career-guidance.svg',
+    githubUrl: 'https://github.com/VALENTINE-it/career-guidance',
+    liveUrl: '',
+  },
+  {
+    id: 5,
+    title: 'HopeReach Community Platform',
+    description:
+      'A comprehensive digital NGO operations and outreach platform delivering real-time meal tracking (500k+ meals served), housing intake logs, and volunteer mobilization.',
+    category: 'Full-Stack Web Application',
+    year: 2026,
+    technologies: ['React', 'Go', 'SQLite', 'REST APIs', 'UI/UX', 'Community Platforms'],
+    image: '/images/hopereach.jpeg',
+    githubUrl: 'https://github.com/VALENTINE-it/hope-reach',
+    liveUrl: 'https://hope-reach-project-ngo-gdq7.onrender.com/',
+  },
+  {
+    id: 6,
+    title: 'Valentine Omondi Developer Portfolio',
+    description:
+      'A high-performance editorial developer portfolio showcasing architectural systems, real-time telemetry projects, and full-stack engineering achievements with Go and React.',
+    category: 'Portfolio & System Showcase',
+    year: 2026,
+    technologies: ['React', 'Vite', 'JavaScript', 'Go', 'REST APIs', 'SQLite'],
+    image: '/images/projects/portfolio.svg',
+    githubUrl: 'https://github.com/VALENTINE-it/portfolio',
+    liveUrl: '',
+  },
 ]
+
+const PROJECTS_PER_PAGE = 3
 
 function ProjectTimeline() {
   const [projects, setProjects] = useState(FALLBACK_PROJECTS)
+  const [currentPage, setCurrentPage] = useState(1)
 
   const fetchProjects = useCallback(async () => {
     try {
@@ -96,6 +135,25 @@ function ProjectTimeline() {
   useEffect(() => {
     fetchProjects()
   }, [fetchProjects])
+
+  const totalPages = Math.max(1, Math.ceil(projects.length / PROJECTS_PER_PAGE))
+  const startIndex = (currentPage - 1) * PROJECTS_PER_PAGE
+  const visibleProjects = projects.slice(startIndex, startIndex + PROJECTS_PER_PAGE)
+
+  const handlePageChange = (newPage) => {
+    if (newPage < 1 || newPage > totalPages || newPage === currentPage) return
+    setCurrentPage(newPage)
+    const el = document.getElementById('portfolio')
+    if (el) {
+      const offset = 70
+      const bodyRect = document.body.getBoundingClientRect().top
+      const elementRect = el.getBoundingClientRect().top
+      window.scrollTo({
+        top: elementRect - bodyRect - offset,
+        behavior: 'smooth',
+      })
+    }
+  }
 
   return (
     <>
@@ -129,7 +187,7 @@ function ProjectTimeline() {
 
           {/* Portfolio Item Cards */}
           <div className="portfolio-grid">
-            {projects.map((project) => {
+            {visibleProjects.map((project) => {
               const techs = Array.isArray(project.technologies)
                 ? project.technologies
                 : typeof project.technologies === 'string'
@@ -218,6 +276,54 @@ function ProjectTimeline() {
               )
             })}
           </div>
+
+          {/* Projects Pagination Component */}
+          {totalPages > 1 && (
+            <div className="portfolio-pagination" role="navigation" aria-label="Projects pagination">
+              <div className="pagination-info">
+                <span>
+                  Showing {startIndex + 1}–{Math.min(startIndex + PROJECTS_PER_PAGE, projects.length)} of {projects.length} Projects
+                </span>
+              </div>
+
+              <div className="pagination-controls">
+                <button
+                  type="button"
+                  className="pagination-btn pagination-prev"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  aria-label="Previous page"
+                >
+                  <i className="fas fa-chevron-left"></i> Previous
+                </button>
+
+                <div className="pagination-pages">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                    <button
+                      key={pageNum}
+                      type="button"
+                      className={`pagination-page-btn ${currentPage === pageNum ? 'active' : ''}`}
+                      onClick={() => handlePageChange(pageNum)}
+                      aria-label={`Page ${pageNum}`}
+                      aria-current={currentPage === pageNum ? 'page' : undefined}
+                    >
+                      {pageNum}
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  type="button"
+                  className="pagination-btn pagination-next"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  aria-label="Next page"
+                >
+                  Next <i className="fas fa-chevron-right"></i>
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* View Profile on GitHub */}
           <div className="portfolio-more text-center">
