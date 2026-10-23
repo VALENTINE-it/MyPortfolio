@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { contactService } from '../services/contactService'
 import './ContactForm.css'
+
+const WEB3FORMS_ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || '30524dfa-1112-48f8-8be2-804845413636'
 
 function ContactForm() {
   const [formData, setFormData] = useState({
@@ -68,30 +69,40 @@ function ContactForm() {
     }
 
     setIsSubmitting(true)
+
     try {
-      const response = await contactService.submitContact({
-        name: formData.name.trim(),
-        email: formData.email.trim(),
-        subject: formData.subject.trim(),
-        message: formData.message.trim(),
+      const submissionData = new FormData()
+      submissionData.append('access_key', WEB3FORMS_ACCESS_KEY)
+      submissionData.append('name', formData.name.trim())
+      submissionData.append('email', formData.email.trim())
+      submissionData.append('subject', formData.subject.trim())
+      submissionData.append('message', formData.message.trim())
+      submissionData.append('from_name', 'Portfolio Contact Form')
+
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: submissionData,
       })
 
-      setSubmitStatus({
-        success: true,
-        message: response?.message || 'Thank you! Your message has been sent successfully.',
-      })
-      setFormData({ name: '', email: '', subject: '', message: '' })
-      setErrors({})
-    } catch (err) {
-      let errorMsg = 'Failed to send message. Please try again later.'
-      if (err.status === 429) {
-        errorMsg = 'You have submitted several messages recently. Please wait a minute before trying again.'
-      } else if (err.data?.message) {
-        errorMsg = err.data.message
+      const data = await response.json()
+
+      if (data.success) {
+        setSubmitStatus({
+          success: true,
+          message: data.message || 'Thank you! Your message has been sent successfully.',
+        })
+        setFormData({ name: '', email: '', subject: '', message: '' })
+        setErrors({})
+      } else {
+        setSubmitStatus({
+          success: false,
+          message: data.message || 'Failed to send message. Please try again later.',
+        })
       }
+    } catch {
       setSubmitStatus({
         success: false,
-        message: errorMsg,
+        message: 'Network error: Unable to reach the server. Please check your connection and try again.',
       })
     } finally {
       setIsSubmitting(false)
@@ -218,6 +229,7 @@ function ContactForm() {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="contact-form" noValidate>
+                  <input type="hidden" name="access_key" value={WEB3FORMS_ACCESS_KEY} />
                   {submitStatus?.success === false && (
                     <div className="contact-alert-error" role="alert">
                       <i className="fas fa-exclamation-triangle"></i> {submitStatus.message}
@@ -235,6 +247,7 @@ function ContactForm() {
                       className={`form-control ${errors.name ? 'is-invalid' : ''}`}
                       disabled={isSubmitting}
                       aria-label="Your Name"
+                      required
                     />
                     {errors.name && <span className="help-block">{errors.name}</span>}
                   </div>
@@ -250,6 +263,7 @@ function ContactForm() {
                       className={`form-control ${errors.email ? 'is-invalid' : ''}`}
                       disabled={isSubmitting}
                       aria-label="Your Email"
+                      required
                     />
                     {errors.email && <span className="help-block">{errors.email}</span>}
                   </div>
@@ -265,6 +279,7 @@ function ContactForm() {
                       className={`form-control ${errors.subject ? 'is-invalid' : ''}`}
                       disabled={isSubmitting}
                       aria-label="Subject"
+                      required
                     />
                     {errors.subject && <span className="help-block">{errors.subject}</span>}
                   </div>
@@ -280,6 +295,7 @@ function ContactForm() {
                       className={`form-control ${errors.message ? 'is-invalid' : ''}`}
                       disabled={isSubmitting}
                       aria-label="Message"
+                      required
                     />
                     {errors.message && <span className="help-block">{errors.message}</span>}
                   </div>
