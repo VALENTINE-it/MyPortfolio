@@ -236,3 +236,81 @@ func (r *ProjectRepository) Delete(ctx context.Context, id int64) error {
 
 	return nil
 }
+
+// GetProjectsPaginated retrieves projects with limit and offset, returning projects and total count.
+func (r *ProjectRepository) GetProjectsPaginated(ctx context.Context, limit, offset int) ([]models.Project, int, error) {
+	var total int
+	countQuery := `SELECT COUNT(*) FROM projects`
+	if err := r.db.QueryRowContext(ctx, countQuery).Scan(&total); err != nil {
+		return nil, 0, fmt.Errorf("project_repo: failed to count projects: %w", err)
+	}
+
+	query := `
+		SELECT id, title, description, category, year, technologies, image, github_url, live_url, created_at
+		FROM projects
+		ORDER BY year DESC, id ASC
+		LIMIT ? OFFSET ?
+	`
+	rows, err := r.db.QueryContext(ctx, query, limit, offset)
+	if err != nil {
+		return nil, 0, fmt.Errorf("project_repo: failed to query paginated projects: %w", err)
+	}
+	defer rows.Close()
+
+	var projects []models.Project
+	for rows.Next() {
+		var p models.Project
+		var techJSON string
+		var githubURL, liveURL sql.NullString
+		var createdAtStr sql.NullString
+
+		err := rows.Scan(
+			&p.ID,
+			&p.Title,
+			&p.Description,
+			&p.Category,
+			&p.Year,
+			&techJSON,
+			&p.Image,
+			&githubURL,
+			&liveURL,
+			&createdAtStr,
+		)
+		if err != nil {
+			return nil, 0, fmt.Errorf("project_repo: failed to scan project: %w", err)
+		}
+
+		if githubURL.Valid {
+			p.GithubURL = githubURL.String
+		}
+		if liveURL.Valid {
+			p.LiveURL = liveURL.String
+		}
+
+		if techJSON != "" {
+			if err := json.Unmarshal([]byte(techJSON), &p.Technologies); err != nil {
+				p.Technologies = []string{}
+			}
+		} else {
+			p.Technologies = []string{}
+		}
+
+		if createdAtStr.Valid {
+			if t, err := time.Parse("2006-01-02 15:04:05", createdAtStr.String); err == nil {
+				p.CreatedAt = t
+			}
+		}
+
+		projects = append(projects, p)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, 0, fmt.Errorf("project_repo: error iterating project rows: %w", err)
+	}
+
+	if projects == nil {
+		projects = []models.Project{}
+	}
+
+	return projects, total, nil
+}

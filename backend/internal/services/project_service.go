@@ -128,3 +128,18 @@ func (s *ProjectService) validateProjectInput(in *models.ProjectInput) error {
 	}
 	return nil
 }
+
+// GetProjectsPaginated validates pagination arguments and retrieves paginated projects.
+func (s *ProjectService) GetProjectsPaginated(ctx context.Context, page, limit int) ([]models.Project, int, error) {
+	if page < 1 {
+		page = 1
+	}
+	if limit < 1 {
+		limit = 3
+	}
+	if limit > 50 {
+		limit = 50
+	}
+	offset := (page - 1) * limit
+	return s.repo.GetProjectsPaginated(ctx, limit, offset)
+}

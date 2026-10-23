@@ -161,6 +161,36 @@ func seedInitialData(ctx context.Context, db *sql.DB) error {
 				GithubURL:    "https://github.com/VALENTINE-it/MyPortfolio",
 				LiveURL:      "",
 			},
+			{
+				Title:        "Career Guidance Platform",
+				Description:  "An interactive educational advisory application helping secondary students in Western Kenya discover tertiary courses and career pathways matching their academic strengths.",
+				Category:     "Full-Stack EdTech System",
+				Year:         2026,
+				Technologies: `["React", "JavaScript", "Go", "SQLite", "REST APIs", "Analytics"]`,
+				Image:        "/images/projects/career-guidance.svg",
+				GithubURL:    "https://github.com/VALENTINE-it/career-guidance",
+				LiveURL:      "",
+			},
+			{
+				Title:        "HopeReach Community Platform",
+				Description:  "A comprehensive digital NGO operations and outreach platform delivering real-time meal tracking (500k+ meals served), housing intake logs, and volunteer mobilization.",
+				Category:     "Full-Stack Web Application",
+				Year:         2026,
+				Technologies: `["React", "Go", "SQLite", "REST APIs", "UI/UX", "Community Platforms"]`,
+				Image:        "/images/hopereach.jpeg",
+				GithubURL:    "https://github.com/VALENTINE-it/hope-reach",
+				LiveURL:      "https://hope-reach-project-ngo-gdq7.onrender.com/",
+			},
+			{
+				Title:        "Valentine Omondi Developer Portfolio",
+				Description:  "A high-performance editorial developer portfolio showcasing architectural systems, real-time telemetry projects, and full-stack engineering achievements with Go and React.",
+				Category:     "Portfolio & System Showcase",
+				Year:         2026,
+				Technologies: `["React", "Vite", "JavaScript", "Go", "REST APIs", "SQLite"]`,
+				Image:        "/images/projects/portfolio.svg",
+				GithubURL:    "https://github.com/VALENTINE-it/portfolio",
+				LiveURL:      "",
+			},
 		}
 
 		stmt, err := db.Prepare(`

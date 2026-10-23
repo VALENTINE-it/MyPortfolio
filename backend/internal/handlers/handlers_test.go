@@ -136,6 +136,56 @@ func TestProjectHandler_GetAll(t *testing.T) {
 	}
 }
 
+func TestProjectHandler_Pagination(t *testing.T) {
+	projH, _, _, _, _, cleanup := setupTestEnvironment(t)
+	defer cleanup()
+
+	// 1. Page 1, Limit 2
+	req := httptest.NewRequest(http.MethodGet, "/api/projects?page=1&limit=2", nil)
+	rr := httptest.NewRecorder()
+	projH.HandleProjects(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", rr.Code)
+	}
+
+	var resp struct {
+		Success    bool             `json:"success"`
+		Data       []models.Project `json:"data"`
+		Page       int              `json:"page"`
+		Limit      int              `json:"limit"`
+		Total      int              `json:"total"`
+		TotalPages int              `json:"total_pages"`
+	}
+	if err := json.NewDecoder(rr.Body).Decode(&resp); err != nil {
+		t.Fatalf("failed to decode response: %v", err)
+	}
+
+	if !resp.Success {
+		t.Errorf("expected success true")
+	}
+	if len(resp.Data) != 2 {
+		t.Errorf("expected 2 projects, got %d", len(resp.Data))
+	}
+	if resp.Page != 1 || resp.Limit != 2 {
+		t.Errorf("expected page 1 limit 2, got page %d limit %d", resp.Page, resp.Limit)
+	}
+	if resp.Total < 3 {
+		t.Errorf("expected total >= 3, got %d", resp.Total)
+	}
+	if resp.TotalPages < 2 {
+		t.Errorf("expected total_pages >= 2, got %d", resp.TotalPages)
+	}
+
+	// 2. Invalid page param
+	reqBadPage := httptest.NewRequest(http.MethodGet, "/api/projects?page=abc", nil)
+	rrBadPage := httptest.NewRecorder()
+	projH.HandleProjects(rrBadPage, reqBadPage)
+	if rrBadPage.Code != http.StatusBadRequest {
+		t.Errorf("expected status 400 for bad page param, got %d", rrBadPage.Code)
+	}
+}
+
 func TestProjectHandler_GetByID(t *testing.T) {
 	projH, _, _, _, _, cleanup := setupTestEnvironment(t)
 	defer cleanup()

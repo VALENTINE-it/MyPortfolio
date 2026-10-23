@@ -63,6 +63,58 @@ func (h *ProjectHandler) HandleProjects(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	// Check query params for pagination
+	pageStr := r.URL.Query().Get("page")
+	limitStr := r.URL.Query().Get("limit")
+
+	if pageStr != "" || limitStr != "" {
+		page := 1
+		limit := 3
+		if pageStr != "" {
+			if p, err := strconv.Atoi(pageStr); err == nil && p > 0 {
+				page = p
+			} else {
+				utils.SendError(w, http.StatusBadRequest, utils.CodeBadRequest, "Invalid page parameter: must be a positive integer")
+				return
+			}
+		}
+		if limitStr != "" {
+			if l, err := strconv.Atoi(limitStr); err == nil && l > 0 {
+				limit = l
+			} else {
+				utils.SendError(w, http.StatusBadRequest, utils.CodeBadRequest, "Invalid limit parameter: must be a positive integer")
+				return
+			}
+		}
+
+		projects, total, err := h.service.GetProjectsPaginated(r.Context(), page, limit)
+		if err != nil {
+			slog.Error("Error fetching paginated projects", "error", err)
+			utils.SendError(w, http.StatusInternalServerError, utils.CodeInternalServerError, "Unable to retrieve projects list")
+			return
+		}
+
+		totalPages := 1
+		if limit > 0 {
+			totalPages = (total + limit - 1) / limit
+		}
+		if totalPages == 0 {
+			totalPages = 1
+		}
+
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			"success":     true,
+			"data":        projects,
+			"page":        page,
+			"limit":       limit,
+			"total":       total,
+			"total_pages": totalPages,
+		})
+		return
+	}
+
 	// GET all projects
 	cacheKey := "projects:all"
 	if h.cache != nil {
@@ -81,7 +133,6 @@ func (h *ProjectHandler) HandleProjects(w http.ResponseWriter, r *http.Request) 
 			return
 		}
 	}
-
 	projects, err := h.service.GetAllProjects(r.Context())
 	if err != nil {
 		slog.Error("Error fetching all projects", "error", err)
