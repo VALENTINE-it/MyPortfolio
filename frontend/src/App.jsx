@@ -6,12 +6,14 @@ import Skills from './components/Skills'
 import Quotes from './components/Quotes'
 import ContactForm from './components/ContactForm'
 import Footer from './components/Footer'
+import PagePagination from './components/PagePagination'
 import './App.css'
 
 function App() {
   return (
     <div className="app-container">
       <Navbar />
+      <PagePagination />
       <main>
         <Hero />
         <About />

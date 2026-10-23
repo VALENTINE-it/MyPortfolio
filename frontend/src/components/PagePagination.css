@@ -1,0 +1,223 @@
+/* ==========================================================================
+   Page Pagination Component CSS
+   Floating side pagination indicator for section-by-section website navigation
+   ========================================================================== */
+
+.page-pagination {
+  position: fixed;
+  right: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 990;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 30px;
+  padding: 10px 6px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+}
+
+.page-pagination.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Arrow Navigation */
+.page-pagination-arrow {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: #555555;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin: 2px 0;
+}
+
+.page-pagination-arrow:hover:not(:disabled) {
+  background: #EF233C;
+  color: #ffffff;
+}
+
+.page-pagination-arrow:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+/* Page List */
+.page-pagination-list {
+  list-style: none;
+  margin: 6px 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.page-pagination-item {
+  position: relative;
+}
+
+.page-pagination-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  padding: 0;
+  font-family: inherit;
+}
+
+/* Small Indicator Dot */
+.page-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #bbbbbb;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: block;
+}
+
+.page-number {
+  position: absolute;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: #ffffff;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: all 0.2s ease;
+}
+
+/* Active State */
+.page-pagination-btn.active {
+  background: #EF233C;
+  border-color: #EF233C;
+  box-shadow: 0 2px 8px rgba(239, 35, 60, 0.35);
+}
+
+.page-pagination-btn.active .page-dot {
+  opacity: 0;
+  transform: scale(0);
+}
+
+.page-pagination-btn.active .page-number {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Hover State */
+.page-pagination-btn:hover:not(.active) {
+  background: rgba(239, 35, 60, 0.1);
+}
+
+.page-pagination-btn:hover:not(.active) .page-dot {
+  background: #EF233C;
+  transform: scale(1.3);
+}
+
+/* Tooltip on Hover */
+.page-tooltip {
+  position: absolute;
+  right: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%) translateX(6px);
+  background: #222222;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 5px 10px;
+  border-radius: 3px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.page-tooltip::after {
+  content: '';
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 4px;
+  border-style: solid;
+  border-color: transparent transparent transparent #222222;
+}
+
+.page-pagination-btn:hover .page-tooltip,
+.page-pagination-btn:focus-visible .page-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-50%) translateX(0);
+}
+
+/* Bottom counter badge */
+.page-pagination-counter {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid #eeeeee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #888888;
+  letter-spacing: 0.5px;
+}
+
+.page-counter-current {
+  color: #EF233C;
+}
+
+.page-counter-divider {
+  margin: 0 2px;
+  color: #cccccc;
+}
+
+/* Accessible focus outlines */
+.page-pagination-btn:focus-visible,
+.page-pagination-arrow:focus-visible {
+  outline: 2px solid #EF233C;
+  outline-offset: 2px;
+}
+
+/* Responsive Hide on small mobile to avoid blocking content */
+@media (max-width: 767.98px) {
+  .page-pagination {
+    right: 8px;
+    padding: 6px 4px;
+    transform: translateY(-50%) scale(0.9);
+  }
+  
+  .page-tooltip {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-pagination {
+    display: none;
+  }
+}
