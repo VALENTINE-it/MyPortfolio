@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import './Quotes.css'
+import { useState, useEffect } from 'react';
+import './Quotes.css';
 
 const QUOTES = [
   {
@@ -20,35 +20,43 @@ const QUOTES = [
     role: 'Software Architecture Author',
     image: '/images/profile.svg',
   },
-]
+];
 
 export default function Quotes() {
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % QUOTES.length)
-    }, 6000)
-    return () => clearInterval(timer)
-  }, [])
+      setCurrentIndex((prev) => (prev + 1) % QUOTES.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, []);
 
-  const current = QUOTES[currentIndex]
+  const current = QUOTES[currentIndex];
 
   return (
-    <div className="testimonial" id="review">
+    <section className="testimonial" id="review" aria-label="Engineering Principles">
       <div className="container">
-        <div className="testimonial-icon">
+        <h2 className="sr-only">Engineering Principles</h2>
+        <div className="testimonial-icon" aria-hidden="true">
           <i className="fa fa-quote-left"></i>
         </div>
 
         <div className="testimonial-item">
           <div className="testimonial-img">
-            <img src={current.image} alt={current.author} />
+            <img
+              src={current.image}
+              alt=""
+              width={110}
+              height={110}
+              loading="lazy"
+              decoding="async"
+            />
           </div>
           <div className="testimonial-text">
             <p>{current.quote}</p>
             <h3>{current.author}</h3>
-            <h4>{current.role}</h4>
+            <p className="testimonial-role">{current.role}</p>
           </div>
         </div>
 
@@ -65,6 +73,6 @@ export default function Quotes() {
           ))}
         </div>
       </div>
-    </div>
-  )
+    </section>
+  );
 }

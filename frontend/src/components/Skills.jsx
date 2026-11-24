@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react'
-import { skillService } from '../services/skillService'
-import './Skills.css'
+import { useState, useEffect, useCallback } from 'react';
+import { skillService } from '../services/skillService';
+import './Skills.css';
 
 const SKILL_ICONS = {
   blockchain: 'fas fa-cubes',
@@ -10,7 +10,7 @@ const SKILL_ICONS = {
   tools: 'fas fa-tools',
   networking: 'fas fa-network-wired',
   other: 'fas fa-brain',
-}
+};
 
 const FALLBACK_SKILLS = [
   {
@@ -49,47 +49,53 @@ const FALLBACK_SKILLS = [
     description: 'Linux Environments, Git, GitHub Workflows, VS Code, CI/CD Fundamentals',
     skills: ['Linux', 'Git', 'GitHub', 'VS Code', 'Debugging'],
   },
-]
+];
 
-function Skills() {
-  const [categories, setCategories] = useState(FALLBACK_SKILLS)
+function Skills({ isStandalonePage = false, onNavigate }) {
+  const [categories, setCategories] = useState(FALLBACK_SKILLS);
 
   const fetchSkills = useCallback(async () => {
     try {
-      const data = await skillService.getSkills({ grouped: true })
+      const data = await skillService.getSkills({ grouped: true });
       if (Array.isArray(data) && data.length > 0) {
-        // Map icons to categories
         const enriched = data.map((item) => {
-          const lower = (item.category || '').toLowerCase()
-          let icon = SKILL_ICONS.other
-          if (lower.includes('block') || lower.includes('chain')) icon = SKILL_ICONS.blockchain
-          else if (lower.includes('front')) icon = SKILL_ICONS.frontend
-          else if (lower.includes('back')) icon = SKILL_ICONS.backend
-          else if (lower.includes('network')) icon = SKILL_ICONS.networking
-          else if (lower.includes('data')) icon = SKILL_ICONS.databases
-          else if (lower.includes('tool')) icon = SKILL_ICONS.tools
+          const lower = (item.category || '').toLowerCase();
+          let icon = SKILL_ICONS.other;
+          if (lower.includes('block') || lower.includes('chain')) icon = SKILL_ICONS.blockchain;
+          else if (lower.includes('front')) icon = SKILL_ICONS.frontend;
+          else if (lower.includes('back')) icon = SKILL_ICONS.backend;
+          else if (lower.includes('network')) icon = SKILL_ICONS.networking;
+          else if (lower.includes('data')) icon = SKILL_ICONS.databases;
+          else if (lower.includes('tool')) icon = SKILL_ICONS.tools;
 
           return {
             ...item,
             icon,
             description: item.skills ? item.skills.join(', ') : '',
-          }
-        })
-        setCategories(enriched)
+          };
+        });
+        setCategories(enriched);
       } else {
-        setCategories(FALLBACK_SKILLS)
+        setCategories(FALLBACK_SKILLS);
       }
     } catch {
-      setCategories(FALLBACK_SKILLS)
+      setCategories(FALLBACK_SKILLS);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    fetchSkills()
-  }, [fetchSkills])
+    fetchSkills();
+  }, [fetchSkills]);
+
+  const handleLinkClick = (e, path) => {
+    if (typeof onNavigate === 'function') {
+      e.preventDefault();
+      onNavigate(path);
+    }
+  };
 
   return (
-    <div className="service" id="skills">
+    <section className="service" id="skills" aria-label="Technical Skills">
       <div className="container">
         <div className="section-header text-center">
           <p>What I Do?</p>
@@ -98,20 +104,31 @@ function Skills() {
 
         <div className="service-grid">
           {categories.map((cat, idx) => (
-            <div key={cat.category || idx} className="service-item">
-              <div className="service-icon">
+            <article key={cat.category || idx} className="service-item">
+              <div className="service-icon" aria-hidden="true">
                 <i className={cat.icon || 'fas fa-code'}></i>
               </div>
               <div className="service-text">
                 <h3>{cat.category}</h3>
                 <p>{cat.description}</p>
               </div>
-            </div>
+            </article>
           ))}
         </div>
+
+        {isStandalonePage && (
+          <div className="page-cross-links">
+            <a href="/projects" className="btn" onClick={(e) => handleLinkClick(e, '/projects')}>
+              See Skills in Action
+            </a>
+            <a href="/contact" className="btn btn-secondary" onClick={(e) => handleLinkClick(e, '/contact')}>
+              Hire or Collaborate
+            </a>
+          </div>
+        )}
       </div>
-    </div>
-  )
+    </section>
+  );
 }
 
-export default Skills
+export default Skills;

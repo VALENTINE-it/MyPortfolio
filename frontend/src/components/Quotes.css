@@ -75,7 +75,8 @@
   margin-bottom: 4px;
 }
 
-.testimonial .testimonial-text h4 {
+.testimonial .testimonial-text h4,
+.testimonial .testimonial-text .testimonial-role {
   color: #797979;
   font-size: 13.5px;
   margin-bottom: 0;
