@@ -165,14 +165,16 @@
   image-rendering: high-quality;
 }
 
-.experience .timeline .timeline-text h2 {
+.experience .timeline .timeline-text h2,
+.experience .timeline .timeline-text h3 {
   margin: 0 0 6px 0;
   font-size: 20px;
   font-weight: 700;
   color: #414141;
 }
 
-.experience .timeline .timeline-text h4 {
+.experience .timeline .timeline-text h4,
+.experience .timeline .timeline-text .timeline-role {
   margin: 0 0 12px 0;
   font-size: 14px;
   font-style: italic;

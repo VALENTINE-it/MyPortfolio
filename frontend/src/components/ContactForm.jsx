@@ -1,7 +1,7 @@
-import { useState } from 'react'
-import './ContactForm.css'
+import { useState } from 'react';
+import './ContactForm.css';
 
-const WEB3FORMS_ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || '30524dfa-1112-48f8-8be2-804845413636'
+const WEB3FORMS_ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || '30524dfa-1112-48f8-8be2-804845413636';
 
 function ContactForm() {
   const [formData, setFormData] = useState({
@@ -9,114 +9,114 @@ function ContactForm() {
     email: '',
     subject: '',
     message: '',
-  })
+  });
 
-  const [errors, setErrors] = useState({})
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitStatus, setSubmitStatus] = useState(null) // { success: boolean, message: string }
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null);
 
   const validate = () => {
-    const errs = {}
-    const trimmedName = formData.name.trim()
-    const trimmedEmail = formData.email.trim()
-    const trimmedSubject = formData.subject.trim()
-    const trimmedMessage = formData.message.trim()
+    const errs = {};
+    const trimmedName = formData.name.trim();
+    const trimmedEmail = formData.email.trim();
+    const trimmedSubject = formData.subject.trim();
+    const trimmedMessage = formData.message.trim();
 
     if (!trimmedName) {
-      errs.name = 'Please provide your name.'
+      errs.name = 'Please provide your name.';
     } else if (trimmedName.length > 100) {
-      errs.name = 'Name cannot exceed 100 characters.'
+      errs.name = 'Name cannot exceed 100 characters.';
     }
 
     if (!trimmedEmail) {
-      errs.email = 'Please provide your email address.'
+      errs.email = 'Please provide your email address.';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
-      errs.email = 'Please enter a valid email address.'
+      errs.email = 'Please enter a valid email address.';
     }
 
     if (!trimmedSubject) {
-      errs.subject = 'Please enter a subject.'
+      errs.subject = 'Please enter a subject.';
     } else if (trimmedSubject.length > 200) {
-      errs.subject = 'Subject cannot exceed 200 characters.'
+      errs.subject = 'Subject cannot exceed 200 characters.';
     }
 
     if (!trimmedMessage) {
-      errs.message = 'Please write your message.'
+      errs.message = 'Please write your message.';
     } else if (trimmedMessage.length < 5) {
-      errs.message = 'Message must be at least 5 characters long.'
+      errs.message = 'Message must be at least 5 characters long.';
     } else if (trimmedMessage.length > 5000) {
-      errs.message = 'Message cannot exceed 5000 characters.'
+      errs.message = 'Message cannot exceed 5000 characters.';
     }
 
-    setErrors(errs)
-    return Object.keys(errs).length === 0
-  }
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
 
   const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: null }))
+      setErrors((prev) => ({ ...prev, [name]: null }));
     }
-  }
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setSubmitStatus(null)
+    e.preventDefault();
+    setSubmitStatus(null);
 
     if (!validate()) {
-      return
+      return;
     }
 
-    setIsSubmitting(true)
+    setIsSubmitting(true);
 
     try {
-      const submissionData = new FormData()
-      submissionData.append('access_key', WEB3FORMS_ACCESS_KEY)
-      submissionData.append('name', formData.name.trim())
-      submissionData.append('email', formData.email.trim())
-      submissionData.append('subject', formData.subject.trim())
-      submissionData.append('message', formData.message.trim())
-      submissionData.append('from_name', 'Portfolio Contact Form')
+      const submissionData = new FormData();
+      submissionData.append('access_key', WEB3FORMS_ACCESS_KEY);
+      submissionData.append('name', formData.name.trim());
+      submissionData.append('email', formData.email.trim());
+      submissionData.append('subject', formData.subject.trim());
+      submissionData.append('message', formData.message.trim());
+      submissionData.append('from_name', 'Portfolio Contact Form');
 
       const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         body: submissionData,
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (data.success) {
         setSubmitStatus({
           success: true,
           message: data.message || 'Thank you! Your message has been sent successfully.',
-        })
-        setFormData({ name: '', email: '', subject: '', message: '' })
-        setErrors({})
+        });
+        setFormData({ name: '', email: '', subject: '', message: '' });
+        setErrors({});
       } else {
         setSubmitStatus({
           success: false,
           message: data.message || 'Failed to send message. Please try again later.',
-        })
+        });
       }
     } catch {
       setSubmitStatus({
         success: false,
         message: 'Network error: Unable to reach the server. Please check your connection and try again.',
-      })
+      });
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   const handleReset = () => {
-    setSubmitStatus(null)
-    setFormData({ name: '', email: '', subject: '', message: '' })
-    setErrors({})
-  }
+    setSubmitStatus(null);
+    setFormData({ name: '', email: '', subject: '', message: '' });
+    setErrors({});
+  };
 
   return (
-    <div className="contact" id="contact">
+    <section className="contact" id="contact" aria-label="Contact Information and Form">
       <div className="container">
         {/* Section Header */}
         <div className="section-header text-center">
@@ -136,7 +136,7 @@ function ContactForm() {
 
               <div className="contact-detail-items">
                 <div className="contact-detail-item">
-                  <div className="contact-detail-icon">
+                  <div className="contact-detail-icon" aria-hidden="true">
                     <i className="fas fa-map-marker-alt"></i>
                   </div>
                   <div className="contact-detail-text">
@@ -146,7 +146,7 @@ function ContactForm() {
                 </div>
 
                 <div className="contact-detail-item">
-                  <div className="contact-detail-icon">
+                  <div className="contact-detail-icon" aria-hidden="true">
                     <i className="fas fa-envelope"></i>
                   </div>
                   <div className="contact-detail-text">
@@ -158,7 +158,7 @@ function ContactForm() {
                 </div>
 
                 <div className="contact-detail-item">
-                  <div className="contact-detail-icon">
+                  <div className="contact-detail-icon" aria-hidden="true">
                     <i className="fab fa-whatsapp"></i>
                   </div>
                   <div className="contact-detail-text">
@@ -177,7 +177,7 @@ function ContactForm() {
                 </div>
 
                 <div className="contact-detail-item">
-                  <div className="contact-detail-icon">
+                  <div className="contact-detail-icon" aria-hidden="true">
                     <i className="fab fa-github"></i>
                   </div>
                   <div className="contact-detail-text">
@@ -195,7 +195,7 @@ function ContactForm() {
                 </div>
 
                 <div className="contact-detail-item">
-                  <div className="contact-detail-icon">
+                  <div className="contact-detail-icon" aria-hidden="true">
                     <i className="fab fa-linkedin-in"></i>
                   </div>
                   <div className="contact-detail-text">
@@ -220,10 +220,10 @@ function ContactForm() {
             <div className="contact-form-wrapper">
               {submitStatus?.success ? (
                 <div className="contact-success" role="alert">
-                  <i className="fas fa-check-circle success-icon"></i>
+                  <i className="fas fa-check-circle success-icon" aria-hidden="true"></i>
                   <h3>Message Sent Successfully!</h3>
                   <p>{submitStatus.message}</p>
-                  <button onClick={handleReset} className="btn">
+                  <button type="button" onClick={handleReset} className="btn">
                     Send Another Message
                   </button>
                 </div>
@@ -232,7 +232,7 @@ function ContactForm() {
                   <input type="hidden" name="access_key" value={WEB3FORMS_ACCESS_KEY} />
                   {submitStatus?.success === false && (
                     <div className="contact-alert-error" role="alert">
-                      <i className="fas fa-exclamation-triangle"></i> {submitStatus.message}
+                      <i className="fas fa-exclamation-triangle" aria-hidden="true"></i> {submitStatus.message}
                     </div>
                   )}
 
@@ -315,8 +315,8 @@ function ContactForm() {
           </div>
         </div>
       </div>
-    </div>
-  )
+    </section>
+  );
 }
 
-export default ContactForm
+export default ContactForm;

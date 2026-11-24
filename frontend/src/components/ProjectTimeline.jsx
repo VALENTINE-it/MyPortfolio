@@ -1,9 +1,11 @@
-import { useState, useEffect, useCallback } from 'react'
-import ProjectItem from './ProjectItem'
-import { projectService } from '../services/projectService'
-import './Projects.css'
+import { useState, useEffect, useCallback } from 'react';
+import ProjectItem from './ProjectItem';
+import OptimizedImage from './OptimizedImage';
+import { projectService } from '../services/projectService';
+import { PORTFOLIO_PROJECTS } from '../utils/structuredData';
+import './Projects.css';
 
-// Organizations under Accomplishments (managed one by one)
+// Organizations under Accomplishments
 const ORGANISATIONS = [
   {
     id: 'hopereach',
@@ -25,7 +27,7 @@ const ORGANISATIONS = [
     description:
       'Afrinit is a technology company delivering end-to-end software development and comprehensive tech-related solutions, specializing primarily in building robust custom software, responsive web applications, and digital systems.',
     technologies: ['Software Development', 'Full-Stack Engineering', 'Web Applications', 'Tech Solutions'],
-    liveUrl: '#',
+    liveUrl: '',
   },
   {
     id: 'zone01',
@@ -38,127 +40,71 @@ const ORGANISATIONS = [
     technologies: ['Software Engineering', 'Full-Stack Development', 'Go', 'JavaScript', 'System Architecture', 'Peer-to-Peer Learning'],
     liveUrl: 'https://www.zone01kisumu.ke/',
   },
-]
+];
 
-const FALLBACK_PROJECTS = [
-  {
-    id: 1,
-    title: 'Safeguarding Reporting Platform',
-    description:
-      'A secure, confidential reporting platform designed for anonymous safeguarding disclosures, encrypted submission workflows, and case audit records.',
-    category: 'Full-Stack Web Application',
-    year: 2026,
-    technologies: ['React', 'JavaScript', 'Go', 'SQLite', 'REST APIs', 'Security'],
-    image: '/images/projects/safeguarding.png',
-    githubUrl: 'https://github.com/VALENTINE-it/safeguarding-project',
-    liveUrl: 'https://safeguarding-app-1.onrender.com/',
-  },
-  {
-    id: 2,
-    title: 'Nemo',
-    description:
-      'An award-winning IoT security system recognized at the Kijani Space Hackathon, engineered to secure, monitor, and protect fish cages in Lake Victoria through real-time telemetry and intrusion alerts.',
-    category: 'IoT & Embedded Security',
-    year: 2026,
-    technologies: ['IoT', 'Embedded Systems', 'Sensors', 'Telemetry', 'Hardware Security', 'Go'],
-    image: '/images/projects/fish-cage-iot.jpeg',
-    githubUrl: 'https://github.com/nyabokegrace/nemo',
-    liveUrl: '',
-  },
-  {
-    id: 3,
-    title: 'Anga Guard',
-    description:
-      'A decentralized dMRV oracle and SME ESG platform empowering Western Kenya smallholders with verifiable biochar carbon removal credits compliant with Kenya National Carbon Registry.',
-    category: 'Web3 & Climate Tech Oracle',
-    year: 2026,
-    technologies: ['dMRV Oracle', 'Web3', 'React', 'Go', 'IoT Telemetry', 'Smart Contracts', 'ESG Analytics'],
-    image: '/images/projects/angaguard.png',
-    githubUrl: 'https://github.com/ClayMichael2004/angaguard',
-    liveUrl: 'https://angaguard-d96o.onrender.com/',
-  },
-  {
-    id: 4,
-    title: 'Career Guidance Platform',
-    description:
-      'An interactive educational advisory application helping secondary students in Western Kenya discover tertiary courses and career pathways matching their academic strengths.',
-    category: 'Full-Stack EdTech System',
-    year: 2026,
-    technologies: ['React', 'JavaScript', 'Go', 'SQLite', 'REST APIs', 'Analytics'],
-    image: '/images/projects/career-guidance.svg',
-    githubUrl: 'https://github.com/VALENTINE-it/career-guidance',
-    liveUrl: '',
-  },
-  {
-    id: 5,
-    title: 'HopeReach Community Platform',
-    description:
-      'A comprehensive digital NGO operations and outreach platform delivering real-time meal tracking (500k+ meals served), housing intake logs, and volunteer mobilization.',
-    category: 'Full-Stack Web Application',
-    year: 2026,
-    technologies: ['React', 'Go', 'SQLite', 'REST APIs', 'UI/UX', 'Community Platforms'],
-    image: '/images/hopereach.jpeg',
-    githubUrl: 'https://github.com/VALENTINE-it/hope-reach',
-    liveUrl: 'https://hope-reach-project-ngo-gdq7.onrender.com/',
-  },
-  {
-    id: 6,
-    title: 'Valentine Omondi Developer Portfolio',
-    description:
-      'A high-performance editorial developer portfolio showcasing architectural systems, real-time telemetry projects, and full-stack engineering achievements with Go and React.',
-    category: 'Portfolio & System Showcase',
-    year: 2026,
-    technologies: ['React', 'Vite', 'JavaScript', 'Go', 'REST APIs', 'SQLite'],
-    image: '/images/projects/portfolio.svg',
-    githubUrl: 'https://github.com/VALENTINE-it/portfolio',
-    liveUrl: '',
-  },
-]
+const PROJECT_IMAGE_DIMENSIONS = {
+  '/images/projects/safeguarding.png': { width: 1200, height: 800 },
+  '/images/projects/fish-cage-iot.jpeg': { width: 640, height: 640 },
+  '/images/projects/angaguard.png': { width: 1076, height: 711 },
+  '/images/projects/career-guidance.svg': { width: 800, height: 500 },
+  '/images/hopereach.jpeg': { width: 800, height: 791 },
+  '/images/projects/portfolio.svg': { width: 800, height: 500 },
+};
 
-const PROJECTS_PER_PAGE = 3
+const PROJECTS_PER_PAGE = 3;
 
-function ProjectTimeline() {
-  const [projects, setProjects] = useState(FALLBACK_PROJECTS)
-  const [currentPage, setCurrentPage] = useState(1)
+function ProjectTimeline({ isStandalonePage = false, onNavigate }) {
+  const [projects, setProjects] = useState(PORTFOLIO_PROJECTS);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const fetchProjects = useCallback(async () => {
     try {
-      const data = await projectService.getProjects()
+      const data = await projectService.getProjects();
       if (Array.isArray(data) && data.length > 0) {
-        setProjects(data)
+        setProjects(data);
       }
     } catch {
       // Fallback is already initialized
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    fetchProjects()
-  }, [fetchProjects])
+    fetchProjects();
+  }, [fetchProjects]);
 
-  const totalPages = Math.max(1, Math.ceil(projects.length / PROJECTS_PER_PAGE))
-  const startIndex = (currentPage - 1) * PROJECTS_PER_PAGE
-  const visibleProjects = projects.slice(startIndex, startIndex + PROJECTS_PER_PAGE)
+  const showAll = isStandalonePage;
+  const totalPages = showAll ? 1 : Math.max(1, Math.ceil(projects.length / PROJECTS_PER_PAGE));
+  const startIndex = showAll ? 0 : (currentPage - 1) * PROJECTS_PER_PAGE;
+  const visibleProjects = showAll
+    ? projects
+    : projects.slice(startIndex, startIndex + PROJECTS_PER_PAGE);
 
   const handlePageChange = (newPage) => {
-    if (newPage < 1 || newPage > totalPages || newPage === currentPage) return
-    setCurrentPage(newPage)
-    const el = document.getElementById('portfolio')
+    if (newPage < 1 || newPage > totalPages || newPage === currentPage) return;
+    setCurrentPage(newPage);
+    const el = document.getElementById('portfolio');
     if (el) {
-      const offset = 70
-      const bodyRect = document.body.getBoundingClientRect().top
-      const elementRect = el.getBoundingClientRect().top
+      const offset = 70;
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = el.getBoundingClientRect().top;
       window.scrollTo({
         top: elementRect - bodyRect - offset,
         behavior: 'smooth',
-      })
+      });
     }
-  }
+  };
+
+  const handleLinkClick = (e, path) => {
+    if (typeof onNavigate === 'function') {
+      e.preventDefault();
+      onNavigate(path);
+    }
+  };
 
   return (
     <>
       {/* 1. Accomplishments Section (#experience) — Featuring Organisations */}
-      <div className="experience" id="experience">
+      <section className="experience" id="experience" aria-label="Accomplishments and Organizations">
         <div className="container">
           <div className="section-header text-center">
             <p>Where I&apos;ve Worked &amp; Contributing</p>
@@ -175,10 +121,10 @@ function ProjectTimeline() {
             ))}
           </div>
         </div>
-      </div>
+      </section>
 
       {/* 2. Portfolio Gallery Grid (#portfolio) */}
-      <div className="portfolio" id="portfolio">
+      <section className="portfolio" id="portfolio" aria-label="Featured Software Projects">
         <div className="container">
           <div className="section-header text-center">
             <p>My Portfolio</p>
@@ -192,16 +138,23 @@ function ProjectTimeline() {
                 ? project.technologies
                 : typeof project.technologies === 'string'
                 ? JSON.parse(project.technologies || '[]')
-                : []
+                : [];
+
+              const imgSrc = project.image || '/images/projects/portfolio.svg';
+              const dims = PROJECT_IMAGE_DIMENSIONS[imgSrc] || { width: 800, height: 533 };
+              const targetUrl = project.liveUrl || project.githubUrl || 'https://github.com/VALENTINE-it';
 
               return (
-                <div key={project.id} className="portfolio-item">
+                <article key={project.id} className="portfolio-item">
                   <div className="portfolio-wrap">
                     <div className="portfolio-img">
-                      <img
-                        src={project.image || '/images/projects/portfolio.svg'}
-                        alt={project.title}
+                      <OptimizedImage
+                        src={imgSrc}
+                        alt={`${project.title} — ${project.category || 'Software project'}`}
+                        width={dims.width}
+                        height={dims.height}
                         loading="lazy"
+                        decoding="async"
                       />
                     </div>
                     <div className="portfolio-text">
@@ -213,8 +166,8 @@ function ProjectTimeline() {
                       </div>
                       <a
                         className="btn"
-                        href={project.liveUrl || project.githubUrl || '#'}
-                        target={project.liveUrl || project.githubUrl ? '_blank' : undefined}
+                        href={targetUrl}
+                        target="_blank"
                         rel="noopener noreferrer"
                         title="View Details"
                         aria-label={`View ${project.title}`}
@@ -233,7 +186,7 @@ function ProjectTimeline() {
                           <span className="portfolio-overlay-year">{project.year}</span>
                         )}
                       </div>
-                      <h3 className="portfolio-overlay-title">{project.title}</h3>
+                      <h4 className="portfolio-overlay-title">{project.title}</h4>
                       <p className="portfolio-overlay-desc">{project.description}</p>
 
                       {techs.length > 0 && (
@@ -255,7 +208,7 @@ function ProjectTimeline() {
                             className="btn btn-sm"
                             aria-label={`Live demo for ${project.title}`}
                           >
-                            Live Site <i className="fas fa-external-link-alt" style={{ marginLeft: 5 }}></i>
+                            Live Site <i className="fas fa-external-link-alt" aria-hidden="true" style={{ marginLeft: 5 }}></i>
                           </a>
                         )}
                         {project.githubUrl && (
@@ -266,19 +219,19 @@ function ProjectTimeline() {
                             className="btn btn-secondary btn-sm"
                             aria-label={`GitHub repo for ${project.title}`}
                           >
-                            GitHub <i className="fab fa-github" style={{ marginLeft: 5 }}></i>
+                            GitHub <i className="fab fa-github" aria-hidden="true" style={{ marginLeft: 5 }}></i>
                           </a>
                         )}
                       </div>
                     </div>
                   </div>
-                </div>
-              )
+                </article>
+              );
             })}
           </div>
 
-          {/* Projects Pagination Component */}
-          {totalPages > 1 && (
+          {/* Projects Pagination Component (on Home view) */}
+          {!showAll && totalPages > 1 && (
             <div className="portfolio-pagination" role="navigation" aria-label="Projects pagination">
               <div className="pagination-info">
                 <span>
@@ -294,7 +247,7 @@ function ProjectTimeline() {
                   disabled={currentPage === 1}
                   aria-label="Previous page"
                 >
-                  <i className="fas fa-chevron-left"></i> Previous
+                  <i className="fas fa-chevron-left" aria-hidden="true"></i> Previous
                 </button>
 
                 <div className="pagination-pages">
@@ -319,14 +272,23 @@ function ProjectTimeline() {
                   disabled={currentPage === totalPages}
                   aria-label="Next page"
                 >
-                  Next <i className="fas fa-chevron-right"></i>
+                  Next <i className="fas fa-chevron-right" aria-hidden="true"></i>
                 </button>
               </div>
             </div>
           )}
 
-          {/* View Profile on GitHub */}
-          <div className="portfolio-more text-center">
+          {/* View Profile on GitHub & Internal Links */}
+          <div className="portfolio-more text-center" style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
+            {!isStandalonePage && (
+              <a
+                href="/projects"
+                className="btn btn-secondary"
+                onClick={(e) => handleLinkClick(e, '/projects')}
+              >
+                View All Projects
+              </a>
+            )}
             <a
               href="https://github.com/VALENTINE-it"
               target="_blank"
@@ -334,13 +296,22 @@ function ProjectTimeline() {
               className="btn btn-primary"
               aria-label="Visit my GitHub profile"
             >
-              View GitHub Profile <i className="fab fa-github" style={{ marginLeft: 8 }}></i>
+              View GitHub Profile <i className="fab fa-github" aria-hidden="true" style={{ marginLeft: 8 }}></i>
             </a>
+            {isStandalonePage && (
+              <a
+                href="/contact"
+                className="btn btn-secondary"
+                onClick={(e) => handleLinkClick(e, '/contact')}
+              >
+                Discuss a Project
+              </a>
+            )}
           </div>
         </div>
-      </div>
+      </section>
     </>
-  )
+  );
 }
 
-export default ProjectTimeline
+export default ProjectTimeline;

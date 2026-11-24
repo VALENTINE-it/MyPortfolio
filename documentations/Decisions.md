@@ -1227,3 +1227,21 @@ If the answer is no, the feature or architectural change should normally be avoi
 ### D042: Non-Root Minimal Containerization
 - **Decision**: Multi-stage Docker build producing an unprivileged Alpine image running as `appuser`.
 - **Rationale**: Minimizes attack surface, complies with container security standards, and isolates persistent database files to `/data`.
+
+## 26. SEO & Performance Architectural Decisions (D043 - D046)
+
+### D043: Zero-Dependency History Routing & Head Management
+- **Decision**: Implement lightweight History API route matching (`src/utils/routing.js`) and native DOM head synchronization (`src/hooks/useSEO.js`) rather than installing `react-router-dom` or `react-helmet-async`.
+- **Rationale**: Consistent with D027 (avoid unnecessary dependencies) and D028 (proportional architecture), a 5-route portfolio needs neither full client router overhead nor third-party head managers that risk duplicate tags during navigation.
+
+### D044: Build-Time Static Prerendering via Vite SSR + `react-dom/server`
+- **Decision**: Pre-render all public portfolio routes and `404.html` during `npm run build` using React 18's built-in `react-dom/server` (`vite build --ssr`) rather than migrating to Next.js/Remix or introducing headless-browser build dependencies.
+- **Rationale**: Preserves the existing React + Vite stack (D001), works in AWS Amplify CI (`amplify.yml`) with zero additional npm packages, ensures search crawlers and social link scrapers receive full semantic HTML and route-specific metadata immediately, and hydrates cleanly via `hydrateRoot`.
+
+### D045: WebP Image Optimization & Explicit Dimensions with `<picture>` Fallback
+- **Decision**: Provide `.webp` variants for local raster images alongside original `.jpeg`/`.png` fallbacks via `OptimizedImage.jsx` with explicit `width`, `height`, `loading`, and `fetchPriority` attributes, plus a dedicated `1200x630` Open Graph banner (`og-preview.png`).
+- **Rationale**: Reduces image payload sizes significantly and prevents Cumulative Layout Shift (CLS) while maintaining broad browser and social-crawler compatibility.
+
+### D046: Canonical URL Normalization & True 404 Handling
+- **Decision**: Normalize trailing slashes to non-trailing canonical paths (except `/`), exclude private/API/404 paths from `sitemap.xml`, and emit `404.html` with `noindex, nofollow` and HTTP `404` status in Nginx (`nginx/nginx.conf`).
+- **Rationale**: Prevents duplicate canonical URLs and soft-404 indexing issues without exposing backend routes.

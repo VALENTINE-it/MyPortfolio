@@ -1,27 +1,43 @@
-import './Projects.css'
+import OptimizedImage from './OptimizedImage';
+import './Projects.css';
+
+const LOGO_DIMENSIONS = {
+  '/images/hopereach.jpeg': { width: 800, height: 791 },
+  '/images/afrinit.jpeg': { width: 400, height: 400 },
+  '/images/zone01.png': { width: 181, height: 107 },
+};
 
 function ProjectItem({ item, isLeft }) {
   const technologies = Array.isArray(item.technologies)
     ? item.technologies
-    : []
+    : [];
 
-  const title = item.name || item.title
-  const role = item.role || item.category || 'Full-Stack Project'
-  const date = item.period || item.year || '2026'
+  const title = item.name || item.title;
+  const role = item.role || item.category || 'Full-Stack Project';
+  const date = item.period || item.year || '2026';
+  const hasValidLiveUrl = Boolean(item.liveUrl && item.liveUrl !== '#' && item.liveUrl !== '#!');
+  const logoDims = LOGO_DIMENSIONS[item.logo] || { width: 88, height: 88 };
 
   return (
-    <div className={`timeline-item ${isLeft ? 'left' : 'right'}`} id={`timeline-${item.id}`}>
+    <article className={`timeline-item ${isLeft ? 'left' : 'right'}`} id={`timeline-${item.id}`}>
       <div className="timeline-date">{date}</div>
       <div className="timeline-text">
         {item.logo && (
           <div className="timeline-header-org">
             <div className="timeline-circular-logo">
-              <img src={item.logo} alt={`${title} Logo`} />
+              <OptimizedImage
+                src={item.logo}
+                alt={`${title} Logo`}
+                width={logoDims.width}
+                height={logoDims.height}
+                loading="lazy"
+                decoding="async"
+              />
             </div>
           </div>
         )}
-        <h2>{title}</h2>
-        <h4>{role}</h4>
+        <h3>{title}</h3>
+        <p className="timeline-role">{role}</p>
         <p>{item.description}</p>
 
         {technologies.length > 0 && (
@@ -34,35 +50,32 @@ function ProjectItem({ item, isLeft }) {
           </div>
         )}
 
-        <div className="timeline-actions">
-          {item.githubUrl && (
-            <a
-              href={item.githubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-sm"
-              aria-label={`View ${title} on GitHub`}
-            >
-              GitHub <i className="fab fa-github" style={{ marginLeft: 6 }}></i>
-            </a>
-          )}
-          {item.liveUrl && (
-            <a
-              href={item.liveUrl === '#' ? '#!' : item.liveUrl}
-              target={item.liveUrl && item.liveUrl !== '#' && item.liveUrl !== '#!' ? '_blank' : undefined}
-              rel={item.liveUrl && item.liveUrl !== '#' && item.liveUrl !== '#!' ? 'noopener noreferrer' : undefined}
-              className="btn btn-secondary btn-sm"
-              aria-label={`Visit live site for ${title}`}
-              onClick={(e) => {
-                if (item.liveUrl === '#' || item.liveUrl === '#!') {
-                  e.preventDefault()
-                }
-              }}
-            >
-              Live Site <i className="fas fa-external-link-alt" style={{ marginLeft: 6 }}></i>
-            </a>
-          )}
-        </div>
+        {(item.githubUrl || hasValidLiveUrl) && (
+          <div className="timeline-actions">
+            {item.githubUrl && (
+              <a
+                href={item.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-sm"
+                aria-label={`View ${title} on GitHub`}
+              >
+                GitHub <i className="fab fa-github" aria-hidden="true" style={{ marginLeft: 6 }}></i>
+              </a>
+            )}
+            {hasValidLiveUrl && (
+              <a
+                href={item.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-secondary btn-sm"
+                aria-label={`Visit live site for ${title}`}
+              >
+                Live Site <i className="fas fa-external-link-alt" aria-hidden="true" style={{ marginLeft: 6 }}></i>
+              </a>
+            )}
+          </div>
+        )}
 
         {(item.aboutOrg || item.orgDetail) && (
           <div className="timeline-org-detail">
@@ -72,8 +85,8 @@ function ProjectItem({ item, isLeft }) {
           </div>
         )}
       </div>
-    </div>
-  )
+    </article>
+  );
 }
 
-export default ProjectItem
+export default ProjectItem;

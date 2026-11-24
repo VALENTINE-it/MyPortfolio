@@ -101,7 +101,7 @@ export default function PagePagination() {
 
       {/* Numbered Page Track */}
       <ul className="page-pagination-list">
-        {SECTIONS.map((sec, idx) => {
+        {SECTIONS.map((sec) => {
           const isActive = activeSection === sec.id
           return (
             <li key={sec.id} className="page-pagination-item">

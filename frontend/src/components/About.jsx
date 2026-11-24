@@ -1,20 +1,31 @@
-import { useState } from 'react'
-import './About.css'
+import { useState } from 'react';
+import OptimizedImage from './OptimizedImage';
+import './About.css';
 
-export default function About() {
-  const [isExpanded, setIsExpanded] = useState(false)
+export default function About({ isStandalonePage = false, onNavigate }) {
+  const [isExpanded, setIsExpanded] = useState(isStandalonePage);
+
+  const handleLinkClick = (e, path) => {
+    if (typeof onNavigate === 'function') {
+      e.preventDefault();
+      onNavigate(path);
+    }
+  };
 
   return (
-    <div className="about" id="about">
+    <section className="about" id="about" aria-label="About Valentine Omondi Awili">
       <div className="container-fluid">
         <div className="about-row">
           {/* Left Column: Image */}
           <div className="about-col-img">
             <div className="about-img">
-              <img
+              <OptimizedImage
                 src="/images/about-me.jpeg"
-                alt="Valentine Omondi Awili Workspace"
+                alt="Valentine Omondi Awili working in his software development workspace"
+                width={1040}
+                height={694}
                 loading="lazy"
+                decoding="async"
               />
             </div>
           </div>
@@ -61,28 +72,42 @@ export default function About() {
                     <div className="about-section-block">
                       <h3 className="about-subtitle">Where I’m Heading</h3>
                       <p>
-                        My goal is to grow into a well-rounded technology professional who can build applications and understand the infrastructure that keeps them running. Through my ICT studies, practical projects, and continued learning, I’m working toward a career that combines software development, networking, and cybersecurity.
+                        My goal is to grow into a well-rounded technology professional who can build applications and understand the infrastructure that keeps them running. Through my ICT studies at Maseno University, practical projects, and continued learning, I’m working toward a career that combines software development, networking, and cybersecurity.
                       </p>
                     </div>
                   </div>
                 )}
               </div>
 
-              <div className="about-actions">
-                <button
-                  type="button"
-                  className="btn-read-more"
-                  onClick={() => setIsExpanded(!isExpanded)}
-                  aria-expanded={isExpanded}
-                >
-                  {isExpanded ? 'Read Less' : 'Read More'}
-                  <i className={`fas fa-chevron-${isExpanded ? 'up' : 'down'}`}></i>
-                </button>
-              </div>
+              {!isStandalonePage ? (
+                <div className="about-actions">
+                  <button
+                    type="button"
+                    className="btn-read-more"
+                    onClick={() => setIsExpanded(!isExpanded)}
+                    aria-expanded={isExpanded}
+                  >
+                    {isExpanded ? 'Read Less' : 'Read More'}
+                    <i className={`fas fa-chevron-${isExpanded ? 'up' : 'down'}`} aria-hidden="true"></i>
+                  </button>
+                </div>
+              ) : (
+                <div className="page-cross-links text-left">
+                  <a href="/projects" className="btn" onClick={(e) => handleLinkClick(e, '/projects')}>
+                    Explore Projects
+                  </a>
+                  <a href="/skills" className="btn btn-secondary" onClick={(e) => handleLinkClick(e, '/skills')}>
+                    View Technical Skills
+                  </a>
+                  <a href="/contact" className="btn btn-secondary" onClick={(e) => handleLinkClick(e, '/contact')}>
+                    Contact Me
+                  </a>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
-    </div>
-  )
+    </section>
+  );
 }

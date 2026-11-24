@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /metrics
+Disallow: /health/
+
+Sitemap: https://valentineawili.dev/sitemap.xml

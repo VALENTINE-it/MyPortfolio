@@ -829,3 +829,11 @@ The Go backend follows a modular monolith architecture using exclusively the Go 
 6. **Cache (`internal/cache`)**: Thread-safe in-memory TTL cache with background eviction and ETag / HTTP 304 support.
 7. **Middleware (`internal/middleware`)**: Request ID, structured logging, panic recovery, global 1MB body limit, security headers, CORS, token-bucket rate limiter with trusted proxy detection, double-submit CSRF, and admin session authentication.
 8. **Monitoring & Tasks (`internal/monitoring`, `internal/tasks`)**: Prometheus `/metrics`, `/health/live`, `/health/ready`, and background worker for daily backups and hourly session cleanup.
+
+---
+
+## 9. SEO, Multi-Route Views, and Static Prerendering
+
+While `/` preserves the continuous long-form editorial portfolio story, the frontend also supports dedicated crawlable routes (`/about`, `/projects`, `/skills`, `/contact`, and `/404`) via a zero-dependency History API router (`src/utils/routing.js`) and `src/pages/` wrappers.
+
+During `npm run build`, `vite build --ssr src/entry-server.jsx` and `scripts/prerender-seo.mjs` pre-render static HTML (`dist/index.html`, `dist/about/index.html`, `dist/projects/index.html`, `dist/skills/index.html`, `dist/contact/index.html`, `dist/404.html`) alongside `dist/sitemap.xml` and `dist/robots.txt`. See [SEO.md](./SEO.md) for the complete SEO specification.

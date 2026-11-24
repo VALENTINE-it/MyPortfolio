@@ -19,19 +19,45 @@
   text-align: center;
 }
 
-.footer .footer-info h2 {
+.footer .footer-info h2,
+.footer .footer-info .footer-name {
   margin-bottom: 12px;
   font-size: 30px;
   font-weight: 700;
   color: #ffffff;
   letter-spacing: 1px;
+  line-height: 1.2;
 }
 
-.footer .footer-info h3 {
+.footer .footer-info h3,
+.footer .footer-info .footer-role {
   margin-bottom: 25px;
   font-size: 18px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.9);
+  line-height: 1.2;
+}
+
+.footer .footer-nav {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin: 10px 0 6px;
+}
+
+.footer .footer-nav a {
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.footer .footer-nav a:hover {
+  color: #111111;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 .footer .footer-menu {
